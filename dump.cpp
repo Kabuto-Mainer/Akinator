@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#include "config.h"
 #include "type.h"
 #include "func.h"
 
@@ -13,9 +14,7 @@ int create_graph (tree_t* tree)
     assert (tree);
 
     char address[200] = "";
-    make_address_dump (tree->num_dump, "graph.dot", address);
-
-    printf ("ADDRESS: %s\n", address);
+    make_dir_address (ADDRESS_DUMP_DIR, tree->num_dump, "graph.dot", address);
 
     FILE* file = fopen (address, "w");
     if (file == NULL)
@@ -74,11 +73,13 @@ int create_block (node_t* node,
              "block_%p [label=<\n<TABLE CELLSPACING=\"0\" CELLPADDING=\"4\">\n"
              "<TR><TD PORT=\"root\" BGCOLOR=\"#0308f9ff\" COLSPAN=\"2\"><B>%p</B></TD></TR>\n"
              "<TR><TD BGCOLOR=\"#f46b8bff\" COLSPAN=\"2\">%s</TD></TR>\n"
+             "<TR><TD BGCOLOR=\"#f46b8bff\" COLSPAN=\"2\">RANK=%d</TD></TR>\n"
+             "<TR><TD BGCOLOR=\"#b209ccff\" COLSPAN=\"2\">ROOT=%p</TD></TR>\n"
              "<TR><TD BGCOLOR=\"#ff7301ff\">NO</TD><TD BGCOLOR=\"#08ff3aff\">YES</TD></TR>\n"
 
              "<TR>\n<TD PORT=\"left\" BGCOLOR=\"#ff7301ff\">%s</TD>\n"
              "<TD PORT=\"right\" BGCOLOR=\"#08ff3aff\">%s</TD>\n</TR>\n</TABLE> >];\n\n",
-             node, node, node->object, left_line, right_line);
+             node, node, node->object, (int) node->rank, node->father, left_line, right_line);
 
     return 0;
 }
@@ -148,10 +149,10 @@ int dump_tree (tree_t* tree,
     create_graph (tree);
 
     char address_dot[200] = {};
-    make_address_dump (tree->num_dump, "graph.dot", address_dot);
+    make_dir_address (ADDRESS_DUMP_DIR, tree->num_dump, "graph.dot", address_dot);
 
     char address_img[200] = {};
-    make_address_dump (tree->num_dump, "IMAGES/img_", address_img);
+    make_dir_address (ADDRESS_DUMP_DIR, tree->num_dump, "IMAGES/img_", address_img);
 
     char comand[200] = {};
     sprintf (comand,

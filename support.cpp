@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "config.h"
 // #include "const.h"
@@ -34,14 +35,15 @@ int find_number_dump ()
 // --------------------------------------------------------------------------------------------------
 
 // --------------------------------------------------------------------------------------------------
-int make_address_dump (const int number_dump,
-                       const char* address_in_dump,
-                       char* string)
+int make_dir_address (const char* address_dir,
+                      const int number_dir,
+                      const char* address_file,
+                      char* string)
 {
-    assert (address_in_dump);
+    assert (address_dir);
     assert (string);
 
-    sprintf (string, "%s%d/%s", ADDRESS_DUMP_DIR, number_dump, address_in_dump);
+    sprintf (string, "%s%d/%s", address_dir, number_dir, address_file);
     return 0;
 }
 // --------------------------------------------------------------------------------------------------
@@ -55,7 +57,7 @@ size_t get_hash (const char* string)
     size_t hash = 5381;
     while (string[index] != '\0')
     {
-        hash = (hash << 5 + hash) + toupper (string[index++]); // toupper for more simple use for users
+        hash = ((hash << 5) + hash) + (size_t) (string[index++]); // toupper for more simple use for users
     }
 
     return hash;
