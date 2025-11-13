@@ -17,7 +17,11 @@
 
 
 
-// Start function for using tree functions
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция заполнения структуры дерева
+ * @param [in] tree Адрес структуры дерева
+*/
 // --------------------------------------------------------------------------------------------------
 int create_tree (tree_t* tree)
 {
@@ -39,6 +43,72 @@ int create_tree (tree_t* tree)
     tree->size = 1;
 
     tree->num_dump = find_number_dump ();
+
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция обработки ивентов, полученных от пользователя
+*/
+// --------------------------------------------------------------------------------------------------
+int akinator ()
+{
+    tree_t tree = {};
+    create_tree (&tree);
+
+    EVENT prev = NULL_EVENT;
+    EVENT current = NULL_EVENT;
+    while ((current = get_event (prev)) != EXIT_PROGRAM)
+    {
+        switch ((int) current)
+        {
+            case GUESS_OBJECT:
+            {
+                guess_object (&tree);
+                break;
+            }
+
+            case DESC_OBJECT:
+            {
+                desc_object (&tree);
+                break;
+            }
+
+            case COMPARE_OBJECTS:
+            {
+                compare_objects (&tree);
+                break;
+            }
+
+            case SAVE_DATA:
+            {
+                save_data (&tree);
+                break;
+            }
+
+            case IMPORT_DATA:
+            {
+                import_data (&tree);
+                break;
+            }
+
+            case START_PROGRAM:
+            {
+                break;
+            }
+
+            default:
+            {
+                EXIT_FUNC("Default case", -1);
+            }
+        }
+        prev = current;
+    }
+
+    my_print ("Thank you for using the program\n");
+    delete_tree (&tree);
 
     return 0;
 }
@@ -181,7 +251,7 @@ int get_user_bool ()
 
         else
         {
-            printf ("Please re-enter your answer (your answer mus be 'Y' or 'N'\n");
+            my_print ("Please re-enter your answer (your answer mus be 'Y' or 'N')\n");
         }
     }
     return -1;
@@ -252,8 +322,10 @@ EVENT get_event (EVENT prev)
 {
     if (prev == NULL_EVENT)
     {
-        printf ("Welcome to this program\n");
-        printf ("Do you want to start? (Y\\n)\n");
+        my_print ("------------------------\n");
+        my_print ("Welcome to this program\n");
+        my_print ("Do you want to start? (Y\\n)\n");
+        my_print ("------------------------\n");
 
         if (get_user_bool () == USER_YES)
         {
@@ -265,29 +337,33 @@ EVENT get_event (EVENT prev)
 
     else if (prev == EXIT_PROGRAM)
     {
-        printf ("Do you want to save new data base? (Y\\n)\n");
+        // printf ("Do you want to save new data base? (Y\\n)\n");
 
-                if (get_user_bool () == USER_YES)
-        {
-            return SAVE_DATA;
-        }
+        //         if (get_user_bool () == USER_YES)
+        // {
+        //     return SAVE_DATA;
+        // }
 
         return EXIT_PROGRAM;
     }
 
-    else {
-        printf ("What do you want to do?\n");
-        printf (" - Guess an object (g)\n");
-        printf (" - Compare the objects (c)\n");
-        printf (" - Describe an object (d)\n");
-        printf (" - Save data base (s)\n");
-        printf (" - Exit program (e)\n");
+    else
+    {
+        my_print ("-------------------------\n");
+        my_print ("What do you want to do?\n");
+        my_print (" - Guess an object (g)\n");
+        my_print (" - Compare the objects (c)\n");
+        my_print (" - Describe an object (d)\n");
+        my_print (" - Save data base (s)\n");
+        my_print (" - Import data base (i)\n");
+        my_print (" - Exit program (e)\n");
+        my_print ("-------------------------\n");
     }
     int comand = '\0';
 
     while (1)
     {
-        printf ("> ");
+        my_print ("> ");
         comand = getchar();
 
         while (getchar() != '\n')
@@ -317,6 +393,11 @@ EVENT get_event (EVENT prev)
                 return SAVE_DATA;
             }
 
+            case ('I'):
+            {
+                return IMPORT_DATA;
+            }
+
             case ('E'):
             {
                 return EXIT_PROGRAM;
@@ -324,7 +405,7 @@ EVENT get_event (EVENT prev)
 
             default:
             {
-                printf ("Please, re-enter you answer (you can use only 'g', 'c', 'd', 's', 'e')\n");
+                my_print ("Please, re-enter you answer (you can use only 'g', 'c', 'd', 's', 'e')\n");
             }
         }
     }
@@ -505,6 +586,11 @@ int compare_objects (tree_t* tree)
 {
     assert (tree);
 
+    if (tree->size < 3)
+    {
+        my_print ("Not enough object.\n");
+        return 1;
+    }
     my_print ("Tell me two objects and I will tell you difference between theirs.\n");
     my_print ("Enter first object:\n");
     node_t* node_1 = get_user_node (tree);
@@ -775,7 +861,9 @@ int guess_object (tree_t* tree)
     assert (tree);
     node_t* current_node = tree->null;
 
+    my_print ("------------------------\n");
     my_print ("Think of any character and I'll guess it.\n");
+    my_print ("------------------------\n");
     while (1)
     {
         my_print ("Is it %s? (Y/n)\n", current_node->object.name);
@@ -810,6 +898,8 @@ int guess_object (tree_t* tree)
                         break;
                     }
                 }
+
+                my_print ("I took note of this.\n");
                 create_node (current_node, LEFT_SIDE, current_node->object);
                 create_node (current_node, RIGHT_SIDE, user_object);
                 current_node->object = category;
@@ -847,10 +937,10 @@ obj_t get_user_object ()
     char buffer[200] = "";
     int amount_char = 0;
 
-    while (getchar () != '\n')
-    {
-        continue;
-    }
+    // while (getchar () != '\n')
+    // {
+    //     continue;
+    // }
 
     my_print ("> ");
     while (1)
@@ -1159,6 +1249,7 @@ int import_data (tree_t* tree)
 {
     assert (tree);
 
+    my_print ("----------------------\n");
     if (tree->null->left != NULL || tree->null->right != NULL)
     {
         my_print ("Sorry, file upload is only possible if the tree is empty.\n");

@@ -4,26 +4,27 @@
 
 int main (void)
 {
-    tree_t tree = {};
-    create_tree (&tree);
+    akinator ();
+    // tree_t tree = {};
+    // create_tree (&tree);
 
-    import_data (&tree);
+    // import_data (&tree);
 
-    dump_tree (&tree, "test");
+    // dump_tree (&tree, "test");
 
-    // for (int i = 0; i < 3; i++)
-    // {
-    //     // // import_data (&tree);
-    //     guess_object (&tree);
-    // }
-    desc_object (&tree);
-
-    save_data (&tree);
-
+    // // for (int i = 0; i < 3; i++)
+    // // {
+    // //     // // import_data (&tree);
+    // //     guess_object (&tree);
+    // // }
     // desc_object (&tree);
-    // compare_objects (&tree);
 
-    delete_tree (&tree);
+    // save_data (&tree);
+
+    // // desc_object (&tree);
+    // // compare_objects (&tree);
+
+    // delete_tree (&tree);
 
     return 0;
 }

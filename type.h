@@ -55,7 +55,8 @@ enum EVENT
     COMPARE_OBJECTS     = 3,
     DESC_OBJECT         = 4,
     SAVE_DATA           = 5,
-    EXIT_PROGRAM        = 6
+    IMPORT_DATA         = 6,
+    EXIT_PROGRAM        = 7
 };
 // --------------------------------------------------------------------------------------------------
 enum TYPE_OBJECT
