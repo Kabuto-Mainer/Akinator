@@ -6,14 +6,14 @@ flags = -D_DEBUG -Werror -ggdb3 -lSDL2 -std=c++17 -O3 -Wall -Wextra -Weffc++ -Wa
 
 # Компиляция akin
 akin:
-	g++ func.cpp main.cpp support.cpp dump.cpp $(flags) -o akin.exe
+	g++ func.cpp main.cpp support.cpp dump.cpp STACK/stack.cpp $(flags) -o akin.exe
 
 # Запуск akin
 run-a:
 	./akin.exe
 
 gitcom:
-	git add *
+	git add .
 	git commit -m $(m)
 	git push
 

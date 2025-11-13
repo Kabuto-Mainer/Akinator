@@ -1,39 +1,42 @@
 #include <stdio.h>
+#include <stdio.h>
 #include <assert.h>
 #include <ctype.h>
 #include <string.h>
-// #include <unistd.h>
+#include <unistd.h>
+
+#include "STACK/stack_define.h"
+#include "STACK/config.h"
+#include "STACK/stack.h"
 
 #include "config.h"
 #include "const.h"
 #include "type.h"
 #include "func.h"
 
+
+
+
 // Start function for using tree functions
 // --------------------------------------------------------------------------------------------------
 int create_tree (tree_t* tree)
 {
+    assert (tree);
+
     tree->null = (node_t*) calloc (1, sizeof (node_t));
     if (tree->null == NULL)
     {
         EXIT_FUNC("NULL address", -1);
     }
 
-                                // sizeof (char) in size_object
-    tree->null->object = (obj_t) calloc (1, sizeof (START_OBJECT) / sizeof (START_OBJECT[0]));
-    if (tree->null->object == BAD_OBJECT)
-    {
-        free (tree->null);
-        EXIT_FUNC("NULL address", -1);
-    }
-
-    sprintf (tree->null->object, "%s", START_OBJECT);
-    tree->null->hash = get_hash (tree->null->object);
+    tree->null->object.name = strdup (START_OBJECT_NAME);
+    tree->null->object.hash = get_hash (tree->null->object.name);
+    tree->null->object.type_object = OWN_MEMORY;
     tree->null->father = NULL;
     tree->null->left = NULL;
     tree->null->right = NULL;
-    tree->null->rank = 0;
-    tree->size++;
+    tree->buffer = NULL;
+    tree->size = 1;
 
     tree->num_dump = find_number_dump ();
 
@@ -41,76 +44,30 @@ int create_tree (tree_t* tree)
 }
 // --------------------------------------------------------------------------------------------------
 
-// --------------------------------------------------------------------------------------------------
-node_t* create_node (node_t* root,
-                     SIDES side,
-                     obj_t object)
-{
-    assert (root);
-    ASSERT_OBJECT(object);
 
-    node_t* new_node = (node_t*) calloc (1, sizeof (node_t));
-    if (new_node == NULL)
-    {
-        EXIT_FUNC("NULL address", NULL);
-    }
 
-    if (side == LEFT_SIDE)
-    {
-        root->left = new_node;
-    }
-
-    else
-    {
-        root->right = new_node;
-    }
-
-    new_node->object = object;
-    new_node->hash = get_hash (object);
-    new_node->father = root;
-    new_node->left = NULL;
-    new_node->right = NULL;
-    new_node->rank = root->rank + 1;
-
-    return new_node;
-}
-// --------------------------------------------------------------------------------------------------
+// -*************************************************************************************************
 
 
 
-
-
-// --------------------------------------------------------------------------------------------------
-node_t* get_next_node (node_t* node)
-{
-    assert (node);
-
-    printf ("Is it %s? (Y/n)\n", node->object);
-
-    int user_answer = get_user_bool ();
-    if (user_answer == USER_YES)
-    {
-        return node->right;
-    }
-
-    else if (user_answer == USER_NO)
-    {
-        return node->left;
-    }
-
-    return NULL;
-}
+#ifndef STACK_FUNC
 // ----------------------------------------------------------------------------------------------------
-
+/**
+ * @brief Рекурсивная функция поиска объекта в базе данных
+ * @param [in] node Указатель на узел
+ * @param [in] object Объект, который и надо найти
+ * @return node_t* (указатель на узел) - если узел найдет, иначе -> NULL
+*/
 // ----------------------------------------------------------------------------------------------------
 node_t* find_node (node_t* node,
-                   obj_t object,
-                   size_t hash)
+                   obj_t object)
 {
     assert (node);
     ASSERT_OBJECT(object);
 
-    if (node->hash == hash && strcmp (node->object, object) == 0)
+    int hash = object.hash;
+
+    if (node->object.hash == hash && strcmp (node->object.name, object.name) == 0)
     {
         return node;
     }
@@ -119,7 +76,7 @@ node_t* find_node (node_t* node,
     {
         node_t* buffer = NULL;
 
-        if ((buffer = find_node (node->left, object, hash)) != NULL)
+        if ((buffer = find_node (node->left, object)) != NULL)
         {
             return buffer;
         }
@@ -129,7 +86,7 @@ node_t* find_node (node_t* node,
     {
         node_t* buffer = NULL;
 
-        if ((buffer = find_node (node->right, object, hash)) != NULL)
+        if ((buffer = find_node (node->right, object)) != NULL)
         {
             return buffer;
         }
@@ -138,85 +95,67 @@ node_t* find_node (node_t* node,
     return NULL;
 }
 // ----------------------------------------------------------------------------------------------------
+#endif // STACK_FUNC
 
+
+#ifdef STACK_FUNC
 // ----------------------------------------------------------------------------------------------------
-int save_node (node_t* node,
-               FILE* file)
+/**
+ * @brief Функция поиска объекта в базе данных с помощью цикла со стеком
+ * @param [in] node Указатель на корень дерева
+ * @param [in] object Объект, который и надо найти
+ * @return node_t* (указатель на узел) - если узел найдет, иначе -> NULL
+*/
+// ----------------------------------------------------------------------------------------------------
+node_t* find_node (node_t* node,
+                   obj_t object)
 {
     assert (node);
+    ASSERT_OBJECT(object);
 
-    if (node->object == NULL)
+    stack_struct stack = {};
+    stack_creator (&stack, 10, __FILE__, __LINE__, "Stack for find node");
+    stack_push (&stack, node);
+
+    int hash = object.hash;
+    while (stack.size != 0)
     {
-        fprintf (file, " nil ");
-    }
+        node_t* current_node = NULL;
+        stack_pop (&stack, &current_node);
 
-    else
-    {
-        fprintf (file, "(\"%s\"", node->object);
-    }
+        if (current_node->object.hash == hash)
+        {
+            stack_destruct (&stack);
+            return current_node;
+        }
 
-    if (node->left)
-    {
-        save_node (node->left, file);
-    }
+        if (current_node->right != NULL)
+        {
+            stack_push (&stack, current_node->right);
+        }
 
-    else
-    {
-        fprintf (file,
-                 " nil ");
+        if (current_node->left != NULL)
+        {
+            stack_push (&stack, current_node->left);
+        }
     }
-
-    if (node->right)
-    {
-        save_node (node->right, file);
-    }
-
-    else
-    {
-        fprintf (file,
-                 "(nil)");
-    }
-
-    fprintf (file, ")");
-    return 0;
+    stack_destruct (&stack);
+    return NULL;
 }
 // ----------------------------------------------------------------------------------------------------
-
-// // ----------------------------------------------------------------------------------------------------
-// int upload_node (node_t* root,
-//                  FILE* file)
-// {
-//     assert (root);
-
-//     char symbol = fgetchar (file);
-//     if (symbol == '(')
-//     {
-//         char buffer[200] = "";
-//         int amount_sym = 0;
-
-//         if (fscanf (file, "%199[^(, )]%n",buffer, &amount_sym) != 1)
-//         {
-//             EXIT_FUNC("ERROR with reading\n", -1);
-//         }
-
-//         obj_t object = (obj_t) calloc (1, SIZE_OBJECT((size_t) amount_sym + 1));
-//         if (object == BAD_OBJECT)
-//         {
-//             EXIT_FUNC("NULL calloc", -1);
-//         }
-//         sprintf (object, "%s", buffer);
+#endif // STACK_FUNC
 
 
-//     }
 
-//     else
-//     {
-//         printf ("ERROR in file\n");
-//         return 1;
-//     }
-// }
-// // ----------------------------------------------------------------------------------------------------
+// -*************************************************************************************************
 
+
+
+// ----------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция получения ответа типа 'да/нет' от пользователя
+ * @return USER_YES (если да), иначе -> USER_NO
+*/
 // ----------------------------------------------------------------------------------------------------
 int get_user_bool ()
 {
@@ -250,40 +189,43 @@ int get_user_bool ()
 // ----------------------------------------------------------------------------------------------------
 
 // --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция получения узла по объекту, полученному от пользователя
+ * @param [in] tree Указатель на структуру дерева
+ * @return node_t* (если объект нашелся), иначе -> NULL
+*/
+// --------------------------------------------------------------------------------------------------
 node_t* get_user_node (tree_t* tree)
 {
     assert (tree);
 
-    obj_t user_object = NULL;
-    size_t hash = 0;
+    obj_t user_object = {};
     node_t* user_node = NULL;
 
     while (1)
     {
         user_object = get_user_object ();
-        hash = get_hash (user_object);
-
-        user_node = find_node (tree->null, user_object, hash);
-        free (user_object);
+        user_node = find_node (tree->null, user_object);
+        free (user_object.name);
 
         if (user_node == NULL || (user_node->left != NULL && user_node->right != NULL))
         {
             if (user_node == NULL)
             {
-                printf ("The object you entered was not found.\n");
+                my_print ("The object you entered was not found.\n");
             }
 
             else
             {
-                printf ("The object you entered is category.\n");
+                my_print ("The object you entered is category.\n");
             }
 
-            printf ("Do you want to re-enter? (Y/n)\n");
+            my_print ("Do you want to re-enter? (Y/n)\n");
             int user_answer = get_user_bool ();
 
             if (user_answer == USER_YES)
             {
-                printf ("Your object:\n");
+                my_print ("Your object:\n");
                 continue;
             }
 
@@ -300,119 +242,11 @@ node_t* get_user_node (tree_t* tree)
 }
 // --------------------------------------------------------------------------------------------------
 
-// ----------------------------------------------------------------------------------------------------
-obj_t get_user_object ()
-{
-    char buffer[200] = "";
-    int amount_char = 0;
-
-    printf ("> ");
-    while (1)
-    {
-        if (scanf ("%[^\n]%n", buffer, &amount_char) != 1)
-        {
-            getchar ();
-            printf ("\nPlease re-enter your answer (your answer should not contain any characters other than letters and numbers)\n");
-            printf ("> ");
-            continue;
-        }
-
-        //     printf ("STR: -%s-\n", buffer);
-        // printf ("AMOUNT CHAR: %d\n", amount_char);
-        getchar ();
-
-        obj_t object = (obj_t) calloc (1, SIZE_OBJECT ((size_t) amount_char + 1));
-        if (object == NULL)
-        {
-            EXIT_FUNC("NULL address", NULL);
-        }
-        sprintf (object, "%s", buffer);
-
-        return object;
-    }
-    return BAD_OBJECT;
-}
-// ----------------------------------------------------------------------------------------------------
-
-// ----------------------------------------------------------------------------------------------------
-int check_user_object (obj_t object)
-{
-    ASSERT_OBJECT(object);
-
-    size_t size = get_size_object (object);
-    size_t i = 0;
-
-    for (i = 0; i < size; i++)
-    {
-        if ((toupper (object[i]) == 'N')
-            && i + 1 < size)
-        {
-            if (toupper (object[i + 1]) != 'O')
-            {
-                continue;
-            }
-
-            if (i + 2 < size)
-            {
-                if (toupper (object[i + 2]) != ' ' && toupper (object[i + 2]) != 'T')
-                {
-                    continue;
-                }
-
-                if (i > 0)
-                {
-                    if (i + 3 < size)
-                    {
-                        if (toupper (object[i - 1]) == ' ' && (toupper (object[i + 2] == ' ' ||toupper (object[i + 3]) == ' ')))
-                        {
-                            break;
-                        }
-                    }
-
-                    if (toupper (object[i - 1]) == ' ')
-                    {
-                        break;
-                    }
-
-                    continue;
-                }
-
-                else
-                {
-                    break;
-                }
-            }
-
-            else
-            {
-                if (i > 0)
-                {
-                    if (toupper (object[i - 1]) == ' ')
-                    {
-                        break;
-                    }
-
-                    continue;
-                }
-
-                else
-                {
-                    break;
-                }
-            }
-        }
-    }
-
-    if (i == size)
-    {
-        return 0;
-    }
-
-    printf ("Invalid string. Please do not use negation.\n");
-    return -1;
-}
-// ----------------------------------------------------------------------------------------------------
-
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция получения следующей задачи от пользователя
+ * @param [in] prev Предыдущая задача
+*/
 // --------------------------------------------------------------------------------------------------
 EVENT get_event (EVENT prev)
 {
@@ -500,9 +334,15 @@ EVENT get_event (EVENT prev)
 
 
 
+// -*************************************************************************************************
 
 
 
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция удаления всего дерева
+ * @param [in] tree Указатель на структуру дерева
+*/
 // --------------------------------------------------------------------------------------------------
 int delete_tree (tree_t* tree)
 {
@@ -510,10 +350,22 @@ int delete_tree (tree_t* tree)
 
     delete_node (tree->null);
 
+    if (tree->buffer != NULL)
+    {
+        free (tree->buffer);
+    }
+
     return 0;
 }
 // --------------------------------------------------------------------------------------------------
 
+#ifndef STACK_FUNC
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Рекурсивная функция удаления элемента
+ * @param [in] node Указатель на текущий удаляемый узел
+ * @return 0
+*/
 // --------------------------------------------------------------------------------------------------
 int delete_node (node_t* node)
 {
@@ -529,166 +381,72 @@ int delete_node (node_t* node)
         delete_node (node->right);
     }
 
-    free (node->object);
+    if ((node->object.type_object & OWN_MEMORY) == OWN_MEMORY)
+    {
+        free (node->object.name);
+    }
     free (node);
 
     return 0;
 }
 // --------------------------------------------------------------------------------------------------
+#endif // STACK_FUNC
 
-
-
-
-
-
-
+#ifdef STACK_FUNC
 // --------------------------------------------------------------------------------------------------
-int compare_objects (tree_t* tree)
+/**
+ * @brief Функция удаления элемента с помощью цикла и стека
+ * @param [in] node Указатель на корень дерева
+ * @return 0
+*/
+// --------------------------------------------------------------------------------------------------
+int delete_node (node_t* node)
 {
-    assert (tree);
+    assert (node);
 
-    printf ("Tell me two objects and I will tell you difference between theirs.\n");
-    printf ("Enter first object:\n");
-    node_t* node_1 = get_user_node (tree);
+    stack_struct stack = {};
+    stack_creator (&stack, 10, __FILE__, __LINE__, "Stack for delete tree");
+    stack_push (&stack, node);
 
-    if (node_1 == NULL)
+    while (stack.size != 0)
     {
-        return 1;
-    }
-// Необходимо, что бы при первом NULL был return
-    printf ("Enter second object:\n");
-    node_t* node_2 = get_user_node (tree);
+        node_t* current_node = NULL;
+        stack_pop (&stack, &current_node);
 
-    if (node_2 == NULL)
-    {
-        return 1;
-    }
-
-    if (node_1 == node_2)
-    {
-        printf ("You enter just one object\n");
-        return 0;
-    }
-
-    char left_side = 'l';
-    char right_side = 'r';
-
-    int size_1 = (int) node_1->rank;
-    int size_2 = (int) node_2->rank;
-
-
-    char* path_to_1 = (char*) calloc (size_t (size_1 + 1), sizeof (char));
-    char* path_to_2 = (char*) calloc (size_t (size_2 + 1), sizeof (char));
-
-
-    node_t* current_node = node_1->father;
-    printf ("Node 1: %p\nNode 2: %p\n", node_1, node_2);
-    for (int i = 0; i < size_1 - 1; i++)
-    {
-        if (current_node->father->right == current_node)
+        if (current_node->left != NULL)
         {
-            path_to_1[i] = right_side;
-        }
-// TODO Насколько тут важна надежность?
-// TODO Надо ли нам проверять, не совпадают какие либо элементы в дереве
-        else
-        {
-            path_to_1[i] = left_side;
-        }
-        current_node = current_node->father;
-    }
-
-    current_node = node_2->father;
-    for (int i = 0; i < size_2 - 1; i++)
-    {
-        if (current_node->father->right == current_node)
-        {
-            path_to_2[i] = right_side;
+            stack_push (&stack, current_node->left);
         }
 
-        else
+        if (current_node->right != NULL)
         {
-            path_to_2[i] = left_side;
+            stack_push (&stack, current_node->right);
         }
-        current_node = current_node->father;
+
+        if ((current_node->object.type_object & OWN_MEMORY) == OWN_MEMORY)
+        {
+            free (current_node->object.name);
+        }
+        free (current_node);
     }
 
-    if (path_to_1[size_1] != path_to_2[size_2])
-    {
-        printf ("There are no common properties between the objects you entered\n");
-    }
-
-    else
-    {
-        printf ("What these objects have in common:\n");
-        int index_1 = size_1;
-        int index_2 = size_2;
-        current_node = tree->null;
-        while (path_to_1[index_1] != path_to_2[index_2])
-        {
-            printf (" - %s\n", current_node->object);
-
-            if (path_to_1[index_1] == left_side)
-            {
-                current_node = current_node->left;
-            }
-
-            else
-            {
-                current_node = current_node->right;
-            }
-
-            index_1--;
-            index_2--;
-        }
-
-        printf ("The differences between these objects:\n");
-        printf ("First is:\n");
-        node_1 = current_node;
-        while (index_1 != 0)
-        {
-            printf (" - %s\n", node_1->object);
-
-            if (path_to_1[index_1] == left_side)
-            {
-                node_1 = node_1->left;
-            }
-
-            else
-            {
-                node_1 = node_1->right;
-            }
-
-            index_1--;
-        }
-
-        printf ("Second is:\n");
-        node_2 = current_node;
-        while (index_2 != 0)
-        {
-            printf (" - %s\n", node_2->object);
-
-            if (path_to_2[index_2] == left_side)
-            {
-                node_2 = node_2->left;
-            }
-
-            else
-            {
-                node_2 = node_2->right;
-            }
-
-            index_1--;
-        }
-    }
-
-    free (path_to_1);
-    free (path_to_2);
-
+    stack_destruct (&stack);
     return 0;
 }
 // --------------------------------------------------------------------------------------------------
+#endif // STACK_FUNC
 
+
+
+// -*************************************************************************************************
+
+
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция описания объекта
+ * @param [in] tree Указатель на структуру дерева
+*/
 // --------------------------------------------------------------------------------------------------
 int desc_object (tree_t* tree)
 {
@@ -702,57 +460,346 @@ int desc_object (tree_t* tree)
         return 0;
     }
 
-    node_t** path_to_object = (node_t**) calloc (size_t (user_node->rank + 1), sizeof (node_t*));
+    stack_struct stack = {};
+    stack_creator (&stack, 10, __FILE__, __LINE__, "stack for find");
 
     node_t* current_node = user_node->father;
-    for (int i = 0; i < (int) user_node->rank; i++)
+
+    int len = 0;
+    while (current_node != NULL)
     {
-        path_to_object[i] = current_node;
+        stack_push (&stack, current_node);
         current_node = current_node->father;
+        len++;
     }
 
-    printf ("%s is: \n", user_node->object);
-    for (int i = (int) user_node->rank - 1; i >= 0; i--)
+    my_print ("%s: \n", user_node->object.name);
+    for (int i = 0; i < len; i++)
     {
-        printf (" - %s\n", path_to_object[i]->object);
+        stack_pop (&stack, &current_node);
+        if (current_node == current_node->left->father)
+        {
+            my_print (" - isn't %s\n", current_node->object.name);
+        }
+
+        else
+        {
+            my_print (" - is %s\n", current_node->object.name);
+        }
     }
-    free (path_to_object);
+    stack_destruct (&stack);
 
     return 1;
 }
 // --------------------------------------------------------------------------------------------------
 
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция сравнения объектов, реализованная на и цикле со стеком, и на обычном динамическом массиве
+ * @param [in] tree Указатель на структуру дерева
+ * @note Тип обработки данных настраивается через STACK_FUNC (если объявлен, то используется стек, иначе -> динамический массив
+*/
+// --------------------------------------------------------------------------------------------------
+int compare_objects (tree_t* tree)
+{
+    assert (tree);
+
+    my_print ("Tell me two objects and I will tell you difference between theirs.\n");
+    my_print ("Enter first object:\n");
+    node_t* node_1 = get_user_node (tree);
+
+    if (node_1 == NULL)
+    {
+        return 1;
+    }
+// Необходимо, что бы при первом NULL был return
+    my_print ("Enter second object:\n");
+    node_t* node_2 = get_user_node (tree);
+
+    if (node_2 == NULL)
+    {
+        return 1;
+    }
+
+    if (node_1 == node_2)
+    {
+        my_print ("You enter just one object\n");
+        return 0;
+    }
+
+#ifdef STACK_FUNC
+    stack_struct stack_node_1 = {};
+    stack_creator (&stack_node_1, 10, __FILE__, __LINE__, "Stack of node 1");
+    stack_push (&stack_node_1, node_1);
+
+    stack_struct stack_node_2 = {};
+    stack_creator (&stack_node_2, 10, __FILE__, __LINE__, "Stack of node 2");
+    stack_push (&stack_node_2, node_2);
+
+    node_t* buffer_node_1 = node_1->father;
+    node_t* buffer_node_2 = node_2->father;
+
+    int len_path_1 = 0;
+    int len_path_2 = 0;
+
+    while (buffer_node_1 != NULL) // Можно через for, но как то уже все такие функции делал через while
+    {
+        stack_push (&stack_node_1, buffer_node_1);
+        buffer_node_1 = buffer_node_1->father;
+        len_path_1++;
+    }
+
+    while (buffer_node_2 != NULL)
+    {
+        stack_push (&stack_node_2, buffer_node_2);
+        buffer_node_2 = buffer_node_2->father;
+        len_path_2++;
+    }
+
+    int amount_common = 0;
+    my_print ("What these objects have in common:\n");
+    while (buffer_node_1 == buffer_node_2)
+    {
+        if (buffer_node_1 == buffer_node_1->left->father)
+        {
+            my_print (" - isn't %s\n", buffer_node_1->object.name);
+        }
+
+        else
+        {
+            my_print (" - is %s\n", buffer_node_1->object.name);
+        }
+
+        stack_pop (&stack_node_1, &buffer_node_1);
+        stack_pop (&stack_node_2, &buffer_node_2);
+        amount_common++;
+    }
+
+    my_print ("The differences between these objects:\n");
+    my_print ("First is:\n");
+
+    int buffer_len = amount_common;
+    while (buffer_len != len_path_1)
+    {
+        if (buffer_node_1 == buffer_node_1->left->father)
+        {
+            my_print (" - isn't %s\n", buffer_node_1->object.name);
+        }
+
+        else
+        {
+            my_print (" - is %s\n", buffer_node_1->object.name);
+        }
+        stack_pop (&stack_node_1, &buffer_node_1);
+        buffer_len++;
+    }
+
+    my_print ("Second is:\n");
+
+    buffer_len = amount_common;
+    while (buffer_len != len_path_2)
+    {
+        if (buffer_node_2 == buffer_node_2->left->father)
+        {
+            my_print (" - isn't %s\n", buffer_node_2->object.name);
+        }
+
+        else
+        {
+            my_print (" - is %s\n", buffer_node_2->object.name);
+        }
+        stack_pop (&stack_node_2, &buffer_node_2);
+        buffer_len++;
+    }
+
+    stack_destruct (&stack_node_1);
+    stack_destruct (&stack_node_2);
+#endif // STACK_FUNC
+
+#ifndef STACK_FUNC_H
+    char left_side = 'l';
+    char right_side = 'r';
+
+    int size = (int) tree->size;
+    int size_1 = 0;
+    int size_2 = 0;
+
+    char* path_to_1 = (char*) calloc (size_t (size), sizeof (char));
+    char* path_to_2 = (char*) calloc (size_t (size), sizeof (char));
+
+    if (path_to_1 == NULL || path_to_2 == NULL)
+    {
+        EXIT_FUNC ("NULL calloc", -1);
+    }
+
+    node_t* current_node = node_1->father;
+    // printf ("Node 1: %p\nNode 2: %p\n", node_1, node_2);
+    for (int i = 0; i < size - 1; i++)
+    {
+// TODO Насколько тут важна надежность?
+// TODO Надо ли нам проверять, не совпадают какие либо элементы в дереве
+
+        if (current_node->father->right == current_node)
+        {
+            path_to_1[i] = right_side;
+        }
+        else
+        {
+            path_to_1[i] = left_side;
+        }
+
+        current_node = current_node->father;
+        size_1++;
+
+        if (current_node->father == NULL)
+        {
+            break;
+        }
+    }
+
+    current_node = node_2->father;
+    for (int i = 0; i < size - 1; i++)
+    {
+        if (current_node->father->right == current_node)
+        {
+            path_to_2[i] = right_side;
+        }
+
+        else
+        {
+            path_to_2[i] = left_side;
+        }
+
+        current_node = current_node->father;
+        size_2++;
+
+        if (current_node->father == NULL)
+        {
+            break;
+        }
+    }
+
+    my_print ("What these objects have in common:\n");
+    int index_1 = size_1;
+    int index_2 = size_2;
+    current_node = tree->null;
+    while (path_to_1[index_1] != path_to_2[index_2])
+    {
+        if (current_node == current_node->left->father)
+        {
+            my_print (" - isn't %s\n", current_node->object.name);
+        }
+
+        else
+        {
+            my_print (" - is %s\n", current_node->object.name);
+        }
+
+        if (path_to_1[index_1] == left_side)
+        {
+            current_node = current_node->left;
+        }
+
+        else
+        {
+            current_node = current_node->right;
+        }
+
+        index_1--;
+        index_2--;
+    }
+
+    my_print ("The differences between these objects:\n");
+    my_print ("First is:\n");
+    node_1 = current_node;
+    while (index_1 != 0)
+    {
+        my_print (" - %s\n", node_1->object.name);
+
+        if (path_to_1[index_1] == left_side)
+        {
+            node_1 = node_1->left;
+        }
+
+        else
+        {
+            node_1 = node_1->right;
+        }
+
+        index_1--;
+    }
+
+    my_print ("Second is:\n");
+    node_2 = current_node;
+    while (index_2 != 0)
+    {
+        my_print (" - %s\n", node_2->object.name);
+
+        if (path_to_2[index_2] == left_side)
+        {
+            node_2 = node_2->left;
+        }
+
+        else
+        {
+            node_2 = node_2->right;
+        }
+
+        index_1--;
+    }
+
+    free (path_to_1);
+    free (path_to_2);
+#endif // STACK_FUNC
+
+    return 0;
+
+}
+// --------------------------------------------------------------------------------------------------
+
+
+
+// -*************************************************************************************************
+
+
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция отгадывания пользовательского объекта и, при необходимости, добавления его в базу данных
+ * @param [in] tree Указатель на структуру дерева
+*/
 // --------------------------------------------------------------------------------------------------
 int guess_object (tree_t* tree)
 {
     assert (tree);
     node_t* current_node = tree->null;
 
-    printf ("Think of any character and I'll guess it.\n");
+    my_print ("Think of any character and I'll guess it.\n");
     while (1)
     {
-        printf ("Is it %s? (Y/n)\n", current_node->object);
+        my_print ("Is it %s? (Y/n)\n", current_node->object.name);
         int user_answer = get_user_bool ();
 
         if (current_node->left == NULL && current_node->right == NULL)
         {
             if (user_answer == USER_YES)
             {
-                printf ("It couldn't be otherwise\n");
+                my_print ("It couldn't be otherwise\n");
                 return 1;
             }
 
-            printf ("Are you sure? (Y\\n)\n");
+            my_print ("Are you sure? (Y\\n)\n");
             user_answer = get_user_bool ();
 
             if (user_answer == USER_YES)
             {
-                printf ("Then who did you guess?\n");
+                my_print ("Then who did you guess?\n");
                 obj_t user_object = get_user_object ();
-                printf ("How is %s different from %s? %s is...\n",
-                        current_node->object,
-                        user_object,
-                        user_object);
+                my_print ("How is %s different from %s? %s is...\n",
+                        current_node->object.name,
+                        user_object.name,
+                        user_object.name);
 
                 obj_t category = {};
                 while (1)
@@ -766,7 +813,6 @@ int guess_object (tree_t* tree)
                 create_node (current_node, LEFT_SIDE, current_node->object);
                 create_node (current_node, RIGHT_SIDE, user_object);
                 current_node->object = category;
-                current_node->hash = get_hash (category);
                 // printf ("1: %s\n2: %s\n3: %s\n",
                 //         current_node->object, current_node->left->object, current_node->right->object);
                 return 1;
@@ -789,33 +835,217 @@ int guess_object (tree_t* tree)
 }
 // --------------------------------------------------------------------------------------------------
 
+// ----------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция получения пользовательского объекта и сохранение его в динамическую память
+ * @return obj_t - пользовательский объект
+ * @note Сохраняет в динамическую память -> необходимо с дальнейшем будет самому освободить
+*/
+// ----------------------------------------------------------------------------------------------------
+obj_t get_user_object ()
+{
+    char buffer[200] = "";
+    int amount_char = 0;
+
+    while (getchar () != '\n')
+    {
+        continue;
+    }
+
+    my_print ("> ");
+    while (1)
+    {
+        if (scanf ("%[^\n]%n", buffer, &amount_char) != 1)
+        {
+            getchar ();
+            my_print ("\nPlease re-enter your answer (your answer should not contain any characters other than letters and numbers)\n");
+            my_print ("> ");
+            continue;
+        }
+
+        while (getchar () != '\n')
+        {
+            continue;
+        }
+
+        obj_t object = {};
+        object.name = strdup (buffer);
+        object.hash = get_hash (object.name);
+        object.type_object = OWN_MEMORY;
+        return object;
+    }
+
+    return {NULL, 0, NULL, NULL, NO_OWN_MEMORY};
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция проверки корректности пользовательской строки на предмет наличия отрицания
+ * @param [in] object Пользовательский объект, направленный на проверку
+ * @return 0 - если корректный ввод, иначе -1
+*/
+// ----------------------------------------------------------------------------------------------------
+int check_user_object (obj_t object)
+{
+    ASSERT_OBJECT(object);
+
+    size_t size = get_size_object (object);
+    size_t i = 0;
+
+    char* name = object.name;
+    for (i = 0; i < size; i++)
+    {
+        if ((toupper (name[i]) == 'N')
+            && i + 1 < size)
+        {
+            if (toupper (name[i + 1]) != 'O')
+            {
+                continue;
+            }
+
+            if (i + 2 < size)
+            {
+                if (toupper (name[i + 2]) != ' ' && toupper (name[i + 2]) != 'T')
+                {
+                    continue;
+                }
+
+                if (i > 0)
+                {
+                    if (i + 3 < size)
+                    {
+                        if (toupper (name[i - 1]) == ' ' && (toupper (name[i + 2] == ' ' || toupper (name[i + 3]) == ' ')))
+                        {
+                            break;
+                        }
+                    }
+
+                    if (toupper (name[i - 1]) == ' ')
+                    {
+                        break;
+                    }
+
+                    continue;
+                }
+
+                else
+                {
+                    break;
+                }
+            }
+
+            else
+            {
+                if (i > 0)
+                {
+                    if (toupper (name[i - 1]) == ' ')
+                    {
+                        break;
+                    }
+
+                    continue;
+                }
+
+                else
+                {
+                    break;
+                }
+            }
+        }
+    }
+
+    if (i == size)
+    {
+        return 0;
+    }
+
+    my_print ("Invalid string. Please do not use negation.\n");
+    return -1;
+}
+// ----------------------------------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Создание узла и добавление связей
+ *
+ * @param [in] root Родительский корень
+ * @param [in] side Сторона, куда нужно добавлять новый элемент
+ * @param [in] object Добавляемый объект
+ * @return node_t* Указатель на новый узел
+ */
+// --------------------------------------------------------------------------------------------------
+node_t* create_node (node_t* root,
+                     SIDES side,
+                     obj_t object)
+{
+    assert (root);
+    ASSERT_OBJECT(object);
+
+    node_t* new_node = (node_t*) calloc (1, sizeof (node_t));
+    if (new_node == NULL)
+    {
+        EXIT_FUNC("NULL address", NULL);
+    }
+
+    if (side == LEFT_SIDE)
+    {
+        root->left = new_node;
+    }
+
+    else
+    {
+        root->right = new_node;
+    }
+
+    new_node->object = object;
+    new_node->father = root;
+    new_node->left = NULL;
+    new_node->right = NULL;
+
+    return new_node;
+}
+// --------------------------------------------------------------------------------------------------
+
+
+
+// -*************************************************************************************************
+
+
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция сохранения базы данных либо в стандартную директорию, либо в пользовательский файл
+ * @param [in] tree Указатель на структуру дерева
+ * @return 0
+*/
 // --------------------------------------------------------------------------------------------------
 int save_data (tree_t* tree)
 {
     assert (tree);
 
-    printf ("Where do you want to save data base?\n");
-    printf ("Do you want to save in standard directory (Y) or in own file (n)?\n");
+    my_print ("Where do you want to save data base?\n");
+    my_print ("Do you want to save in standard directory (Y) or in own file (n)?\n");
     int user_answer = get_user_bool ();
     char address[200] = "";
 
     if (user_answer == USER_YES)
     {
-        printf ("In what directory number do you want to save the file? (1-%d):\n", AMOUNT_DATA_DIR);
+        my_print ("In what directory number do you want to save the file? (1-%d):\n", AMOUNT_DATA_DIR);
 
         int number_dir = 0;
         while (1)
         {
-            printf ("> ");
+            my_print ("> ");
             if (scanf ("%d", &number_dir) != 1)
             {
-                printf ("Please, re-enter your answer.\n");
+                my_print ("Please, re-enter your answer.\n");
                 continue;
             }
 
             if (number_dir < 1 || number_dir > AMOUNT_DATA_DIR)
             {
-                printf ("Incorrect number directory. Please, re-enter it.\n");
+                my_print ("Incorrect number directory. Please, re-enter it.\n");
                 continue;
             }
 
@@ -826,17 +1056,17 @@ int save_data (tree_t* tree)
 
     else
     {
-        printf ("Enter the file name (note that the file will be created in the current directory):\n");
+        my_print ("Enter the file name (note that the file will be created in the current directory):\n");
 
         while (1)
         {
             int amount_sym = 0;
             char buffer[180] = "";
 
-            printf ("> ");
+            my_print ("> ");
             if (scanf ("%179s%n", buffer, &amount_sym) != 1)
             {
-                printf ("Please, re-enter your address\n");
+                my_print ("Please, re-enter your address\n");
                 continue;
             }
 
@@ -844,7 +1074,7 @@ int save_data (tree_t* tree)
             {
                 if (address[i] == '/')
                 {
-                    printf ("Please, do not enter a directory. Just name file.\n");
+                    my_print ("Please, do not enter a directory. Just name file.\n");
                     continue;
                 }
             }
@@ -857,85 +1087,344 @@ int save_data (tree_t* tree)
     save_node (tree->null, file);
     fclose (file);
 
-    printf ("File saved successfully\n");
+    my_print ("File saved successfully\n");
     return 0;
 }
 // --------------------------------------------------------------------------------------------------
 
+// ----------------------------------------------------------------------------------------------------
+/**
+ * @brief Рекурсивная функция, сохраняющая узел в файл
+ * @param [in] node Узел, который будет сохраняться
+ * @param [in] file Указатель на файл, куда будет записываться база данных
+ * @return 0
+*/
+// ----------------------------------------------------------------------------------------------------
+int save_node (node_t* node,
+               FILE* file)
+{
+    assert (node);
+
+    if (node->object.name == NULL)
+    {
+        fprintf (file, " nil ");
+    }
+
+    else
+    {
+        fprintf (file, "(\"%s\"", node->object.name);
+    }
+
+    if (node->left)
+    {
+        save_node (node->left, file);
+    }
+
+    else
+    {
+        fprintf (file,
+                 " nil ");
+    }
+
+    if (node->right)
+    {
+        save_node (node->right, file);
+    }
+
+    else
+    {
+        fprintf (file,
+                 " nil ");
+    }
+
+    fprintf (file, ")");
+    return 0;
+}
+// ----------------------------------------------------------------------------------------------------
+
+
+
+// -*************************************************************************************************
+
+
+
 // --------------------------------------------------------------------------------------------------
-// int import_data (tree_t* tree)
-// {
-//     assert (tree);
+/**
+ * @brief Функция, загружающая базу данных из выбранной пользователем директории, либо из введенного файла
+ * @param [in] tree Дерево, в которое загружается база данных, предварительно освобождая его
+ * @return 1
+ */
+// --------------------------------------------------------------------------------------------------
+int import_data (tree_t* tree)
+{
+    assert (tree);
 
-//     if (tree->null->left != NULL || tree->null->right != NULL)
-//     {
-//         printf ("Sorry, file upload is only possible if the tree is empty.\n");
-//         return 0;
-//     }
+    if (tree->null->left != NULL || tree->null->right != NULL)
+    {
+        my_print ("Sorry, file upload is only possible if the tree is empty.\n");
+        return 0;
+    }
 
-//     printf ("Where do you want to upload the file from? From a standard directory (Y) or from your own file (n) ?\n");
-//     printf ("Do you want to save in standard directory (Y) or in own file (n) ?\n");
-//     int user_answer = get_user_bool ();
-//     char address[200] = "";
 
-//     if (user_answer == USER_YES)
-//     {
-//         printf ("In what directory number do you want to upload the file? (1-%d):\n", AMOUNT_DATA_DIR);
+    my_print ("Where do you want to upload the file from? From a standard directory (Y) or from your own file (n) ?\n");
+    int user_answer = get_user_bool ();
+    char address[200] = "";
 
-//         int number_dir = 0;
-//         while (1)
-//         {
-//             printf ("> ");
-//             if (scanf ("%d", &number_dir) != 1)
-//             {
-//                 printf ("Please, re-enter your answer.\n");
-//                 continue;
-//             }
+    if (user_answer == USER_YES)
+    {
+        my_print ("In what directory number do you want to upload the file? (1-%d):\n", AMOUNT_DATA_DIR);
 
-//             if (number_dir < 1 || number_dir > AMOUNT_DATA_DIR)
-//             {
-//                 printf ("Incorrect number directory. Please, re-enter it.\n");
-//                 continue;
-//             }
+        int number_dir = 0;
+        while (1)
+        {
+            my_print ("> ");
+            if (scanf ("%d", &number_dir) != 1)
+            {
+                my_print ("Please, re-enter your answer.\n");
+                continue;
+            }
 
-//             make_dir_address (ADDRESS_DATA_DIR, number_dir, "data.txt", address);
-//             break;
-//         }
-//     }
+            if (number_dir < 1 || number_dir > AMOUNT_DATA_DIR)
+            {
+                my_print ("Incorrect number directory. Please, re-enter it.\n");
+                continue;
+            }
 
-//     else
-//     {
-//         printf ("Enter the file name (note that the file will be created in the current directory):\n");
+            make_dir_address (ADDRESS_DATA_DIR, number_dir, "data.txt", address);
+            break;
+        }
+    }
 
-//         while (1)
-//         {
-//             int amount_sym = 0;
-//             char buffer[180] = "";
+    else
+    {
+        my_print ("Enter the file name (note that the file will be created in the current directory):\n");
 
-//             printf ("> ");
-//             if (scanf ("%179s%n", buffer, &amount_sym) != 1)
-//             {
-//                 printf ("Please, re-enter your address\n");
-//                 continue;
-//             }
+        while (1)
+        {
+            int amount_sym = 0;
+            char buffer[180] = "";
 
-//             for (int i = 0; i < amount_sym; i++)
-//             {
-//                 if (address[i] == '/')
-//                 {
-//                     printf ("Please, do not enter a directory. Just name file.\n");
-//                     continue;
-//                 }
-//             }
-//             sprintf (address, "%s%s", ADDRESS_USER_DATA, buffer);
-//             break;
-//         }
-//     }
+            my_print ("> ");
+            if (scanf ("%179s%n", buffer, &amount_sym) != 1)
+            {
+                my_print ("Please, re-enter your address\n");
+                continue;
+            }
 
-//     FILE* file = fopen (address, "w");
-//     save_node (tree->null, file);
-//     fclose (file);
+            for (int i = 0; i < amount_sym; i++)
+            {
+                if (address[i] == '/')
+                {
+                    my_print ("Please, do not enter a directory. Just name file.\n");
+                    continue;
+                }
+            }
 
-//     printf ("File saved successfully\n");
-//     return 0;
-// }
+            // Проверка, существует ли файл
+            if (access (address, F_OK) != 0)
+            {
+                my_print ("File does not exist.\n");
+                continue;
+            }
+
+            sprintf (address, "%s%s", ADDRESS_USER_DATA, buffer);
+            break;
+        }
+    }
+
+
+    FILE* file = fopen (address, "r");
+    if (file == NULL)
+    {
+        EXIT_FUNC ("NULL file", -1);
+    }
+
+    size_t size = file_size_check (address);
+    char* buffer = (char*) calloc (size + 1, sizeof (char));
+    if (buffer == NULL)
+    {
+        EXIT_FUNC("NULL calloc", -1);
+    }
+    size_t amount_char =  fread (buffer, size, sizeof (char), file);
+    (void) amount_char;
+    buffer[size] = '\0';
+
+    clean_html (ADDRESS_DUMP_DEBUG "dump.html");
+    clean_dir (ADDRESS_DUMP_DEBUG "IMAGES");
+
+    delete_node (tree->null);
+    tree->buffer = buffer;
+    tree->null = upload_node (NULL, &(buffer));
+    fclose (file);
+
+    my_print ("File import successfully\n");
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+/**
+ * @brief Рекурсивная функция создания узла по буферу
+ *
+ * @param [in] root Родительский корень
+ * @param [in] cur_char Указатель на адрес буфера
+ * @return node_t* Указатель на новый узел
+ */
+// ----------------------------------------------------------------------------------------------------
+node_t* upload_node (node_t* root,
+                     char** cur_char)
+{
+    // assert (root);
+    assert (cur_char);
+    assert (*cur_char);
+
+    // debug_html (root, "Dump before skip void", *cur_char);
+    skip_void (cur_char);
+    if (**cur_char == '(')
+    {
+        node_t* new_node = (node_t*) calloc (1, sizeof (node_t));
+        if (new_node == NULL)
+        {
+            EXIT_FUNC("NULL calloc", NULL);
+        }
+
+        (*cur_char) += 2; // Skip - (" -
+        new_node->object.name = *cur_char;
+
+
+        skip_after_symbol (cur_char, '"');
+        debug_html (root, "Dump after skip_after_symbol", *cur_char);
+        skip_void (cur_char);
+
+        new_node->object.hash = get_hash (new_node->object.name);
+
+    // Есть ли доп. файлы для объекта
+        if (**cur_char == '[')
+        {
+            (*cur_char) += 2; // Skip -["-
+            new_node->object.audio = *cur_char;
+
+            debug_html (root, "Dump before skip_after_symbol (with add objects)", *cur_char);
+
+            skip_after_symbol (cur_char, '"');
+            (*cur_char)++; // Skip -"-
+            skip_void (cur_char);
+
+            debug_html (root, "Dump before skip_after_symbol (with add objects)", *cur_char);
+
+            (*cur_char)++;
+            new_node->object.image = *cur_char;
+            skip_after_symbol (cur_char, '"');
+            (*cur_char) += 2; // Skip -"]-
+            skip_void (cur_char);
+
+            new_node->object.type_object = NO_OWN_MEMORY | IS_AUDIO | IS_IMAGE;
+        }
+
+        else
+        {
+            new_node->object.audio = NULL;
+            new_node->object.image = NULL;
+            new_node->object.type_object = NO_OWN_MEMORY;
+        }
+
+        new_node->left = upload_node (new_node, cur_char);
+        new_node->right = upload_node (new_node, cur_char);
+
+        new_node->father = root;
+
+        (*cur_char)++; // Skip -)-
+        return new_node;
+    }
+
+    else
+    {
+        debug_html (root, "Dump before check nil", *cur_char);
+
+        int int_nil_enter = 0;
+        int int_nil_const = 0;
+
+        memcpy (&int_nil_enter, *cur_char, sizeof (int));
+        memcpy (&int_nil_const, "nil ", sizeof (int));
+
+        if (int_nil_const == int_nil_enter)
+        {
+            *cur_char += 3; // Skip -nil -
+            skip_void (cur_char);
+            debug_html (root, "Dump after check nil", *cur_char);
+            return NULL;
+        }
+
+        printf ("ERROR in data: incorrect syntax -%s-\n", *cur_char);
+        return NULL;
+    }
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция скипа cur_char до символа, замена его на '\0' и перевод cur_char на следующий
+ * @param [in] cur_pose Указатель на адрес хранения текущего символа
+ * @param [in] symbol Символ, который будет заменяться на '\0'
+*/
+// ----------------------------------------------------------------------------------------------------
+int skip_after_symbol (char** cur_pose,
+                       int symbol)
+{
+    assert (cur_pose);
+    assert (*cur_pose);
+
+    *cur_pose = strchr (*cur_pose, symbol);
+    // printf ("STR: %s\n", *cur_pose);
+    **cur_pose = '\0';
+    (*cur_pose)++;
+
+    skip_void (cur_pose);
+
+    return 0;
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция скипа всего ненужного синтаксиса, указанного в SYNTAX_VOID
+ * @param [in] Указатель на адрес хранения текущего символа
+*/
+// ----------------------------------------------------------------------------------------------------
+int skip_void (char** cur_pose)
+{
+    assert (cur_pose);
+    assert (*cur_pose);
+
+    while (1)
+    {
+        int flag = 0;
+        for (size_t i = 0; i < sizeof (SYNTAX_VOID) * sizeof (SYNTAX_VOID[0]); i++)
+        {
+            if (**cur_pose == SYNTAX_VOID[i])
+            {
+                (*cur_pose)++;
+                break;
+            }
+        }
+
+        if (flag == 0)
+        {
+            return 0;
+        }
+    }
+    return -1;
+}
+// ----------------------------------------------------------------------------------------------------
+
+
+
+// -*************************************************************************************************
+
+
+
+
+
+
+
+

@@ -7,11 +7,16 @@ int main (void)
     tree_t tree = {};
     create_tree (&tree);
 
-    for (int i = 0; i < 3; i++)
-    {
-        guess_object (&tree);
-        dump_tree (&tree, "test");
-    }
+    import_data (&tree);
+
+    dump_tree (&tree, "test");
+
+    // for (int i = 0; i < 3; i++)
+    // {
+    //     // // import_data (&tree);
+    //     guess_object (&tree);
+    // }
+    desc_object (&tree);
 
     save_data (&tree);
 
