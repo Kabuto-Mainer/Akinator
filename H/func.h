@@ -65,6 +65,10 @@ int delete_tree (tree_t* tree);
 int dump_tree (tree_t* tree,
                const char* reason);
 // ----------------------------------------------------------------------------------------------------
+int create_html (tree_t* tree,
+                 const char* address,
+                 const char* reason);
+// ----------------------------------------------------------------------------------------------------
 int debug_html (node_t* root,
                 const char* reason,
                 const char* add_string);
@@ -123,7 +127,8 @@ int save_node (node_t* node,
 int import_data (tree_t* tree);
 // ---------------------------------------------------------------------------------------------------
 node_t* upload_node (node_t* root,
-                     char** cur_char);
+                     char** cur_char,
+                     int* size_tree);
 // ----------------------------------------------------------------------------------------------------
 int skip_after_symbol (char** cur_pose,
                        int symbol);

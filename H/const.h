@@ -19,6 +19,23 @@ const char SYNTAX_VOID[] =
 };
 // --------------------------------------------------------------------------------------------------
 
+// --------------------------------------------------------------------------------------------------
+const char BUTTON_DESC_CHAR[][30] =
+{
+    "Yes",
+    "No",
+    "Guess objects",
+    "Description object",
+    "Compare objects",
+    "Import data base",
+    "Save data base",
+    "Start program",
+    "Exit program",
+    "Own file",
+    "Standard directory"
+};
+// --------------------------------------------------------------------------------------------------
+
 
 
 #endif // CONST_H

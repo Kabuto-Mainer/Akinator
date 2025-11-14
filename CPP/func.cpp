@@ -5,16 +5,14 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "STACK/stack_define.h"
-#include "STACK/config.h"
-#include "STACK/stack.h"
+#include "../STACK/stack_define.h"
+#include "../STACK/config.h"
+#include "../STACK/stack.h"
 
-#include "config.h"
-#include "const.h"
-#include "type.h"
-#include "func.h"
-
-
+#include "../H/config.h"
+#include "../H/const.h"
+#include "../H/type.h"
+#include "../H/func.h"
 
 
 // --------------------------------------------------------------------------------------------------
@@ -41,8 +39,14 @@ int create_tree (tree_t* tree)
     tree->null->right = NULL;
     tree->buffer = NULL;
     tree->size = 1;
-
     tree->num_dump = find_number_dump ();
+
+    char address[200] = "";
+    sprintf (address, "DUMPS/DUMP_%d/IMAGES", tree->num_dump);
+    clean_dir (address);
+
+    sprintf (address, "DUMPS/DUMP_%d/dump.html", tree->num_dump);
+    clean_html (address);
 
     return 0;
 }
@@ -105,6 +109,7 @@ int akinator ()
             }
         }
         prev = current;
+        dump_tree (&tree, "Dump after iteration");
     }
 
     my_print ("Thank you for using the program\n");
@@ -555,10 +560,14 @@ int desc_object (tree_t* tree)
     }
 
     my_print ("%s: \n", user_node->object.name);
-    for (int i = 0; i < len; i++)
+
+    node_t* prev = NULL;
+    stack_pop (&stack, &prev);
+    for (int i = 0; i < len - 1; i++)
     {
         stack_pop (&stack, &current_node);
-        if (current_node == current_node->left->father)
+
+        if (current_node == prev->left)
         {
             my_print (" - isn't %s\n", current_node->object.name);
         }
@@ -567,6 +576,7 @@ int desc_object (tree_t* tree)
         {
             my_print (" - is %s\n", current_node->object.name);
         }
+        prev = current_node;
     }
     stack_destruct (&stack);
 
@@ -629,14 +639,14 @@ int compare_objects (tree_t* tree)
     int len_path_1 = 0;
     int len_path_2 = 0;
 
-    while (buffer_node_1 != NULL) // Можно через for, но как то уже все такие функции делал через while
+    while (buffer_node_1->father != NULL) // Можно через for, но как то уже все такие функции делал через while
     {
         stack_push (&stack_node_1, buffer_node_1);
         buffer_node_1 = buffer_node_1->father;
         len_path_1++;
     }
 
-    while (buffer_node_2 != NULL)
+    while (buffer_node_2->father != NULL)
     {
         stack_push (&stack_node_2, buffer_node_2);
         buffer_node_2 = buffer_node_2->father;
@@ -645,10 +655,18 @@ int compare_objects (tree_t* tree)
 
     int amount_common = 0;
     my_print ("What these objects have in common:\n");
-    while (buffer_node_1 == buffer_node_2)
+
+    node_t* next_1 = NULL;
+    node_t* next_2 = NULL;
+    stack_pop (&stack_node_1, &next_1);
+    stack_pop (&stack_node_2, &next_2);
+
+    while (next_1 == next_2)
     {
-        if (buffer_node_1 == buffer_node_1->left->father)
+
+        if (buffer_node_1->left == next_2)
         {
+            printf ("NAME: %s\n", buffer_node_1->object.name);
             my_print (" - isn't %s\n", buffer_node_1->object.name);
         }
 
@@ -657,18 +675,23 @@ int compare_objects (tree_t* tree)
             my_print (" - is %s\n", buffer_node_1->object.name);
         }
 
-        stack_pop (&stack_node_1, &buffer_node_1);
-        stack_pop (&stack_node_2, &buffer_node_2);
+        buffer_node_1 = next_1;
+        buffer_node_2 = next_2;
+        stack_pop (&stack_node_1, &next_1);
+        stack_pop (&stack_node_2, &next_2);
         amount_common++;
     }
 
+    stack_push (&stack_node_1, next_1);
+    stack_push (&stack_node_2, next_2);
+
     my_print ("The differences between these objects:\n");
-    my_print ("First is:\n");
+    my_print ("First:\n");
 
     int buffer_len = amount_common;
-    while (buffer_len != len_path_1)
+    while (buffer_len <= len_path_1)
     {
-        if (buffer_node_1 == buffer_node_1->left->father)
+        if (buffer_node_1->left != next_1)
         {
             my_print (" - isn't %s\n", buffer_node_1->object.name);
         }
@@ -677,16 +700,17 @@ int compare_objects (tree_t* tree)
         {
             my_print (" - is %s\n", buffer_node_1->object.name);
         }
-        stack_pop (&stack_node_1, &buffer_node_1);
+        buffer_node_1 = next_1;
+        stack_pop (&stack_node_1, &next_1);
         buffer_len++;
     }
 
     my_print ("Second is:\n");
 
     buffer_len = amount_common;
-    while (buffer_len != len_path_2)
+    while (buffer_len <= len_path_2)
     {
-        if (buffer_node_2 == buffer_node_2->left->father)
+        if (buffer_node_2->left != next_2)
         {
             my_print (" - isn't %s\n", buffer_node_2->object.name);
         }
@@ -695,7 +719,8 @@ int compare_objects (tree_t* tree)
         {
             my_print (" - is %s\n", buffer_node_2->object.name);
         }
-        stack_pop (&stack_node_2, &buffer_node_2);
+        buffer_node_2 = next_2;
+        stack_pop (&stack_node_2, &next_2);
         buffer_len++;
     }
 
@@ -703,7 +728,7 @@ int compare_objects (tree_t* tree)
     stack_destruct (&stack_node_2);
 #endif // STACK_FUNC
 
-#ifndef STACK_FUNC_H
+#ifndef STACK_FUNC
     char left_side = 'l';
     char right_side = 'r';
 
@@ -1345,10 +1370,17 @@ int import_data (tree_t* tree)
 
     delete_node (tree->null);
     tree->buffer = buffer;
-    tree->null = upload_node (NULL, &(buffer));
+
+    int size_tree = 0;
+    tree->null = upload_node (NULL, &(buffer), &size_tree);
+    tree->size = (size_t) size_tree;
     fclose (file);
 
     my_print ("File import successfully\n");
+    while (getchar() != '\n')
+    {
+        continue;
+    }
     return 0;
 }
 // --------------------------------------------------------------------------------------------------
@@ -1359,11 +1391,13 @@ int import_data (tree_t* tree)
  *
  * @param [in] root Родительский корень
  * @param [in] cur_char Указатель на адрес буфера
+ * @param [in] size_tree Указатель на размер дерева
  * @return node_t* Указатель на новый узел
  */
 // ----------------------------------------------------------------------------------------------------
 node_t* upload_node (node_t* root,
-                     char** cur_char)
+                     char** cur_char,
+                     int* size_tree)
 {
     // assert (root);
     assert (cur_char);
@@ -1378,6 +1412,7 @@ node_t* upload_node (node_t* root,
         {
             EXIT_FUNC("NULL calloc", NULL);
         }
+        (*size_tree)++;
 
         (*cur_char) += 2; // Skip - (" -
         new_node->object.name = *cur_char;
@@ -1419,8 +1454,8 @@ node_t* upload_node (node_t* root,
             new_node->object.type_object = NO_OWN_MEMORY;
         }
 
-        new_node->left = upload_node (new_node, cur_char);
-        new_node->right = upload_node (new_node, cur_char);
+        new_node->left = upload_node (new_node, cur_char, size_tree);
+        new_node->right = upload_node (new_node, cur_char, size_tree);
 
         new_node->father = root;
 

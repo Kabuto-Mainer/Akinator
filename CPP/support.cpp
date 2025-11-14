@@ -9,10 +9,10 @@
 #include <unistd.h>
 #include <time.h>
 
-#include "config.h"
+#include "../H/config.h"
 // #include "const.h"
-#include "type.h"
-#include "func.h"
+#include "../H/type.h"
+#include "../H/func.h"
 
 
 
@@ -37,21 +37,6 @@ int get_hash (const char* string)
 
 
 
-
-// --------------------------------------------------------------------------------------------------
-int print_delay_string (const char* string)
-{
-    assert (string);
-
-    for (size_t i = 0; i < strlen (string); i++)
-    {
-        putchar (string[i]);
-        msleep (PRINT_SLEEP_TIME);
-        fflush(stdout);
-    }
-    return 0;
-}
-// --------------------------------------------------------------------------------------------------
 
 // --------------------------------------------------------------------------------------------------
 int my_print (const char* format, ...)
@@ -110,6 +95,21 @@ int my_print (const char* format, ...)
     }
 
     va_end (args);
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------------------------------
+int print_delay_string (const char* string)
+{
+    assert (string);
+
+    for (size_t i = 0; i < strlen (string); i++)
+    {
+        putchar (string[i]);
+        msleep (PRINT_SLEEP_TIME);
+        fflush(stdout);
+    }
     return 0;
 }
 // --------------------------------------------------------------------------------------------------

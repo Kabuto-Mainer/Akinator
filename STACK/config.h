@@ -1,7 +1,7 @@
 #ifndef CONFIG_STACK_H
 #define CONFIG_STACK_H
 
-#include "../type.h"
+#include "../H/type.h"
 
 #define OFF 0
 #define ON 1

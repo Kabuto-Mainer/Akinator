@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "config.h"
-#include "type.h"
-#include "func.h"
+#include "../H/config.h"
+#include "../H/type.h"
+#include "../H/func.h"
 
 static int AMOUNT_IMAGES = 0;
 
@@ -28,7 +28,7 @@ int dump_tree (tree_t* tree,
     make_dir_address (ADDRESS_DUMP_DIR, tree->num_dump, "graph.dot", address_dot);
 
     char address_img[200] = {};
-    make_dir_address (ADDRESS_DUMP_DIR, tree->num_dump, "IMAGES/img_", address_img);
+    make_dir_address (ADDRESS_DUMP_DIR, tree->num_dump, "IMAGES/img", address_img);
 
     char comand[200] = {};
     sprintf (comand,
@@ -40,14 +40,54 @@ int dump_tree (tree_t* tree,
     int trash = system (comand);
     (void) trash;
 
-    // sprintf (address,
-    //          "%s_%d/dump.html",
-    //          ADDRESS_DUMP_DIR,
-    //          tree->create.number_dir);
+    sprintf (comand,
+             "%s%d/dump.html",
+             ADDRESS_DUMP_DIR,
+             tree->num_dump);
 
-    // create_html (tree, address, reason);
+    create_html (tree, comand, reason);
     (void) reason;
     AMOUNT_IMAGES++;
+
+    return 0;
+}
+// -------------------------------------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция записи дампа в html файл
+ * @param [in] tree Указатель на структуру дерева
+ * @param [in] address Имя html файла
+ * @param [in] reason Причина дампа
+ * @return 0 (если все нормально), иначе -1
+*/
+// -------------------------------------------------------------------------------------------------------
+int create_html (tree_t* tree,
+                 const char* address,
+                 const char* reason)
+{
+    assert (tree);
+    assert (address);
+
+    FILE* file = fopen (address, "a");
+    if (file == NULL)
+    {
+        EXIT_FUNC("NULL file", -1);
+    }
+
+    fprintf (file,
+             "----- Dump -----\n"
+             "Reason: %s\n"
+             "Tree stats:\n"
+             " Num_Dump: %d"
+             " Size: %zu\n",
+             reason, tree->num_dump, tree->size);
+
+    size_t size_img = tree->size * STANDARD_SIZE_BLOCK;
+    fprintf (file,
+             "<img src=IMAGES/img%d.png width=%zupx>\n",
+             AMOUNT_IMAGES, size_img);
+    fclose (file);
 
     return 0;
 }

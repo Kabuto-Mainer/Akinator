@@ -1,9 +1,43 @@
 #ifndef TYPE_H
 #define TYPE_H
 
-// #include <stdio.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
+
+#include "config.h"
 
 
+// --------------------------------------------------------------------------------------------------
+enum TYPE_BUTTON
+{
+    BUTTON_YES      = 0,
+    BUTTON_NO       = 1,
+    BUTTON_GUESS    = 2,
+    BUTTON_DESC     = 3,
+    BUTTON_COMP     = 4,
+    BUTTON_IMPORT   = 5,
+    BUTTON_SAVE     = 6,
+    BUTTON_START    = 7,
+    BUTTON_EXIT     = 8,
+    BUTTON_OWN      = 9,
+    BUTTON_STANDARD = 10
+};
+// --------------------------------------------------------------------------------------------------
+struct button_t
+{
+    SDL_Texture* but;
+    TYPE_BUTTON type;
+};
+// --------------------------------------------------------------------------------------------------
+struct display_t
+{
+    SDL_Window* window;
+    SDL_Renderer* render;
+    TTF_Font* font;
+    SDL_Texture* background;
+    button_t buttons[AMOUNT_BUTTONS];
+};
 // --------------------------------------------------------------------------------------------------
 struct object_t
 {
@@ -13,6 +47,8 @@ struct object_t
     char* image;
     int type_object;
 };
+// --------------------------------------------------------------------------------------------------
+
 // --------------------------------------------------------------------------------------------------
 typedef object_t obj_t;
 // #define BAD_OBJECT
@@ -31,6 +67,7 @@ struct tree_t
     size_t size;
     int num_dump;
     char* buffer;
+    display_t* display;
 };
 // --------------------------------------------------------------------------------------------------
 
@@ -67,6 +104,8 @@ enum TYPE_OBJECT
     IS_IMAGE        = 0x0004,
 };
 // --------------------------------------------------------------------------------------------------
+
+
 
 
 #endif // TYPE_H
