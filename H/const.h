@@ -35,6 +35,18 @@ const char BUTTON_DESC_CHAR[][30] =
     "Standard directory"
 };
 // --------------------------------------------------------------------------------------------------
+const button_desc_t MAIN_MENU_BUT[] =
+{
+    {"Guess object",        LEFT_UP,    GUESS_OBJECT},
+    {"Compare objects",     LEFT_MID,   COMPARE_OBJECTS},
+    {"Description object",  LEFT_DOWN,  DESC_OBJECT},
+    {"Save data base",      RIGHT_UP,   SAVE_DATA},
+    {"Upload data base",    RIGHT_MID,  IMPORT_DATA},
+    {"Exit",                RIGHT_DOWN, EXIT_PROGRAM}
+};
+// --------------------------------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------------------------------
 
 
 

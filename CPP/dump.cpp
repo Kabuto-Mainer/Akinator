@@ -250,14 +250,14 @@ int create_line (node_t* node,
         if (node->right->father == node)
         {
             fprintf (file,
-                     "block_%p:right -> block_%p:root [color=\"#e501faff\", penwidth = 2, arrowsize = 0.6, constraint = true, dir = both];\n",
+                     "block_%p:right -> block_%p:root [color=\"#e501faff\", penwidth = 1.5, arrowsize = 0.6, constraint = true, dir = both];\n",
                      node, node->right);
         }
 
         else
         {
             fprintf (file,
-                     "block_%p:right -> block_%p:root [color=\"#fa0101ff\", penwidth = 2, arrowsize = 0.6, constraint = true];\n",
+                     "block_%p:right -> block_%p:root [color=\"#fa0101ff\", penwidth = 1.5, arrowsize = 0.6, constraint = true];\n",
                      node, node->right);
         }
     }
@@ -267,14 +267,14 @@ int create_line (node_t* node,
         if (node->left->father == node)
         {
             fprintf (file,
-                     "block_%p:left -> block_%p:root [color=\"#e501faff\", penwidth = 2, arrowsize = 0.6, constraint = true, dir = both];\n",
+                     "block_%p:left -> block_%p:root [color=\"#e501faff\", penwidth = 1.5, arrowsize = 0.6, constraint = true, dir = both];\n",
                      node, node->left);
         }
 
         else
         {
             fprintf (file,
-                     "block_%p:left -> block_%p:root [color=\"#fa0101ff\", penwidth = 2, arrowsize = 0.6, constraint = true];\n",
+                     "block_%p:left -> block_%p:root [color=\"#fa0101ff\", penwidth = 1.5, arrowsize = 0.6, constraint = true];\n",
                      node, node->left);
         }
     }

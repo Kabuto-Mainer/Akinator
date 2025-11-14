@@ -226,43 +226,6 @@ node_t* find_node (node_t* node,
 
 
 
-// ----------------------------------------------------------------------------------------------------
-/**
- * @brief Функция получения ответа типа 'да/нет' от пользователя
- * @return USER_YES (если да), иначе -> USER_NO
-*/
-// ----------------------------------------------------------------------------------------------------
-int get_user_bool ()
-{
-    while (1)
-    {
-        printf ("> ");
-        int answer = getchar ();
-
-        while (getchar() != '\n')
-        {
-            continue;
-        }
-
-        if (toupper(answer) == 'Y')
-        {
-            return USER_YES;
-        }
-
-        else if (toupper(answer) == 'N')
-        {
-            return USER_NO;
-        }
-
-        else
-        {
-            my_print ("Please re-enter your answer (your answer mus be 'Y' or 'N')\n");
-        }
-    }
-    return -1;
-}
-// ----------------------------------------------------------------------------------------------------
-
 // --------------------------------------------------------------------------------------------------
 /**
  * @brief Функция получения узла по объекту, полученному от пользователя
@@ -314,107 +277,6 @@ node_t* get_user_node (tree_t* tree)
     }
 
     return NULL;
-}
-// --------------------------------------------------------------------------------------------------
-
-// --------------------------------------------------------------------------------------------------
-/**
- * @brief Функция получения следующей задачи от пользователя
- * @param [in] prev Предыдущая задача
-*/
-// --------------------------------------------------------------------------------------------------
-EVENT get_event (EVENT prev)
-{
-    if (prev == NULL_EVENT)
-    {
-        my_print ("------------------------\n");
-        my_print ("Welcome to this program\n");
-        my_print ("Do you want to start? (Y\\n)\n");
-        my_print ("------------------------\n");
-
-        if (get_user_bool () == USER_YES)
-        {
-            return START_PROGRAM;
-        }
-
-        return EXIT_PROGRAM;
-    }
-
-    else if (prev == EXIT_PROGRAM)
-    {
-        // printf ("Do you want to save new data base? (Y\\n)\n");
-
-        //         if (get_user_bool () == USER_YES)
-        // {
-        //     return SAVE_DATA;
-        // }
-
-        return EXIT_PROGRAM;
-    }
-
-    else
-    {
-        my_print ("-------------------------\n");
-        my_print ("What do you want to do?\n");
-        my_print (" - Guess an object (g)\n");
-        my_print (" - Compare the objects (c)\n");
-        my_print (" - Describe an object (d)\n");
-        my_print (" - Save data base (s)\n");
-        my_print (" - Import data base (i)\n");
-        my_print (" - Exit program (e)\n");
-        my_print ("-------------------------\n");
-    }
-    int comand = '\0';
-
-    while (1)
-    {
-        my_print ("> ");
-        comand = getchar();
-
-        while (getchar() != '\n')
-        {
-            continue;
-        }
-
-        switch (toupper (comand))
-        {
-            case ('G'):
-            {
-                return GUESS_OBJECT;
-            }
-
-            case ('C'):
-            {
-                return COMPARE_OBJECTS;
-            }
-
-            case ('D'):
-            {
-                return DESC_OBJECT;
-            }
-
-            case ('S'):
-            {
-                return SAVE_DATA;
-            }
-
-            case ('I'):
-            {
-                return IMPORT_DATA;
-            }
-
-            case ('E'):
-            {
-                return EXIT_PROGRAM;
-            }
-
-            default:
-            {
-                my_print ("Please, re-enter you answer (you can use only 'g', 'c', 'd', 's', 'e')\n");
-            }
-        }
-    }
-    return EXIT_PROGRAM;
 }
 // --------------------------------------------------------------------------------------------------
 
@@ -962,11 +824,6 @@ obj_t get_user_object ()
     char buffer[200] = "";
     int amount_char = 0;
 
-    // while (getchar () != '\n')
-    // {
-    //     continue;
-    // }
-
     my_print ("> ");
     while (1)
     {
@@ -1206,7 +1063,7 @@ int save_data (tree_t* tree)
     return 0;
 }
 // --------------------------------------------------------------------------------------------------
-
+// todo: check file
 // ----------------------------------------------------------------------------------------------------
 /**
  * @brief Рекурсивная функция, сохраняющая узел в файл
@@ -1223,12 +1080,14 @@ int save_node (node_t* node,
     if (node->object.name == NULL)
     {
         fprintf (file, " nil ");
+        return 0;
     }
 
     else
     {
         fprintf (file, "(\"%s\"", node->object.name);
     }
+
 
     if (node->left)
     {
@@ -1361,7 +1220,7 @@ int import_data (tree_t* tree)
     {
         EXIT_FUNC("NULL calloc", -1);
     }
-    size_t amount_char =  fread (buffer, size, sizeof (char), file);
+    size_t amount_char = fread (buffer, size, sizeof (char), file);
     (void) amount_char;
     buffer[size] = '\0';
 

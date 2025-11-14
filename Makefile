@@ -11,7 +11,7 @@ akin:
 	g++ CPP/func.cpp main.cpp CPP/support.cpp CPP/dump.cpp STACK/stack.cpp $(flags) -o akin.exe
 
 video:
-	g++ CPP/graphic.cpp $(flags) $(sdl2) -o video.exe
+	g++ CPP/graphic.cpp CPP/support.cpp $(flags) $(sdl2) -o video.exe
 
 
 # Запуск akin
