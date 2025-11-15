@@ -1,0 +1,1 @@
+("Teach Math" ["teacher.png"] ("Faker" ["faker.png"] ("Petrovich" ["petrov.jpg"] nil nil ) ("Lunina" ["lunina.png"] nil nil )) ("Master of apology" ["master.png"] nil nil ))

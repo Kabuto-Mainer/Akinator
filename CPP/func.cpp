@@ -317,6 +317,22 @@ int push_image_object (display_t* display,
 // --------------------------------------------------------------------------------------------------
 
 
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция удаления текстуры объекта из окна
+ * @param [in] display Указатель на структуру дисплея
+*/
+// --------------------------------------------------------------------------------------------------
+int pop_image_object (display_t* display)
+{
+    assert (display);
+
+    display->cur_frame.obj_img = NULL;
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
+
 
 // -*************************************************************************************************
 
@@ -811,6 +827,7 @@ int guess_object (tree_t* tree)
     while (true)
     {
         push_text (tree->display, "Is it %s?", current_node->object.name);
+        push_image_object (tree->display, current_node->object);
         int user_answer = get_user_bool (tree->display, "YES", "NO");
 
         if (current_node->left == NULL && current_node->right == NULL)
@@ -818,9 +835,10 @@ int guess_object (tree_t* tree)
             if (user_answer == USER_YES)
             {
                 PRINT_TEXT (tree->display, "It couldn't be otherwise");
+                pop_image_object (tree->display);
                 return 0;
             }
-
+            pop_image_object (tree->display);
             push_text (tree->display, "Are you sure?");
             user_answer = get_user_bool (tree->display, "YES", "NO");
 
@@ -1319,7 +1337,6 @@ int import_data (tree_t* tree)
 // ----------------------------------------------------------------------------------------------------
 /**
  * @brief Рекурсивная функция создания узла по буферу
- *
  * @param [in] root Родительский корень
  * @param [in] cur_char Указатель на адрес буфера
  * @param [in] size_tree Указатель на размер дерева
@@ -1354,37 +1371,44 @@ node_t* upload_node (node_t* root,
         skip_void (cur_char);
 
         new_node->object.hash = get_hash (new_node->object.name);
+        new_node->object.type_object = NO_OWN_MEMORY;
 
     // Есть ли доп. файлы для объекта
         if (**cur_char == '[')
         {
+            // printf ("STR: %s\n", *cur_char);
             (*cur_char) += 2; // Skip -["-
-            new_node->object.audio = *cur_char;
-
-            debug_html (root, "Dump before skip_after_symbol (with add objects)", *cur_char);
-
-            skip_after_symbol (cur_char, '"');
-            (*cur_char)++; // Skip -"-
-            skip_void (cur_char);
-
-            debug_html (root, "Dump before skip_after_symbol (with add objects)", *cur_char);
-
-            (*cur_char)++;
             new_node->object.image = *cur_char;
+
+            debug_html (root, "Dump before skip_after_symbol (with add objects)", *cur_char);
+
             skip_after_symbol (cur_char, '"');
-            (*cur_char) += 2; // Skip -"]-
+            // (*cur_char)++; // Skip -"-
             skip_void (cur_char);
 
-            new_node->object.type_object = NO_OWN_MEMORY | IS_AUDIO | IS_IMAGE;
+            debug_html (root, "Dump before skip_after_symbol (with add objects)", *cur_char);
+            new_node->object.type_object |= IS_IMAGE;
+
+            if ((**cur_char) != ']')
+            {
+                (*cur_char)++;
+                new_node->object.audio = *cur_char;
+                skip_after_symbol (cur_char, '"');
+                (*cur_char) += 2; // Skip -"-
+                skip_void (cur_char);
+
+                new_node->object.type_object |= IS_AUDIO;
+            }
+            (*cur_char)++; // Skip -]-
         }
 
         else
         {
             new_node->object.audio = NULL;
             new_node->object.image = NULL;
-            new_node->object.type_object = NO_OWN_MEMORY;
         }
 
+        skip_void (cur_char);
         new_node->left = upload_node (new_node, cur_char, size_tree);
         new_node->right = upload_node (new_node, cur_char, size_tree);
 

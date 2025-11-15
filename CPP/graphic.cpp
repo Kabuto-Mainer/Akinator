@@ -380,7 +380,10 @@ int push_text__va_list (display_t* display,
                     const char* string = va_arg (args, const char*);
                     strcpy (string_buffer + index, string);
                     index += (int) strlen (string);
-                    index++;
+                    if (string_buffer[index] != '\0')
+                    {
+                        index++;
+                    }
                     break;
                 }
 
@@ -687,10 +690,13 @@ int render_object (display_t* display)
         return 0;
     }
 
-    SDL_Texture* image = load_texture (display->render, display->cur_frame.obj_img);
+    char buffer[200] = "";
+    sprintf (buffer, "%s%s", OBJECT_IMAGE, display->cur_frame.obj_img);
+
+    SDL_Texture* image = load_texture (display->render, buffer);
     draw_texture (display->render, image, &USER_VIDEO);
     SDL_DestroyTexture (image);
-    display->cur_frame.obj_img = NULL;
+    // display->cur_frame.obj_img = NULL;
 
     return 0;
 }
