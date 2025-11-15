@@ -4,14 +4,14 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
-// #include "type.h"
-extern button_desc_t;
+
+// extern button_desc_t;
 
 // ----------------------------------------------------------------------------------------------------
 // Параметры графики
 // ----------------------------------------------------------------------------------------------------
-const int SCREEN_WIDTH = 720;
-const int SCREEN_HEIGHT = 405;
+const int SCREEN_WIDTH = 1600;
+const int SCREEN_HEIGHT = 900;
 const int INDENT = 5;
 // ----------------------------------------------------------------------------------------------------
 const int BUTTON_WIDTH = 345;
@@ -21,69 +21,26 @@ const int AMOUNT_BUTTONS = 6;
 // ----------------------------------------------------------------------------------------------------
 const SDL_Color COLOR_FONT = {255, 255, 255, 255};
 // ----------------------------------------------------------------------------------------------------
-const char DISPLAY_FONT[] = "LIB/font.ttf";
-const char BACKGROUND[] = "LIB/image.png";
+const char DISPLAY_FONT[] = "GRAPHIC/SYSTEM/font.ttf";
+const char BACKGROUND[] = "GRAPHIC/SYSTEM/BACK/";
+const char SIDE_VIDEO[] = "GRAPHIC/SYSTEM/SIDE/";
 // ----------------------------------------------------------------------------------------------------
-
-// ----------------------------------------------------------------------------------------------------
-const SDL_Rect PLACE_BUTTON_MASS[6] =
-{
-    {10, 350, BUTTON_WIDTH, BUTTON_HEIGHT},
-    {370, 350, BUTTON_WIDTH, BUTTON_HEIGHT},
-    {10, 300, BUTTON_WIDTH, BUTTON_HEIGHT},
-    {370, 300, BUTTON_WIDTH, BUTTON_HEIGHT},
-    {10, 250, BUTTON_WIDTH, BUTTON_HEIGHT},
-    {370, 250, BUTTON_WIDTH, BUTTON_HEIGHT},
-};
-// ----------------------------------------------------------------------------------------------------
-const SDL_Color BASE_BUTTON_COLOR = {255, 145, 0, 255};
-const SDL_Color CLICK_BUTTON_COLOR = {98, 255, 0, 255};
-// ----------------------------------------------------------------------------------------------------
-const SDL_Rect MAIN_TEXT =
-{
-    10, 10,
-    SCREEN_WIDTH - 10 * 2,
-    100
-};
-// ----------------------------------------------------------------------------------------------------
-
-const SDL_Color MAIN_TEXT_COLOR = {};
-// ----------------------------------------------------------------------------------------------------
-
-
-// ----------------------------------------------------------------------------------------------------
-const SDL_Rect USER_TEXT =
-{
-    10, 250,
-    SCREEN_WIDTH - 10 * 2,
-    75
-};
+const int LEN_VIDEO_BACKGROUND = 1;
+const int LEN_VIDEO_SIDE = 0; // 25
 // ----------------------------------------------------------------------------------------------------
 const int SIZE_LINE = 2;
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
 const int CENTER_MAIN_TEXT_X = SCREEN_WIDTH / 2;
-const int CENTER_MAIN_TEXT_Y = 100 / 2 + 10;
+const int CENTER_MAIN_TEXT_Y = 150 / 2;
 const int CENTER_USER_TEXT_X = SCREEN_WIDTH / 2;
-const int CENTER_USER_TEXT_Y = 250 + 75 / 2;
+const int CENTER_USER_TEXT_Y = 800;
 // ----------------------------------------------------------------------------------------------------
 const int MAX_USER_LEN_TEXT = 60;
 const Uint64 TIME_DELAY_CURSOR = 500;
 // ----------------------------------------------------------------------------------------------------
 
-
-// --------------------------------------------------------------------------------------------------
-const button_desc_t MAIN_MENU_BUT[] =
-{
-    {"Guess object",        LEFT_UP,    GUESS_OBJECT},
-    {"Compare objects",     LEFT_MID,   COMPARE_OBJECTS},
-    {"Description object",  LEFT_DOWN,  DESC_OBJECT},
-    {"Save data base",      RIGHT_UP,   SAVE_DATA},
-    {"Upload data base",    RIGHT_MID,  IMPORT_DATA},
-    {"Exit",                RIGHT_DOWN, EXIT_PROGRAM}
-};
-// --------------------------------------------------------------------------------------------------
 
 
 #endif // DISPLAY_CONFIG_H

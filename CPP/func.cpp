@@ -44,7 +44,14 @@ int create_tree (tree_t* tree)
     tree->size = 1;
     tree->num_dump = find_number_dump ();
 
-    create_display (tree->display);
+    display_t* display = (display_t*) calloc (1, sizeof (display_t));
+    if (display == NULL)
+    {
+        EXIT_FUNC("NULL calloc", -1);
+    }
+
+    create_display (display);
+    tree->display = display;
 
     char address[200] = "";
     sprintf (address, "DUMPS/DUMP_%d/IMAGES", tree->num_dump);
@@ -117,7 +124,7 @@ int akinator ()
         dump_tree (&tree, "Dump after iteration");
     }
 
-    PRINT_TEXT (tree.display, "Thank you for using the program\n");
+    PRINT_TEXT (tree.display, "Thank you for using the program");
     delete_tree (&tree);
 
     return 0;
@@ -264,7 +271,7 @@ node_t* get_user_node (tree_t* tree)
             }
 
             push_text (tree->display, "Do you want to re-enter?");
-            int user_answer = get_user_bool (tree->display);
+            int user_answer = get_user_bool (tree->display, "YES", "NO");
 
             if (user_answer == USER_YES)
             {
@@ -282,6 +289,30 @@ node_t* get_user_node (tree_t* tree)
     }
 
     return NULL;
+}
+// --------------------------------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция записи изображения в текущий кадр
+ * @param [in] display Указатель на структуру дисплея
+ * @param [in] object Переданный объект
+*/
+// --------------------------------------------------------------------------------------------------
+int push_image_object (display_t* display,
+                       obj_t object)
+{
+    assert (display);
+    ASSERT_OBJECT (object);
+
+    if (object.image == NULL)
+    {
+        return 0;
+    }
+
+    display->cur_frame.obj_img = object.image;
+    return 0;
 }
 // --------------------------------------------------------------------------------------------------
 
@@ -309,7 +340,7 @@ int delete_tree (tree_t* tree)
     }
 
     destroy_display (tree->display);
-
+    free (tree->display);
     return 0;
 }
 // --------------------------------------------------------------------------------------------------
@@ -381,6 +412,16 @@ int delete_node (node_t* node)
         if ((current_node->object.type_object & OWN_MEMORY) == OWN_MEMORY)
         {
             free (current_node->object.name);
+
+            if (current_node->object.image != NULL)
+            {
+                free (current_node->object.image);
+            }
+
+            if (current_node->object.audio != NULL)
+            {
+                free (current_node->object.audio);
+            }
         }
         free (current_node);
     }
@@ -447,9 +488,11 @@ int desc_object (tree_t* tree)
         }
         prev = current_node;
     }
+    stack_destruct (&stack);
 
     renew_display (tree->display);
-    stack_destruct (&stack);
+    push_text (tree->display, "Do tou want to continue?");
+    get_user_bool (tree->display, "YES", "OF COURSE");
 
     return 1;
 }
@@ -472,8 +515,8 @@ int compare_objects (tree_t* tree)
         PRINT_TEXT (tree->display, "Not enough object.");
         return 1;
     }
-    PRINT_TEXT (tree->display, "Tell me two objects and I will tell you difference between theirs.");
-    push_text (tree->display, "Enter first object:\n");
+    PRINT_TEXT (tree->display, "Tell me two objects and I will\n tell you difference between theirs.");
+    push_text (tree->display, "Enter first object:");
     node_t* node_1 = get_user_node (tree);
 
     if (node_1 == NULL)
@@ -481,7 +524,7 @@ int compare_objects (tree_t* tree)
         return 1;
     }
 // Необходимо, что бы при первом NULL был return
-    push_text (tree->display, "Enter second object:\n");
+    push_text (tree->display, "Enter second object:");
     node_t* node_2 = get_user_node (tree);
 
     if (node_2 == NULL)
@@ -491,7 +534,7 @@ int compare_objects (tree_t* tree)
 
     if (node_1 == node_2)
     {
-        PRINT_TEXT (tree->display, "You enter just one object\n");
+        PRINT_TEXT (tree->display, "You enter just one object");
         return 0;
     }
 
@@ -525,12 +568,14 @@ int compare_objects (tree_t* tree)
     }
 
     int amount_common = 0;
-    PRINT_TEXT (tree->display, "What these objects have in common:\n");
+    PRINT_TEXT (tree->display, "What these objects have in common:");
+    get_user_continue (tree->display);
 
     node_t* next_1 = NULL;
     node_t* next_2 = NULL;
     stack_pop (&stack_node_1, &next_1);
     stack_pop (&stack_node_2, &next_2);
+    push_text (tree->display, "They: ");
 
     while (next_1 == next_2)
     {
@@ -539,6 +584,7 @@ int compare_objects (tree_t* tree)
         {
             add_text (tree->display, " isn't %s, ", buffer_node_1->object.name);
         }
+
 
         else
         {
@@ -555,6 +601,7 @@ int compare_objects (tree_t* tree)
     stack_push (&stack_node_1, next_1);
     stack_push (&stack_node_2, next_2);
 
+    get_user_continue (tree->display);
     PRINT_TEXT (tree->display, "The differences between these objects:");
     push_text (tree->display, "First:");
 
@@ -575,6 +622,7 @@ int compare_objects (tree_t* tree)
         buffer_len++;
     }
     renew_display (tree->display);
+    get_user_continue (tree->display);
 
     push_text (tree->display, "Second is:");
 
@@ -594,6 +642,7 @@ int compare_objects (tree_t* tree)
         stack_pop (&stack_node_2, &next_2);
         buffer_len++;
     }
+    get_user_continue (tree->display);
 
     stack_destruct (&stack_node_1);
     stack_destruct (&stack_node_2);
@@ -762,7 +811,7 @@ int guess_object (tree_t* tree)
     while (true)
     {
         push_text (tree->display, "Is it %s?", current_node->object.name);
-        int user_answer = get_user_bool (tree->display);
+        int user_answer = get_user_bool (tree->display, "YES", "NO");
 
         if (current_node->left == NULL && current_node->right == NULL)
         {
@@ -772,14 +821,14 @@ int guess_object (tree_t* tree)
                 return 0;
             }
 
-            push_text (tree->display, "Are you sure?\n");
-            user_answer = get_user_bool (tree->display);
+            push_text (tree->display, "Are you sure?");
+            user_answer = get_user_bool (tree->display, "YES", "NO");
 
             if (user_answer == USER_YES)
             {
-                push_text (tree->display, "Then who did you guess?\n");
+                push_text (tree->display, "Then who did you guess?");
                 obj_t user_object = get_user_object (tree->display);
-                push_text (tree->display, "How is %s different from %s? %s is...\n",
+                push_text (tree->display, "How is %s different from %s?\n %s is...",
                                            current_node->object.name,
                                            user_object.name,
                                            user_object.name);
@@ -796,7 +845,7 @@ int guess_object (tree_t* tree)
                     PRINT_TEXT (tree->display, "Invalid string. Please do not use negation.");
                 }
 
-                PRINT_TEXT (tree->display, "I took note of this.\n");
+                PRINT_TEXT (tree->display, "I took note of this.");
                 create_node (current_node, LEFT_SIDE, current_node->object);
                 create_node (current_node, RIGHT_SIDE, user_object);
                 current_node->object = category;
@@ -990,13 +1039,13 @@ int save_data (tree_t* tree)
     assert (tree);
 
     push_text (tree->display, "Where do you want to save data base?");
-    int user_answer = get_user_bool (tree->display);
+    int user_answer = get_user_bool (tree->display, "STANDARD DIR", "OWN FILE");
     char address[200] = "";
 
     if (user_answer == USER_YES)
     {
         push_text (tree->display,
-                  "In what directory number do you want to save the file? (1-%d):",
+                  "In what directory number\n do you want to save the file? (1-%d):",
                   AMOUNT_DATA_DIR);
 
         int number_dir = 0;
@@ -1015,7 +1064,7 @@ int save_data (tree_t* tree)
 
             if (number_dir < 1 || number_dir > AMOUNT_DATA_DIR)
             {
-                PRINT_TEXT (tree->display, "Incorrect number directory. Please, re-enter it.");
+                PRINT_TEXT (tree->display, "Incorrect number directory.\n Please, re-enter it.");
                 continue;
             }
 
@@ -1038,6 +1087,12 @@ int save_data (tree_t* tree)
             if (sscanf (adr, "%s%n", address, &amount_sym) != 1)
             {
                 free (adr);
+                push_text (tree->display, "Do you want to use own file?");
+
+                if (get_user_bool (tree->display, "YES", "NO") != USER_YES)
+                {
+                    return 0;
+                }
                 push_text (tree->display , "Please, re-enter your address\n");
                 continue;
             }
@@ -1137,17 +1192,17 @@ int import_data (tree_t* tree)
 
     if (tree->null->left != NULL || tree->null->right != NULL)
     {
-        PRINT_TEXT (tree->display, "Sorry, file upload is only possible if the tree is empty.");
+        PRINT_TEXT (tree->display, "Sorry, file upload is only possible\n if the tree is empty.");
         return 0;
     }
 
-    push_text (tree->display, "Where do you want to upload the file from? From a standard directory (Y) or from your own file (n) ?");
-    int user_answer = get_user_bool (tree->display);
+    push_text (tree->display, "Where do you want to upload the file from?");
+    int user_answer = get_user_bool (tree->display, "STANDARD DIR", "OWN FILE");
     char address[200] = "";
 
     if (user_answer == USER_YES)
     {
-        push_text (tree->display, "In what directory number do you want to upload the file? (1-%d):", AMOUNT_DATA_DIR);
+        push_text (tree->display, "In what directory number \ndo you want to upload the file? (1-%d):", AMOUNT_DATA_DIR);
 
         int number_dir = 0;
         while (1)
@@ -1165,7 +1220,12 @@ int import_data (tree_t* tree)
 
             if (number_dir < 1 || number_dir > AMOUNT_DATA_DIR)
             {
-                push_text (tree->display, "Incorrect number directory. Please, re-enter it.");
+                push_text (tree->display, "Incorrect number directory.\nDo you what to continue");
+                if (get_user_bool (tree->display, "YES", "NO") == USER_NO)
+                {
+                    return 0;
+                }
+
                 continue;
             }
 
@@ -1176,7 +1236,7 @@ int import_data (tree_t* tree)
 
     else
     {
-        push_text (tree->display, "Enter file name ");
+        push_text (tree->display, "Enter file name");
 
         while (1)
         {
@@ -1188,8 +1248,14 @@ int import_data (tree_t* tree)
 
             if (sscanf (adr, "%s%n", buffer, &amount_sym) != 1)
             {
-                push_text (tree->display, "Please, re-enter your address\n");
                 free (adr);
+
+                push_text (tree->display, "Incorrect input\nDo you want to continue?");
+                if (get_user_bool (tree->display, "YES", "NO") == USER_NO)
+                {
+                    return 0;
+                }
+                push_text (tree->display, "Please, re-enter your address\n");
                 continue;
             }
             free (adr);
@@ -1199,7 +1265,7 @@ int import_data (tree_t* tree)
             {
                 if (buffer[i] == '/')
                 {
-                    push_text (tree->display, "Please, do not enter a directory. Just name file.\n");
+                    push_text (tree->display, "Please, do not enter a directory. Only name file.");
                     continue;
                 }
             }
@@ -1207,7 +1273,7 @@ int import_data (tree_t* tree)
             // Проверка, существует ли файл
             if (access (buffer, F_OK) != 0)
             {
-                push_text (tree->display, "File does not exist.\n");
+                push_text (tree->display, "File does not exist.");
                 continue;
             }
 
@@ -1245,7 +1311,7 @@ int import_data (tree_t* tree)
     tree->size = (size_t) size_tree;
     fclose (file);
 
-    PRINT_TEXT (tree->display, "File import successfully\n");
+    PRINT_TEXT (tree->display, "File import successfully");
     return 0;
 }
 // --------------------------------------------------------------------------------------------------

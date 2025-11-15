@@ -8,7 +8,6 @@
 #include "config.h"
 #include "display-config.h"
 
-
 // ---------------------------------------------------------------------------------------------------
 enum PLACE_BUTTON
 {
@@ -17,7 +16,8 @@ enum PLACE_BUTTON
     LEFT_MID    = 2,
     RIGHT_MID   = 3,
     LEFT_UP     = 4,
-    RIGHT_UP    = 5
+    RIGHT_UP    = 5,
+    CENTER_UP   = 6
 };
 // --------------------------------------------------------------------------------------------------
 enum SIDES
@@ -67,14 +67,30 @@ struct button_desc_t
     EVENT event;
 };
 // --------------------------------------------------------------------------------------------------
-struct frame_t
+struct _video_t
+{
+    SDL_Texture** frames;
+    int amount;
+    int current;
+    SDL_Rect* place;
+};
+// --------------------------------------------------------------------------------------------------
+struct _frame_t
 {
     char* main_text;
     char* user_text;
-    char* picture;
+    _video_t anim;
+    char* obj_img;
     char* audio;
     button_t buttons[AMOUNT_BUTTONS];
     int amount_but;
+};
+// --------------------------------------------------------------------------------------------------
+struct _system_interface_t
+{
+    _video_t background;
+    _video_t left;
+    _video_t right;
 };
 // --------------------------------------------------------------------------------------------------
 struct display_t
@@ -82,8 +98,8 @@ struct display_t
     SDL_Window* window;
     SDL_Renderer* render;
     TTF_Font* font;
-    SDL_Texture* background;
-    frame_t cur_frame;
+    _system_interface_t system;
+    _frame_t cur_frame;
 };
 // --------------------------------------------------------------------------------------------------
 struct object_t
@@ -118,7 +134,7 @@ struct tree_t
 };
 // --------------------------------------------------------------------------------------------------
 
-
+extern const button_desc_t MAIN_MENU_BUN[];
 
 
 #endif // TYPE_H

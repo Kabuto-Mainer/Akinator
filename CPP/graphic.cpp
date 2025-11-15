@@ -9,9 +9,9 @@
 
 #include "../H/type.h"
 // #include "../H/config.h"
-#include "../H/const.h"
 #include "../H/display.h"
 #include "../H/display-config.h"
+#include "../H/display-const.h"
 #include "../H/func.h"
 
 
@@ -30,8 +30,8 @@ int create_display (display_t* display)
     TTF_Init ();
 
 // Необходимость для того, что бы не показывалось ложных ошибок и утечке памяти
-    // setenv ("DBUS_SESSION_BUS_ADDRESS", "/dev/null", 1);
-    // setenv ("SDL_AUDIODRIVER", "dummy", 1);
+    setenv ("DBUS_SESSION_BUS_ADDRESS", "/dev/null", 1);
+    setenv ("SDL_AUDIODRIVER", "dummy", 1);
 
 
     SDL_Window* window = SDL_CreateWindow ("Akinator",
@@ -42,7 +42,7 @@ int create_display (display_t* display)
 
     SDL_Renderer* renderer = SDL_CreateRenderer (window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-    TTF_Font* font = TTF_OpenFont (DISPLAY_FONT, 14);
+    TTF_Font* font = TTF_OpenFont (DISPLAY_FONT, 24);
     if (font == NULL) {
         SDL_Log ("TTF_OpenFont failed: %s", TTF_GetError());
         return 1;
@@ -51,8 +51,134 @@ int create_display (display_t* display)
     display->font = font;
     display->render = renderer;
     display->window = window;
-    display->background = NULL;
 
+    display->cur_frame.anim = {};
+    display->cur_frame.obj_img = NULL;
+    display->cur_frame.audio = NULL;
+    display->cur_frame.main_text = NULL;
+    display->cur_frame.user_text = NULL;
+    create_system_UI (display);
+
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция создания общего графического интерфейса
+ * @param [in] display Указатель на структуру дисплея
+*/
+// --------------------------------------------------------------------------------------------------
+int create_system_UI (display_t* display)
+{
+    assert (display);
+
+    // Создание заднего фона
+    SDL_Texture** back_frame = (SDL_Texture**) calloc ((size_t) LEN_VIDEO_BACKGROUND, sizeof (SDL_Texture*));
+    if (back_frame == NULL)
+    {
+        EXIT_FUNC ("NULL calloc", 1);
+    }
+    for (int i = 0; i < LEN_VIDEO_BACKGROUND; i++)
+    {
+        char buffer[100] = "";
+        sprintf (buffer, "%s%d.png", BACKGROUND, i + 1);
+        back_frame[i] = load_texture (display->render, buffer);
+    }
+    display->system.background.frames = back_frame;
+    display->system.background.amount = LEN_VIDEO_BACKGROUND;
+    display->system.background.current = 0;
+    display->system.background.place = &BACK_VIDEO;
+
+    SDL_Texture** left = (SDL_Texture**) calloc ((size_t) LEN_VIDEO_SIDE, sizeof (SDL_Texture*));
+    SDL_Texture** right = (SDL_Texture**) calloc ((size_t) LEN_VIDEO_SIDE, sizeof (SDL_Texture*));
+    if (left == NULL || right == NULL)
+    {
+        EXIT_FUNC("NULL calloc", 1);
+    }
+
+    for (int i = 0; i < LEN_VIDEO_SIDE; i++)
+    {
+        char buffer[100] = "";
+        sprintf (buffer, "%s%d.png", SIDE_VIDEO, i + 1);
+        left[i] = load_texture (display->render, buffer);
+        right[i] = load_texture (display->render, buffer);
+    }
+
+    display->system.left.frames = left;
+    display->system.right.frames = right;
+    display->system.left.amount = LEN_VIDEO_SIDE;
+    display->system.right.amount = LEN_VIDEO_SIDE;
+    display->system.left.current = 0;
+    display->system.right.current = 0;
+    display->system.left.place = &LEFT_VIDEO;
+    display->system.right.place = &RIGHT_VIDEO;
+
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция загрузки изображения в текстуру
+ * @param [in] render Указатель на окно рендера
+ * @param [in] filename Имя загружаемого изображения
+ * @return Указатель на текстуру
+*/
+// --------------------------------------------------------------------------------------------------
+SDL_Texture* load_texture (SDL_Renderer* render,
+                           const char* filename)
+{
+    SDL_Texture* texture = IMG_LoadTexture (render, filename);
+    if (texture == NULL) {
+        EXIT_FUNC("NULL texture", NULL);
+    }
+    return texture;
+}
+// --------------------------------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция отрисовки текстуры в окне
+ * @param [in] render Указатель на окно рендера
+ * @param [in] texture Указатель на структуру которую нужно отрисовать
+ * @param [in] rect Место и размеры для отрисовки
+*/
+// --------------------------------------------------------------------------------------------------
+int draw_texture (SDL_Renderer* render,
+                  SDL_Texture* texture,
+                  SDL_Rect* rect)
+{
+    assert (render);
+    assert (texture);
+
+    SDL_RenderCopy (render, texture, NULL, rect);
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция отрисовки кадра видео
+ * @param [in] render Указатель на окно рендера
+ * @param [in] video Указатель на структуру видео
+*/
+// --------------------------------------------------------------------------------------------------
+int play_video (SDL_Renderer* render,
+                _video_t* video)
+{
+    assert (video);
+    if (video->frames == NULL || video->amount == 0)
+    {
+        return 0;
+    }
+
+    draw_texture (render, video->frames[video->current], video->place);
+    video->current = (video->current + 1) % video->amount;
     return 0;
 }
 // --------------------------------------------------------------------------------------------------
@@ -63,6 +189,12 @@ int create_display (display_t* display)
  * @brief Функция удаления структуры дисплея
  * @param [in] display Указатель на структуру дисплея
 */
+// --------------------------------------------------------------------------------------------------
+#define FREE_MEMORY(address) \
+ if (address != NULL) \
+ { \
+     free (address); \
+ }
 // --------------------------------------------------------------------------------------------------
 int destroy_display (display_t* display)
 {
@@ -76,31 +208,48 @@ int destroy_display (display_t* display)
         }
     }
 
-    if (display->cur_frame.audio != NULL)
-    {
-        free (display->cur_frame.audio);
-    }
+    FREE_MEMORY(display->cur_frame.audio);
+    FREE_MEMORY(display->cur_frame.main_text);
+    FREE_MEMORY(display->cur_frame.user_text);
 
-    if (display->cur_frame.main_text != NULL)
-    {
-        free (display->cur_frame.main_text);
-    }
-
-    if (display->cur_frame.picture != NULL)
-    {
-        free (display->cur_frame.picture);
-    }
-
-    if (display->cur_frame.user_text != NULL)
-    {
-        free (display->cur_frame.user_text);
-    }
+    free_video (&(display->system.background));
+    free_video (&(display->system.left));
+    free_video (&(display->system.right));
+    free_video (&(display->cur_frame.anim));
 
     TTF_CloseFont(display->font);
     SDL_DestroyRenderer(display->render);
     SDL_DestroyWindow(display->window);
     TTF_Quit();
     SDL_Quit();
+
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+#undef FREE_MEMORY
+// --------------------------------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция удаления видео
+ * @param [in] video Указатель на структуру видео
+*/
+// --------------------------------------------------------------------------------------------------
+int free_video (_video_t* video)
+{
+    assert (video);
+
+    if (video->frames == NULL)
+    {
+        return 0;
+    }
+
+    for (int i = 0; i < video->amount; i++)
+    {
+        SDL_DestroyTexture (video->frames[i]);
+    }
+    free (video->frames);
 
     return 0;
 }
@@ -178,7 +327,7 @@ int create_button (button_t* button,
 
 // --------------------------------------------------------------------------------------------------
 /**
- * @brief Функция добавления текста в основное окна
+ * @brief Функция, вызывающая добавления текста в основное окна
  * @param [in] display Указатель на структуру дисплея
  * @param [in] format Формат строки, которую нужно добавить
  * @note Читает только %s и %d
@@ -188,10 +337,32 @@ int create_button (button_t* button,
 int push_text (display_t* display,
                const char* format, ...)
 {
+    assert (display);
     assert (format);
 
     va_list args = {};
     va_start (args, format);
+
+    push_text__va_list (display, format, args);
+
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция, записывающая текст в основное окно
+ * @param [in] display Указатель на структуру дисплея
+ * @param [in] format Формат строки, которую нужно добавить
+ * @param [in] args Аргументы для строки
+*/
+// --------------------------------------------------------------------------------------------------
+int push_text__va_list (display_t* display,
+                        const char* format,
+                        va_list args)
+{
+    assert (format);
 
     char string_buffer[1024] = "";
     int index = 0;
@@ -210,7 +381,6 @@ int push_text (display_t* display,
                     strcpy (string_buffer + index, string);
                     index += (int) strlen (string);
                     index++;
-                    // print_delay_string (string);
                     break;
                 }
 
@@ -219,6 +389,7 @@ int push_text (display_t* display,
                     int number = va_arg (args, int);
                     char* string = int_to_char (number);
                     strcpy (string_buffer + index, string);
+                    string_buffer[(size_t) index + strlen (string)] = ' ';
                     index += (int) strlen (string) + 1;
                     // print_delay_string (string);
                     free (string);
@@ -246,7 +417,7 @@ int push_text (display_t* display,
     }
     va_end (args);
 
-    string_buffer[index] = '\0';
+    string_buffer[index + 1] = '\0';
 
     if (display->cur_frame.main_text != NULL)
     {
@@ -279,18 +450,19 @@ int add_text (display_t* display,
     char* prev_str = display->cur_frame.main_text;
     display->cur_frame.main_text = NULL;
 
-    push_text (display, format, args);
+    push_text__va_list (display, format, args);
     char* next_str = display->cur_frame.main_text;
 
-    char* buffer = (char*) calloc (strlen (prev_str) + strlen (next_str) + 1, sizeof (char));
+    char* buffer = (char*) calloc (strlen (prev_str) + strlen (next_str) + 3, sizeof (char));
     if (buffer == NULL)
     {
         EXIT_FUNC("NULL calloc", 1);
     }
 
     strcat (buffer, prev_str);
+    // buffer[strlen (prev_str)] = ' ';
     strcat (buffer, next_str);
-    buffer[strlen (prev_str) + strlen (next_str)] = '\0';
+    buffer[strlen (prev_str) + strlen (next_str) + 1] = '\0';
 
     free (prev_str);
     free (next_str);
@@ -314,11 +486,14 @@ int renew_display (display_t* display)
     SDL_SetRenderDrawColor (display->render, 30, 30, 30, 255);
     SDL_RenderClear (display->render);
 
+    render_video (display);
     render_main_text (display);
     render_buttons (display);
     render_user_text (display);
+    render_object (display);
     SDL_RenderPresent (display->render);
     // render_animation (display);
+    SDL_Delay (STANDARD_SLEEP );
 
     return 0;
 }
@@ -339,18 +514,64 @@ int render_main_text (display_t* display)
         return 0;
     }
 
+    SDL_SetRenderDrawColor (display->render, MAIN_TEXT_COLOR.r, MAIN_TEXT_COLOR.g, MAIN_TEXT_COLOR.b, MAIN_TEXT_COLOR.a);
+    SDL_RenderFillRect (display->render, &MAIN_TEXT);
+
     SDL_Color color = COLOR_FONT;
+    int width = 0;
+    int height = 0;
+    int width_2 = 0;
+    SDL_Surface* surface_2 = NULL;
+    SDL_Texture* texture_2 = NULL;
+
+    char* adr_n = NULL;
+    if ((adr_n = strchr (display->cur_frame.main_text, '\n')) != NULL)
+    {
+        *adr_n = '\0';
+        if (*(adr_n + 1) != '\0')
+        {
+            surface_2 = TTF_RenderUTF8_Blended (display->font, adr_n + 1, color);
+            texture_2 = SDL_CreateTextureFromSurface (display->render, surface_2);
+
+            TTF_SizeUTF8 (display->font, adr_n + 1, &width_2, &height);
+        }
+    }
+
+    else
+    {
+        (void) surface_2;
+        (void) texture_2;
+    }
+
     SDL_Surface* surface = TTF_RenderUTF8_Blended (display->font, display->cur_frame.main_text, color);
     SDL_Texture* texture = SDL_CreateTextureFromSurface (display->render, surface);
 
-    int width = 0;
-    int height = 0;
     TTF_SizeUTF8 (display->font, display->cur_frame.main_text, &width, &height);
 
-    SDL_Rect size_tex = {CENTER_MAIN_TEXT_X - width / 2,
-                         CENTER_MAIN_TEXT_Y - height / 2,
-                         width,
-                         height};
+    SDL_Rect size_tex = {};
+    if (adr_n != NULL)
+    {
+        size_tex = {CENTER_MAIN_TEXT_X - width / 2,
+                    CENTER_MAIN_TEXT_Y - height,
+                    width,
+                    height};
+        SDL_Rect size_tex_2 = {CENTER_MAIN_TEXT_X - width_2 / 2,
+                               CENTER_MAIN_TEXT_Y,
+                               width_2,
+                               height};
+        SDL_FreeSurface (surface_2);
+        SDL_RenderCopy (display->render, texture_2, NULL, &size_tex_2);
+        SDL_DestroyTexture (texture_2);
+        *adr_n = '\n';
+    }
+
+    else
+    {
+        size_tex = {CENTER_MAIN_TEXT_X - width / 2,
+                    CENTER_MAIN_TEXT_Y - height / 2,
+                    width,
+                    height};
+    }
 
     SDL_FreeSurface (surface);
 
@@ -398,6 +619,9 @@ int render_user_text (display_t* display)
         return 0;
     }
 
+    SDL_SetRenderDrawColor (display->render, MAIN_TEXT_COLOR.r, MAIN_TEXT_COLOR.g, MAIN_TEXT_COLOR.b, MAIN_TEXT_COLOR.a);
+    SDL_RenderFillRect (display->render, &USER_TEXT);
+
     SDL_Color color = COLOR_FONT;
     SDL_Surface* surface = TTF_RenderUTF8_Blended (display->font, display->cur_frame.user_text, color);
     SDL_Texture* texture = SDL_CreateTextureFromSurface (display->render, surface);
@@ -429,6 +653,49 @@ int render_user_text (display_t* display)
 // --------------------------------------------------------------------------------------------------
 
 
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция отрисовки всех анимаций
+ * @param [in] display Указатель на структуру дисплея
+*/
+// --------------------------------------------------------------------------------------------------
+int render_video (display_t* display)
+{
+    assert (display);
+    play_video (display->render, &(display->system.background));
+    play_video (display->render, &(display->system.left));
+    play_video (display->render, &(display->system.right));
+    play_video (display->render, &(display->cur_frame.anim));
+
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция отрисовки изображения в поле для пользовательских изображений
+ * @param [in] display Указатель на структуру дисплея
+*/
+// --------------------------------------------------------------------------------------------------
+int render_object (display_t* display)
+{
+    assert (display);
+
+    if (display->cur_frame.obj_img == NULL)
+    {
+        return 0;
+    }
+
+    SDL_Texture* image = load_texture (display->render, display->cur_frame.obj_img);
+    draw_texture (display->render, image, &USER_VIDEO);
+    SDL_DestroyTexture (image);
+    display->cur_frame.obj_img = NULL;
+
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
 
 // --------------------------------------------------------------------------------------------------
 /**
@@ -445,7 +712,7 @@ EVENT get_event (EVENT prev,
                   "Welcome to this program\n"
                   "Do you want to start?");
 
-        if (get_user_bool (display) == USER_YES)
+        if (get_user_bool (display, "YES", "NO") == USER_YES)
         {
             return START_PROGRAM;
         }
@@ -476,8 +743,9 @@ EVENT get_event (EVENT prev,
 
     display->cur_frame.amount_but = (sizeof (MAIN_MENU_BUT) / sizeof (MAIN_MENU_BUT[0]));
     display->cur_frame.audio = NULL;
-    display->cur_frame.picture = NULL;
     display->cur_frame.user_text = NULL;
+    display->cur_frame.obj_img = NULL;
+
 
     int running = true;
     SDL_Event event = {};
@@ -506,9 +774,9 @@ EVENT get_event (EVENT prev,
                     return MAIN_MENU_BUT[i].event;
                 }
             }
-            renew_display (display);
+            // renew_display (display);
         }
-        SDL_Delay (40);
+        renew_display (display);
     }
     return EXIT_PROGRAM;
 }
@@ -518,34 +786,47 @@ EVENT get_event (EVENT prev,
 // ----------------------------------------------------------------------------------------------------
 /**
  * @brief Функция получения ответа типа 'да/нет' от пользователя
+ * @param [in] true_c Левая кнопка
+ * @param [in] false_c Правая кнопка
  * @return USER_YES (если да), иначе -> USER_NO
  * @note Сама обновляет дисплей
 */
 // ----------------------------------------------------------------------------------------------------
-int get_user_bool (display_t* display)
+int get_user_bool (display_t* display,
+                   const char* true_c,
+                   const char* false_c)
 {
 
-    button_t* yes = &(display->cur_frame.buttons[0]);
-    button_t* no = &(display->cur_frame.buttons[1]);
+    button_t* true_b = &(display->cur_frame.buttons[0]);
+    button_t* false_b = &(display->cur_frame.buttons[1]);
 
-    create_button (yes,
+    create_button (true_b,
                    display->render,
-                   "YES",
+                   true_c,
                    display->font,
                    BASE_BUTTON_COLOR);
-    create_button (no,
+    create_button (false_b,
                    display->render,
-                   "NO",
+                   false_c,
                    display->font,
                    BASE_BUTTON_COLOR);
 
     display->cur_frame.amount_but = 2;
+
+    if (display->cur_frame.audio != NULL)
+    {
+        free (display->cur_frame.audio);
+    }
     display->cur_frame.audio = NULL;
-    display->cur_frame.picture = NULL;
+
+    if (display->cur_frame.user_text != NULL)
+    {
+        free (display->cur_frame.user_text);
+    }
     display->cur_frame.user_text = NULL;
 
-    yes->type = LEFT_UP;
-    no->type = RIGHT_UP;
+    true_b->type = LEFT_UP;
+    false_b->type = RIGHT_UP;
 
     int running = 1;
     SDL_Event event = {};
@@ -561,11 +842,11 @@ int get_user_bool (display_t* display)
                 running = 0;
             }
 
-            if (check_button_click (yes, &event) == 1)
+            if (check_button_click (true_b, &event) == 1)
             {
-                create_button (yes,
+                create_button (true_b,
                                display->render,
-                               "YES",
+                               true_c,
                                display->font,
                                CLICK_BUTTON_COLOR);
 
@@ -573,11 +854,11 @@ int get_user_bool (display_t* display)
                 return USER_YES;
             }
 
-            else if (check_button_click (no, &event) == 1)
+            else if (check_button_click (false_b, &event) == 1)
             {
-                create_button (no,
+                create_button (false_b,
                                display->render,
-                               "NO",
+                               false_c,
                                display->font,
                                CLICK_BUTTON_COLOR);
 
@@ -585,8 +866,77 @@ int get_user_bool (display_t* display)
                 return USER_NO;
             }
         }
+        renew_display (display);
     }
 
+    return USER_YES;
+}
+// ----------------------------------------------------------------------------------------------------
+
+
+// ----------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция остановки программы по клика пользователем (кнопка CONTINUE)
+ * @param [in] display Указатель на структуру дисплея
+*/
+// ----------------------------------------------------------------------------------------------------
+int get_user_continue (display_t* display)
+{
+    assert (display);
+
+    button_t* cont = &(display->cur_frame.buttons[0]);
+
+    create_button (cont,
+                   display->render,
+                   "CONTINUE",
+                   display->font,
+                   BASE_BUTTON_COLOR);
+
+    display->cur_frame.amount_but = 1;
+
+    if (display->cur_frame.audio != NULL)
+    {
+        free (display->cur_frame.audio);
+    }
+    display->cur_frame.audio = NULL;
+
+    if (display->cur_frame.user_text != NULL)
+    {
+        free (display->cur_frame.user_text);
+    }
+    display->cur_frame.user_text = NULL;
+
+    // true_b->type = LEFT_UP;
+    cont->type = CENTER_UP;
+
+    int running = 1;
+    SDL_Event event = {};
+
+    renew_display (display);
+    while (running)
+    {
+        while (SDL_PollEvent (&event))
+        {
+
+            if (event.type == SDL_QUIT)
+            {
+                running = 0;
+            }
+
+            if (check_button_click (cont, &event) == 1)
+            {
+                create_button (cont,
+                               display->render,
+                               "CONTINUE",
+                               display->font,
+                               CLICK_BUTTON_COLOR);
+
+                renew_display (display);
+                return USER_YES;
+            }
+        }
+        renew_display (display);
+    }
     return USER_YES;
 }
 // ----------------------------------------------------------------------------------------------------
