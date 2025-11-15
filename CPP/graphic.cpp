@@ -8,11 +8,13 @@
 #include <time.h>
 
 #include "../H/type.h"
-#include "../H/config.h"
+// #include "../H/config.h"
 #include "../H/const.h"
 #include "../H/display.h"
 #include "../H/display-config.h"
 #include "../H/func.h"
+
+
 
 // --------------------------------------------------------------------------------------------------
 /**
@@ -40,7 +42,7 @@ int create_display (display_t* display)
 
     SDL_Renderer* renderer = SDL_CreateRenderer (window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-    TTF_Font* font = TTF_OpenFont (DISPLAY_FONT, 24);
+    TTF_Font* font = TTF_OpenFont (DISPLAY_FONT, 14);
     if (font == NULL) {
         SDL_Log ("TTF_OpenFont failed: %s", TTF_GetError());
         return 1;
@@ -183,8 +185,8 @@ int create_button (button_t* button,
  * @note Удаляет предыдущий текст
 */
 // --------------------------------------------------------------------------------------------------
-int add_text (display_t* display,
-              const char* format, ...)
+int push_text (display_t* display,
+               const char* format, ...)
 {
     assert (format);
 
@@ -258,6 +260,45 @@ int add_text (display_t* display,
 // --------------------------------------------------------------------------------------------------
 
 
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция добавления текста в основное окно
+ * @param [in] display Указатель на дисплей
+ * @param [in] format Формат строки, которую нужно добавить
+ * @note Читает только %s и %d
+*/
+// --------------------------------------------------------------------------------------------------
+int add_text (display_t* display,
+              const char* format, ...)
+{
+    assert (format);
+
+    va_list args = {};
+    va_start (args, format);
+
+    char* prev_str = display->cur_frame.main_text;
+    display->cur_frame.main_text = NULL;
+
+    push_text (display, format, args);
+    char* next_str = display->cur_frame.main_text;
+
+    char* buffer = (char*) calloc (strlen (prev_str) + strlen (next_str) + 1, sizeof (char));
+    if (buffer == NULL)
+    {
+        EXIT_FUNC("NULL calloc", 1);
+    }
+
+    strcat (buffer, prev_str);
+    strcat (buffer, next_str);
+    buffer[strlen (prev_str) + strlen (next_str)] = '\0';
+
+    free (prev_str);
+    free (next_str);
+    display->cur_frame.main_text = buffer;
+
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
 
 
 // --------------------------------------------------------------------------------------------------
@@ -400,7 +441,7 @@ EVENT get_event (EVENT prev,
 {
     if (prev == NULL_EVENT)
     {
-        add_text (display,
+        push_text (display,
                   "Welcome to this program\n"
                   "Do you want to start?");
 
@@ -417,7 +458,7 @@ EVENT get_event (EVENT prev,
         return EXIT_PROGRAM;
     }
 
-    add_text (display,
+    push_text (display,
               "What do you want to do?");
     button_t* all_button[(sizeof (MAIN_MENU_BUT) / sizeof (MAIN_MENU_BUT[0]))] = {};
 
@@ -640,8 +681,8 @@ int get_user_text (display_t* display,
         index--;
     }
 
-    printf ("ggg\n");
     SDL_StopTextInput ();
+    *string = strdup (buffer);
 
     return 0;
 }
@@ -683,28 +724,28 @@ int check_button_click (button_t* button,
 
 
 
-int main()
-{
-    display_t display = {};
-    if (create_display(&display) != 0) {
-        return 1;
-    }
+// int main()
+// {
+//     display_t display = {};
+//     if (create_display(&display) != 0) {
+//         return 1;
+//     }
 
-    int running = 1;
-    EVENT current_event = START_PROGRAM;
+//     int running = 1;
+//     EVENT current_event = START_PROGRAM;
 
-    while (running)
-    {
-        current_event = get_event (current_event, &display);
-        printf ("EVENT: %d\n", current_event);
-        if (current_event == EXIT_PROGRAM)
-        {
-            running = 0;
-        }
-    }
+//     while (running)
+//     {
+//         current_event = get_event (current_event, &display);
+//         printf ("EVENT: %d\n", current_event);
+//         if (current_event == EXIT_PROGRAM)
+//         {
+//             running = 0;
+//         }
+//     }
 
-    destroy_display (&display);
+//     destroy_display (&display);
 
-    return 0;
-}
+//     return 0;
+// }
 

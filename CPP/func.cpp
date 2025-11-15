@@ -9,6 +9,9 @@
 #include "../STACK/config.h"
 #include "../STACK/stack.h"
 
+#include "../H/display-config.h"
+#include "../H/display.h"
+
 #include "../H/config.h"
 #include "../H/const.h"
 #include "../H/type.h"
@@ -41,6 +44,8 @@ int create_tree (tree_t* tree)
     tree->size = 1;
     tree->num_dump = find_number_dump ();
 
+    create_display (tree->display);
+
     char address[200] = "";
     sprintf (address, "DUMPS/DUMP_%d/IMAGES", tree->num_dump);
     clean_dir (address);
@@ -64,7 +69,7 @@ int akinator ()
 
     EVENT prev = NULL_EVENT;
     EVENT current = NULL_EVENT;
-    while ((current = get_event (prev)) != EXIT_PROGRAM)
+    while ((current = get_event (prev, tree.display)) != EXIT_PROGRAM)
     {
         switch ((int) current)
         {
@@ -112,7 +117,7 @@ int akinator ()
         dump_tree (&tree, "Dump after iteration");
     }
 
-    my_print ("Thank you for using the program\n");
+    PRINT_TEXT (tree.display, "Thank you for using the program\n");
     delete_tree (&tree);
 
     return 0;
@@ -242,7 +247,7 @@ node_t* get_user_node (tree_t* tree)
 
     while (1)
     {
-        user_object = get_user_object ();
+        user_object = get_user_object (tree->display);
         user_node = find_node (tree->null, user_object);
         free (user_object.name);
 
@@ -250,20 +255,20 @@ node_t* get_user_node (tree_t* tree)
         {
             if (user_node == NULL)
             {
-                my_print ("The object you entered was not found.\n");
+                PRINT_TEXT (tree->display, "The object you entered was not found");
             }
 
             else
             {
-                my_print ("The object you entered is category.\n");
+                PRINT_TEXT (tree->display, "The object you entered is category");
             }
 
-            my_print ("Do you want to re-enter? (Y/n)\n");
-            int user_answer = get_user_bool ();
+            push_text (tree->display, "Do you want to re-enter?");
+            int user_answer = get_user_bool (tree->display);
 
             if (user_answer == USER_YES)
             {
-                my_print ("Your object:\n");
+                push_text (tree->display, "Enter you object");
                 continue;
             }
 
@@ -302,6 +307,8 @@ int delete_tree (tree_t* tree)
     {
         free (tree->buffer);
     }
+
+    destroy_display (tree->display);
 
     return 0;
 }
@@ -400,7 +407,7 @@ int desc_object (tree_t* tree)
 {
     assert (tree);
 
-    printf ("Tell me the object and I will describe it.\n");
+    push_text (tree->display, "Tell me the object and I will describe it");
     node_t* user_node = get_user_node (tree);
 
     if (user_node == NULL)
@@ -421,7 +428,7 @@ int desc_object (tree_t* tree)
         len++;
     }
 
-    my_print ("%s: \n", user_node->object.name);
+    push_text (tree->display, "%s: ", user_node->object.name);
 
     node_t* prev = NULL;
     stack_pop (&stack, &prev);
@@ -431,15 +438,17 @@ int desc_object (tree_t* tree)
 
         if (current_node == prev->left)
         {
-            my_print (" - isn't %s\n", current_node->object.name);
+            add_text (tree->display, " - isn't %s,", current_node->object.name);
         }
 
         else
         {
-            my_print (" - is %s\n", current_node->object.name);
+            add_text (tree->display, " - is %s,", current_node->object.name);
         }
         prev = current_node;
     }
+
+    renew_display (tree->display);
     stack_destruct (&stack);
 
     return 1;
@@ -460,11 +469,11 @@ int compare_objects (tree_t* tree)
 
     if (tree->size < 3)
     {
-        my_print ("Not enough object.\n");
+        PRINT_TEXT (tree->display, "Not enough object.");
         return 1;
     }
-    my_print ("Tell me two objects and I will tell you difference between theirs.\n");
-    my_print ("Enter first object:\n");
+    PRINT_TEXT (tree->display, "Tell me two objects and I will tell you difference between theirs.");
+    push_text (tree->display, "Enter first object:\n");
     node_t* node_1 = get_user_node (tree);
 
     if (node_1 == NULL)
@@ -472,7 +481,7 @@ int compare_objects (tree_t* tree)
         return 1;
     }
 // Необходимо, что бы при первом NULL был return
-    my_print ("Enter second object:\n");
+    push_text (tree->display, "Enter second object:\n");
     node_t* node_2 = get_user_node (tree);
 
     if (node_2 == NULL)
@@ -482,7 +491,7 @@ int compare_objects (tree_t* tree)
 
     if (node_1 == node_2)
     {
-        my_print ("You enter just one object\n");
+        PRINT_TEXT (tree->display, "You enter just one object\n");
         return 0;
     }
 
@@ -516,7 +525,7 @@ int compare_objects (tree_t* tree)
     }
 
     int amount_common = 0;
-    my_print ("What these objects have in common:\n");
+    PRINT_TEXT (tree->display, "What these objects have in common:\n");
 
     node_t* next_1 = NULL;
     node_t* next_2 = NULL;
@@ -528,13 +537,12 @@ int compare_objects (tree_t* tree)
 
         if (buffer_node_1->left == next_2)
         {
-            printf ("NAME: %s\n", buffer_node_1->object.name);
-            my_print (" - isn't %s\n", buffer_node_1->object.name);
+            add_text (tree->display, " isn't %s, ", buffer_node_1->object.name);
         }
 
         else
         {
-            my_print (" - is %s\n", buffer_node_1->object.name);
+            add_text (tree->display, " is %s, ", buffer_node_1->object.name);
         }
 
         buffer_node_1 = next_1;
@@ -547,39 +555,40 @@ int compare_objects (tree_t* tree)
     stack_push (&stack_node_1, next_1);
     stack_push (&stack_node_2, next_2);
 
-    my_print ("The differences between these objects:\n");
-    my_print ("First:\n");
+    PRINT_TEXT (tree->display, "The differences between these objects:");
+    push_text (tree->display, "First:");
 
     int buffer_len = amount_common;
     while (buffer_len <= len_path_1)
     {
         if (buffer_node_1->left != next_1)
         {
-            my_print (" - isn't %s\n", buffer_node_1->object.name);
+            add_text (tree->display, " - isn't %s,", buffer_node_1->object.name);
         }
 
         else
         {
-            my_print (" - is %s\n", buffer_node_1->object.name);
+            add_text (tree->display, " - is %s,", buffer_node_1->object.name);
         }
         buffer_node_1 = next_1;
         stack_pop (&stack_node_1, &next_1);
         buffer_len++;
     }
+    renew_display (tree->display);
 
-    my_print ("Second is:\n");
+    push_text (tree->display, "Second is:");
 
     buffer_len = amount_common;
     while (buffer_len <= len_path_2)
     {
         if (buffer_node_2->left != next_2)
         {
-            my_print (" - isn't %s\n", buffer_node_2->object.name);
+            add_text (tree->display, " - isn't %s,", buffer_node_2->object.name);
         }
 
         else
         {
-            my_print (" - is %s\n", buffer_node_2->object.name);
+            add_text (tree->display, " - is %s,", buffer_node_2->object.name);
         }
         buffer_node_2 = next_2;
         stack_pop (&stack_node_2, &next_2);
@@ -748,51 +757,52 @@ int guess_object (tree_t* tree)
     assert (tree);
     node_t* current_node = tree->null;
 
-    my_print ("------------------------\n");
-    my_print ("Think of any character and I'll guess it.\n");
-    my_print ("------------------------\n");
-    while (1)
+    PRINT_TEXT (tree->display, "Think of any character and I'll guess it");
+
+    while (true)
     {
-        my_print ("Is it %s? (Y/n)\n", current_node->object.name);
-        int user_answer = get_user_bool ();
+        push_text (tree->display, "Is it %s?", current_node->object.name);
+        int user_answer = get_user_bool (tree->display);
 
         if (current_node->left == NULL && current_node->right == NULL)
         {
             if (user_answer == USER_YES)
             {
-                my_print ("It couldn't be otherwise\n");
-                return 1;
+                PRINT_TEXT (tree->display, "It couldn't be otherwise");
+                return 0;
             }
 
-            my_print ("Are you sure? (Y\\n)\n");
-            user_answer = get_user_bool ();
+            push_text (tree->display, "Are you sure?\n");
+            user_answer = get_user_bool (tree->display);
 
             if (user_answer == USER_YES)
             {
-                my_print ("Then who did you guess?\n");
-                obj_t user_object = get_user_object ();
-                my_print ("How is %s different from %s? %s is...\n",
-                        current_node->object.name,
-                        user_object.name,
-                        user_object.name);
+                push_text (tree->display, "Then who did you guess?\n");
+                obj_t user_object = get_user_object (tree->display);
+                push_text (tree->display, "How is %s different from %s? %s is...\n",
+                                           current_node->object.name,
+                                           user_object.name,
+                                           user_object.name);
 
                 obj_t category = {};
                 while (1)
                 {
-                    category = get_user_object ();
+                    category = get_user_object (tree->display);
                     if (check_user_object (category) == 0)
                     {
                         break;
                     }
+
+                    PRINT_TEXT (tree->display, "Invalid string. Please do not use negation.");
                 }
 
-                my_print ("I took note of this.\n");
+                PRINT_TEXT (tree->display, "I took note of this.\n");
                 create_node (current_node, LEFT_SIDE, current_node->object);
                 create_node (current_node, RIGHT_SIDE, user_object);
                 current_node->object = category;
                 // printf ("1: %s\n2: %s\n3: %s\n",
                 //         current_node->object, current_node->left->object, current_node->right->object);
-                return 1;
+                return 0;
             }
 
             continue;
@@ -819,35 +829,18 @@ int guess_object (tree_t* tree)
  * @note Сохраняет в динамическую память -> необходимо с дальнейшем будет самому освободить
 */
 // ----------------------------------------------------------------------------------------------------
-obj_t get_user_object ()
+obj_t get_user_object (display_t* display)
 {
-    char buffer[200] = "";
-    int amount_char = 0;
+    char* name = NULL;
+    obj_t object = {};
 
-    my_print ("> ");
-    while (1)
-    {
-        if (scanf ("%[^\n]%n", buffer, &amount_char) != 1)
-        {
-            getchar ();
-            my_print ("\nPlease re-enter your answer (your answer should not contain any characters other than letters and numbers)\n");
-            my_print ("> ");
-            continue;
-        }
+    get_user_text (display, &name);
 
-        while (getchar () != '\n')
-        {
-            continue;
-        }
+    object.name = name;
+    object.hash = get_hash (object.name);
+    object.type_object = OWN_MEMORY;
 
-        obj_t object = {};
-        object.name = strdup (buffer);
-        object.hash = get_hash (object.name);
-        object.type_object = OWN_MEMORY;
-        return object;
-    }
-
-    return {NULL, 0, NULL, NULL, NO_OWN_MEMORY};
+    return object;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -860,9 +853,10 @@ obj_t get_user_object ()
 // ----------------------------------------------------------------------------------------------------
 int check_user_object (obj_t object)
 {
+// TODO: переделать алгос
     ASSERT_OBJECT(object);
 
-    size_t size = get_size_object (object);
+    size_t size = get_len_name (object);
     size_t i = 0;
 
     char* name = object.name;
@@ -932,7 +926,6 @@ int check_user_object (obj_t object)
         return 0;
     }
 
-    my_print ("Invalid string. Please do not use negation.\n");
     return -1;
 }
 // ----------------------------------------------------------------------------------------------------
@@ -996,28 +989,33 @@ int save_data (tree_t* tree)
 {
     assert (tree);
 
-    my_print ("Where do you want to save data base?\n");
-    my_print ("Do you want to save in standard directory (Y) or in own file (n)?\n");
-    int user_answer = get_user_bool ();
+    push_text (tree->display, "Where do you want to save data base?");
+    int user_answer = get_user_bool (tree->display);
     char address[200] = "";
 
     if (user_answer == USER_YES)
     {
-        my_print ("In what directory number do you want to save the file? (1-%d):\n", AMOUNT_DATA_DIR);
+        push_text (tree->display,
+                  "In what directory number do you want to save the file? (1-%d):",
+                  AMOUNT_DATA_DIR);
 
         int number_dir = 0;
         while (1)
         {
-            my_print ("> ");
-            if (scanf ("%d", &number_dir) != 1)
+            char* adr = NULL;
+            get_user_text (tree->display, &adr);
+
+            if (sscanf (adr, "%d", &number_dir) != 1)
             {
-                my_print ("Please, re-enter your answer.\n");
+                free (adr);
+                PRINT_TEXT (tree->display, "Please, re-enter your answer.");
                 continue;
             }
+            free (adr);
 
             if (number_dir < 1 || number_dir > AMOUNT_DATA_DIR)
             {
-                my_print ("Incorrect number directory. Please, re-enter it.\n");
+                PRINT_TEXT (tree->display, "Incorrect number directory. Please, re-enter it.");
                 continue;
             }
 
@@ -1028,29 +1026,33 @@ int save_data (tree_t* tree)
 
     else
     {
-        my_print ("Enter the file name (note that the file will be created in the current directory):\n");
+        push_text (tree->display, "Enter file name");
 
         while (1)
         {
             int amount_sym = 0;
-            char buffer[180] = "";
+            char* adr = NULL;
 
-            my_print ("> ");
-            if (scanf ("%179s%n", buffer, &amount_sym) != 1)
+            get_user_text (tree->display, &adr);
+
+            if (sscanf (adr, "%s%n", address, &amount_sym) != 1)
             {
-                my_print ("Please, re-enter your address\n");
+                free (adr);
+                push_text (tree->display , "Please, re-enter your address\n");
                 continue;
             }
+            free (adr);
 
             for (int i = 0; i < amount_sym; i++)
             {
                 if (address[i] == '/')
                 {
-                    my_print ("Please, do not enter a directory. Just name file.\n");
+                    push_text (tree->display, "Please, do not enter a directory. Just name file.\n");
                     continue;
                 }
             }
-            sprintf (address, "%s%s", ADDRESS_USER_DATA, buffer);
+            // sprintf (address, "%s%s", ADDRESS_USER_DATA, buffer);
+            address[amount_sym + 1] = '\0';
             break;
         }
     }
@@ -1059,7 +1061,7 @@ int save_data (tree_t* tree)
     save_node (tree->null, file);
     fclose (file);
 
-    my_print ("File saved successfully\n");
+    PRINT_TEXT (tree->display, "File saved successfully\n");
     return 0;
 }
 // --------------------------------------------------------------------------------------------------
@@ -1133,35 +1135,37 @@ int import_data (tree_t* tree)
 {
     assert (tree);
 
-    my_print ("----------------------\n");
     if (tree->null->left != NULL || tree->null->right != NULL)
     {
-        my_print ("Sorry, file upload is only possible if the tree is empty.\n");
+        PRINT_TEXT (tree->display, "Sorry, file upload is only possible if the tree is empty.");
         return 0;
     }
 
-
-    my_print ("Where do you want to upload the file from? From a standard directory (Y) or from your own file (n) ?\n");
-    int user_answer = get_user_bool ();
+    push_text (tree->display, "Where do you want to upload the file from? From a standard directory (Y) or from your own file (n) ?");
+    int user_answer = get_user_bool (tree->display);
     char address[200] = "";
 
     if (user_answer == USER_YES)
     {
-        my_print ("In what directory number do you want to upload the file? (1-%d):\n", AMOUNT_DATA_DIR);
+        push_text (tree->display, "In what directory number do you want to upload the file? (1-%d):", AMOUNT_DATA_DIR);
 
         int number_dir = 0;
         while (1)
         {
-            my_print ("> ");
-            if (scanf ("%d", &number_dir) != 1)
+            char* adr = NULL;
+            get_user_text (tree->display, &adr);
+
+            if (sscanf (adr, "%d", &number_dir) != 1)
             {
-                my_print ("Please, re-enter your answer.\n");
+                push_text (tree->display, "Please, re-enter your answer.");
+                free (adr);
                 continue;
             }
+            free (adr);
 
             if (number_dir < 1 || number_dir > AMOUNT_DATA_DIR)
             {
-                my_print ("Incorrect number directory. Please, re-enter it.\n");
+                push_text (tree->display, "Incorrect number directory. Please, re-enter it.");
                 continue;
             }
 
@@ -1172,33 +1176,38 @@ int import_data (tree_t* tree)
 
     else
     {
-        my_print ("Enter the file name (note that the file will be created in the current directory):\n");
+        push_text (tree->display, "Enter file name ");
 
         while (1)
         {
             int amount_sym = 0;
-            char buffer[180] = "";
+            char buffer[100] = "";
+            char* adr = NULL;
 
-            my_print ("> ");
-            if (scanf ("%179s%n", buffer, &amount_sym) != 1)
+            get_user_text (tree->display, &adr);
+
+            if (sscanf (adr, "%s%n", buffer, &amount_sym) != 1)
             {
-                my_print ("Please, re-enter your address\n");
+                push_text (tree->display, "Please, re-enter your address\n");
+                free (adr);
                 continue;
             }
+            free (adr);
+
 
             for (int i = 0; i < amount_sym; i++)
             {
-                if (address[i] == '/')
+                if (buffer[i] == '/')
                 {
-                    my_print ("Please, do not enter a directory. Just name file.\n");
+                    push_text (tree->display, "Please, do not enter a directory. Just name file.\n");
                     continue;
                 }
             }
 
             // Проверка, существует ли файл
-            if (access (address, F_OK) != 0)
+            if (access (buffer, F_OK) != 0)
             {
-                my_print ("File does not exist.\n");
+                push_text (tree->display, "File does not exist.\n");
                 continue;
             }
 
@@ -1220,6 +1229,7 @@ int import_data (tree_t* tree)
     {
         EXIT_FUNC("NULL calloc", -1);
     }
+
     size_t amount_char = fread (buffer, size, sizeof (char), file);
     (void) amount_char;
     buffer[size] = '\0';
@@ -1235,11 +1245,7 @@ int import_data (tree_t* tree)
     tree->size = (size_t) size_tree;
     fclose (file);
 
-    my_print ("File import successfully\n");
-    while (getchar() != '\n')
-    {
-        continue;
-    }
+    PRINT_TEXT (tree->display, "File import successfully\n");
     return 0;
 }
 // --------------------------------------------------------------------------------------------------

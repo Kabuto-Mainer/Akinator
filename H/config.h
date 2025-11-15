@@ -25,7 +25,7 @@ const int STANDARD_DIR_DUMP = 1;
 const int AMOUNT_DATA_DIR = 4;
 const int STANDARD_SIZE_BLOCK = 250;
 // ----------------------------------------------------------------------------------------------------
-const int PRINT_SLEEP_TIME = 10; // 45 - standard
+const int STANDARD_SLEEP = 200;
 // ----------------------------------------------------------------------------------------------------
 
 

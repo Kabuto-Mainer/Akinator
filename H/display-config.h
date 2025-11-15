@@ -4,7 +4,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
-
+// #include "type.h"
+extern button_desc_t;
 
 // ----------------------------------------------------------------------------------------------------
 // Параметры графики
@@ -67,9 +68,22 @@ const int CENTER_MAIN_TEXT_Y = 100 / 2 + 10;
 const int CENTER_USER_TEXT_X = SCREEN_WIDTH / 2;
 const int CENTER_USER_TEXT_Y = 250 + 75 / 2;
 // ----------------------------------------------------------------------------------------------------
-const int MAX_USER_LEN_TEXT = 40;
+const int MAX_USER_LEN_TEXT = 60;
 const Uint64 TIME_DELAY_CURSOR = 500;
 // ----------------------------------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------------------------------
+const button_desc_t MAIN_MENU_BUT[] =
+{
+    {"Guess object",        LEFT_UP,    GUESS_OBJECT},
+    {"Compare objects",     LEFT_MID,   COMPARE_OBJECTS},
+    {"Description object",  LEFT_DOWN,  DESC_OBJECT},
+    {"Save data base",      RIGHT_UP,   SAVE_DATA},
+    {"Upload data base",    RIGHT_MID,  IMPORT_DATA},
+    {"Exit",                RIGHT_DOWN, EXIT_PROGRAM}
+};
+// --------------------------------------------------------------------------------------------------
 
 
 #endif // DISPLAY_CONFIG_H

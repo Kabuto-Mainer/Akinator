@@ -8,7 +8,7 @@ sdl2 =  -lSDL2 -lSDL2_image -lSDL2_ttf
 
 # Компиляция akin
 akin:
-	g++ CPP/func.cpp main.cpp CPP/support.cpp CPP/dump.cpp STACK/stack.cpp $(flags) -o akin.exe
+	g++ CPP/func.cpp main.cpp CPP/support.cpp CPP/dump.cpp STACK/stack.cpp CPP/graphic.cpp $(flags) $(sdl2) -o akin.exe
 
 video:
 	g++ CPP/graphic.cpp CPP/support.cpp $(flags) $(sdl2) -o video.exe
