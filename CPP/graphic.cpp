@@ -26,12 +26,12 @@ int create_display (display_t* display)
 {
     assert (display);
 
-    // SDL_Init (SDL_INIT_VIDEO);
+    SDL_Init (SDL_INIT_AUDIO);
     TTF_Init ();
 
 // Необходимость для того, что бы не показывалось ложных ошибок и утечке памяти
-    setenv ("DBUS_SESSION_BUS_ADDRESS", "/dev/null", 1);
-    setenv ("SDL_AUDIODRIVER", "dummy", 1);
+    // setenv ("DBUS_SESSION_BUS_ADDRESS", "/dev/null", 1);
+    // setenv ("SDL_AUDIODRIVER", "dummy", 1);
 
 
     SDL_Window* window = SDL_CreateWindow ("Akinator",
@@ -52,12 +52,13 @@ int create_display (display_t* display)
     display->render = renderer;
     display->window = window;
 
-    display->cur_frame.anim = {};
     display->cur_frame.obj_img = NULL;
     display->cur_frame.audio = NULL;
     display->cur_frame.main_text = NULL;
     display->cur_frame.user_text = NULL;
+    display->cur_frame.anim_type = STANDARD_ANIM;
     create_system_UI (display);
+    create_anim (display);
 
     return 0;
 }
@@ -83,37 +84,134 @@ int create_system_UI (display_t* display)
     for (int i = 0; i < LEN_VIDEO_BACKGROUND; i++)
     {
         char buffer[100] = "";
-        sprintf (buffer, "%s%d.png", BACKGROUND, i + 1);
+        sprintf (buffer, BACKGROUND_ADR, i + 1);
         back_frame[i] = load_texture (display->render, buffer);
     }
     display->system.background.frames = back_frame;
     display->system.background.amount = LEN_VIDEO_BACKGROUND;
     display->system.background.current = 0;
     display->system.background.place = &BACK_VIDEO;
+    display->system.background.time_left = 0;
+    display->system.background.delay = DELAY_BACK_VIDEO;
 
-    SDL_Texture** left = (SDL_Texture**) calloc ((size_t) LEN_VIDEO_SIDE, sizeof (SDL_Texture*));
-    SDL_Texture** right = (SDL_Texture**) calloc ((size_t) LEN_VIDEO_SIDE, sizeof (SDL_Texture*));
-    if (left == NULL || right == NULL)
+    SDL_Texture** main_frame = (SDL_Texture**) calloc ((size_t) LEN_VIDEO_MAIN, sizeof (SDL_Texture*));
+    if (main_frame == NULL)
+    {
+        EXIT_FUNC ("NULL calloc", 1);
+    }
+    for (int i = 0; i < LEN_VIDEO_MAIN; i++)
+    {
+        char buffer[100] = "";
+        sprintf (buffer, MAIN_VIDEO_ADR, i + 1);
+        main_frame[i] = load_texture (display->render, buffer);
+    }
+    display->system.main.frames = main_frame;
+    display->system.main.amount = LEN_VIDEO_MAIN;
+    display->system.main.current = 0;
+    display->system.main.place = &MAIN_TEXT;
+    display->system.main.delay = 0;
+    display->system.main.time_left = 0;
+
+    SDL_Texture** user_frame = (SDL_Texture**) calloc ((size_t) LEN_VIDEO_USER, sizeof (SDL_Texture*));
+    if (user_frame == NULL)
+    {
+        EXIT_FUNC ("NULL calloc", 1);
+    }
+    for (int i = 0; i < LEN_VIDEO_USER; i++)
+    {
+        char buffer[100] = "";
+        sprintf (buffer, MAIN_VIDEO_ADR, i + 1);
+        user_frame[i] = load_texture (display->render, buffer);
+    }
+    display->system.user.frames = user_frame;
+    display->system.user.amount = LEN_VIDEO_USER;
+    display->system.user.current = 0;
+    display->system.user.place = &USER_TEXT;
+    display->system.user.time_left = 0;
+    display->system.user.delay = 0;
+
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция создания видео-анимаций
+ * @param [in] display Указатель на структуру дисплея
+*/
+// --------------------------------------------------------------------------------------------------
+int create_anim (display_t* display)
+{
+    assert (display);
+
+    _video_t* mass_anim = (_video_t*) calloc ((size_t) LEN_VIDEO_ANIM, sizeof (_video_t));
+    if (mass_anim == NULL)
     {
         EXIT_FUNC("NULL calloc", 1);
     }
+    display->system.mass_anim = mass_anim;
 
-    for (int i = 0; i < LEN_VIDEO_SIDE; i++)
+    for (int i = 0; i < AMOUNT_ANIM; i++)
     {
-        char buffer[100] = "";
-        sprintf (buffer, "%s%d.png", SIDE_VIDEO, i + 1);
-        left[i] = load_texture (display->render, buffer);
-        right[i] = load_texture (display->render, buffer);
-    }
+        SDL_Texture** anim_frame = (SDL_Texture**) calloc ((size_t) LEN_VIDEO_ANIM, sizeof (SDL_Texture*));
+        if (anim_frame == NULL)
+        {
+            EXIT_FUNC ("NULL calloc", 1);
+        }
 
-    display->system.left.frames = left;
-    display->system.right.frames = right;
-    display->system.left.amount = LEN_VIDEO_SIDE;
-    display->system.right.amount = LEN_VIDEO_SIDE;
-    display->system.left.current = 0;
-    display->system.right.current = 0;
-    display->system.left.place = &LEFT_VIDEO;
-    display->system.right.place = &RIGHT_VIDEO;
+        for (int cur_f = 0; cur_f < LEN_VIDEO_ANIM; cur_f++)
+        {
+            char buffer[100] = "";
+            sprintf (buffer, ANIM_VIDEO_ADR, i + 1, cur_f + 1);
+            anim_frame[cur_f] = load_texture (display->render, buffer);
+        }
+
+        display->system.mass_anim[i].frames = anim_frame;
+        display->system.mass_anim[i].amount = LEN_VIDEO_ANIM;
+        display->system.mass_anim[i].place = &ANIM_VIDEO;
+        display->system.mass_anim[i].current = 0;
+        display->system.mass_anim[i].time_left = 0;
+        display->system.mass_anim[i].delay = DELAY_ANIM_VIDEO;
+    }
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция инициализации аудио-устройств
+ * @param [in] display Указатель на структуру дисплея
+*/
+// --------------------------------------------------------------------------------------------------
+int create_audio (display_t* display)
+{
+    assert (display);
+    SDL_AudioSpec want = {};
+    SDL_AudioSpec play_have = {};
+    SDL_zero (want);
+
+    want.freq = SAMPLE_RATE;
+    want.format= AUDIO_S16LSB;
+    want.channels = CHANNELS;
+    want.samples = SAMPLES;
+    want.callback = NULL;
+
+    display->audio_data.play = SDL_OpenAudioDevice (NULL, 0, &want, &play_have, 0);
+    /*if (display->audio_data.play == nullptr)
+    {
+        EXIT_FUNC("NULL device", 1);
+    }*/
+    display->audio_data.param_play = play_have;
+
+    SDL_AudioSpec record_have = {};
+    display->audio_data.record = SDL_OpenAudioDevice (NULL, 1, &want, &record_have, 0);
+    /*if (display->audio_data.record == nullptr)
+    {
+        EXIT_FUNC("NULL device", 1);
+    }*/
+    display->audio_data.param_record = record_have;
 
     return 0;
 }
@@ -150,7 +248,7 @@ SDL_Texture* load_texture (SDL_Renderer* render,
 // --------------------------------------------------------------------------------------------------
 int draw_texture (SDL_Renderer* render,
                   SDL_Texture* texture,
-                  SDL_Rect* rect)
+                  const SDL_Rect* rect)
 {
     assert (render);
     assert (texture);
@@ -178,9 +276,154 @@ int play_video (SDL_Renderer* render,
     }
 
     draw_texture (render, video->frames[video->current], video->place);
-    video->current = (video->current + 1) % video->amount;
+
+    if (video->delay == video->time_left)
+    {
+        video->current = (video->current + 1) % video->amount;
+        video->time_left = 0;
+    }
+    else
+    {
+        video->time_left++;
+    }
+
     return 0;
 }
+// --------------------------------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция проигрывания wav файла
+ * @param [in] play_device Устройство, на котором будет проигрываться файл
+ * @param [in] name_wav Имя файла
+*/
+// --------------------------------------------------------------------------------------------------
+int play_audio (SDL_AudioDeviceID play_device,
+                const char* name_wav)
+{
+    assert (play_device);
+    assert (name_wav);
+
+    SDL_AudioSpec wav_spec = {};
+    Uint32 wav_len = 0;
+    Uint8* buffer = NULL;
+
+    if (SDL_LoadWAV (name_wav, &wav_spec, &buffer, &wav_len) == NULL)
+    {
+        EXIT_FUNC("NULL load file", 1);
+    }
+
+    SDL_QueueAudio (play_device, buffer, wav_len);
+    // SDL_Delay ((wav_len / (wav_spec.freq * wav_spec.channels * (wav_spec.format & 0xFF) / 8)) * 1000);
+    SDL_free (buffer);
+
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция записи аудио в файл
+ * @param [in] button Кнопка, нажатие на которую останавливает запись
+ * @param [in] record_device Устройство для записи
+ * @param [in] file Имя файла, куда будет записываться аудио
+*/
+// --------------------------------------------------------------------------------------------------
+int record_audio (button_t* button,
+                  SDL_AudioDeviceID record_device,
+                  const char* file)
+{
+    assert (file);
+    assert (record_device);
+
+    SDL_PauseAudioDevice(record_device, 0);
+
+    uint8_t* recorded = NULL;
+    uint32_t recorded_len = 0;
+
+    int running = true;
+    while (running) {
+        uint8_t buffer[4096] = {};
+
+        Uint32 got_data = SDL_DequeueAudio (record_device, buffer, sizeof (buffer));
+        if (got_data > 0)
+        {
+            recorded = (uint8_t*) realloc (recorded, recorded_len + got_data);
+            memcpy (recorded + recorded_len, buffer, got_data);
+            recorded_len += got_data;
+        }
+
+        SDL_Event event = {};
+        while (SDL_PollEvent (&event))
+        {
+            if (check_button_click (button, &event) == 1)
+            {
+                running = false;
+            }
+        }
+
+        SDL_Delay(10);
+    }
+    SDL_PauseAudioDevice(record_device, 1);
+
+    save_audio (file, recorded, recorded_len);
+
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция записи аудио-семплов в wav файл
+ * @param [in] file_name Имя файла
+ * @param [in] data Аудио данные
+ * @param [in] len_data Длина data
+*/
+// --------------------------------------------------------------------------------------------------
+/* Невозможность компиляции с -Werror*/
+// --------------------------------------------------------------------------------------------------
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstack-protector"
+// --------------------------------------------------------------------------------------------------
+int save_audio (const char* file_name,
+                uint8_t* data,
+                uint32_t len_data)
+{
+    assert (file_name);
+    assert (data);
+
+    FILE* wav_file = fopen (file_name, "wb");
+    if (wav_file == NULL)
+    {
+        EXIT_FUNC("NULL file", 1);
+    }
+
+    __WAV_head head = {};
+    memcpy (head.riff, "RIFF", 4);
+    head.chunk_size = 36 + len_data;
+    memcpy (head.wave, "WAVE", 4);
+    memcpy (head.format, "fmt", 4);
+
+    head.subchunk1Size = 16;
+    head.audio_format = 1;
+    head.num_channels = CHANNELS;
+    head.sample_rate = SAMPLE_RATE;
+    head.bitsPerSample = 16;
+    head.byte_rate = (uint32_t) SAMPLE_RATE * CHANNELS * head.bitsPerSample / 8;
+    head.block_align = (uint16_t) (CHANNELS * head.bitsPerSample / 8);
+    memcpy (head.data, "data", 4);
+    head.data_size = len_data;
+    fwrite (&head, sizeof (__WAV_head), 1, wav_file);
+    fwrite (data, 1, len_data, wav_file);
+
+    fclose (wav_file);
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+#pragma GCC diagnostic pop
 // --------------------------------------------------------------------------------------------------
 
 
@@ -213,13 +456,19 @@ int destroy_display (display_t* display)
     FREE_MEMORY(display->cur_frame.user_text);
 
     free_video (&(display->system.background));
-    free_video (&(display->system.left));
-    free_video (&(display->system.right));
-    free_video (&(display->cur_frame.anim));
+    free_video (&(display->system.user));
+    free_video (&(display->system.main));
+    for (int i = 0; i < AMOUNT_ANIM; i++)
+    {
+        free_video (display->system.mass_anim);
+    }
+    free (display->system.mass_anim);
 
     TTF_CloseFont(display->font);
     SDL_DestroyRenderer(display->render);
     SDL_DestroyWindow(display->window);
+    SDL_CloseAudioDevice (display->audio_data.play);
+    SDL_CloseAudioDevice (display->audio_data.record);
     TTF_Quit();
     SDL_Quit();
 
@@ -380,10 +629,10 @@ int push_text__va_list (display_t* display,
                     const char* string = va_arg (args, const char*);
                     strcpy (string_buffer + index, string);
                     index += (int) strlen (string);
-                    if (string_buffer[index] != '\0')
-                    {
-                        index++;
-                    }
+                    // if (string_buffer[index] != '\0')
+                    // {
+                    //     index++;
+                    // }
                     break;
                 }
 
@@ -478,6 +727,24 @@ int add_text (display_t* display,
 
 // --------------------------------------------------------------------------------------------------
 /**
+ * @brief Функция изменения текущей анимации
+ * @param [in] display Указатель на структуру дисплея
+ * @param [in] type Тип анимации
+*/
+// --------------------------------------------------------------------------------------------------
+int add_anim (display_t* display,
+              __ANIM_TYPE type)
+{
+    assert (display);
+
+    display->cur_frame.anim_type = type;
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------------------------------
+/**
  * @brief Функция обновления экрана
  * @param [in] display Указатель на структуру дисплея
 */
@@ -494,6 +761,12 @@ int renew_display (display_t* display)
     render_buttons (display);
     render_user_text (display);
     render_object (display);
+
+    if (display->cur_frame.anim_type != STANDARD_ANIM)
+    {
+        play_video (display->render, &(display->system.mass_anim[display->cur_frame.anim_type]));
+    }
+
     SDL_RenderPresent (display->render);
     // render_animation (display);
     SDL_Delay (STANDARD_SLEEP );
@@ -517,8 +790,9 @@ int render_main_text (display_t* display)
         return 0;
     }
 
-    SDL_SetRenderDrawColor (display->render, MAIN_TEXT_COLOR.r, MAIN_TEXT_COLOR.g, MAIN_TEXT_COLOR.b, MAIN_TEXT_COLOR.a);
-    SDL_RenderFillRect (display->render, &MAIN_TEXT);
+    play_video (display->render, &(display->system.main));
+    // SDL_SetRenderDrawColor (display->render, MAIN_TEXT_COLOR.r, MAIN_TEXT_COLOR.g, MAIN_TEXT_COLOR.b, MAIN_TEXT_COLOR.a);
+    // SDL_RenderFillRect (display->render, &MAIN_TEXT);
 
     SDL_Color color = COLOR_FONT;
     int width = 0;
@@ -622,8 +896,9 @@ int render_user_text (display_t* display)
         return 0;
     }
 
-    SDL_SetRenderDrawColor (display->render, MAIN_TEXT_COLOR.r, MAIN_TEXT_COLOR.g, MAIN_TEXT_COLOR.b, MAIN_TEXT_COLOR.a);
-    SDL_RenderFillRect (display->render, &USER_TEXT);
+    // play_video (display->render, &(display->system.user));
+    // SDL_SetRenderDrawColor (display->render, MAIN_TEXT_COLOR.r, MAIN_TEXT_COLOR.g, MAIN_TEXT_COLOR.b, MAIN_TEXT_COLOR.a);
+    // SDL_RenderFillRect (display->render, &USER_TEXT);
 
     SDL_Color color = COLOR_FONT;
     SDL_Surface* surface = TTF_RenderUTF8_Blended (display->font, display->cur_frame.user_text, color);
@@ -666,9 +941,7 @@ int render_video (display_t* display)
 {
     assert (display);
     play_video (display->render, &(display->system.background));
-    play_video (display->render, &(display->system.left));
-    play_video (display->render, &(display->system.right));
-    play_video (display->render, &(display->cur_frame.anim));
+    play_video (display->render, &(display->system.user));
 
     return 0;
 }
@@ -818,11 +1091,6 @@ int get_user_bool (display_t* display,
                    BASE_BUTTON_COLOR);
 
     display->cur_frame.amount_but = 2;
-
-    if (display->cur_frame.audio != NULL)
-    {
-        free (display->cur_frame.audio);
-    }
     display->cur_frame.audio = NULL;
 
     if (display->cur_frame.user_text != NULL)
@@ -899,11 +1167,6 @@ int get_user_continue (display_t* display)
                    BASE_BUTTON_COLOR);
 
     display->cur_frame.amount_but = 1;
-
-    if (display->cur_frame.audio != NULL)
-    {
-        free (display->cur_frame.audio);
-    }
     display->cur_frame.audio = NULL;
 
     if (display->cur_frame.user_text != NULL)
@@ -972,6 +1235,7 @@ int get_user_text (display_t* display,
 
     SDL_StartTextInput ();
 
+    add_anim (display, STANDARD_ANIM);
     while (running)
     {
         while (SDL_PollEvent (&event))
@@ -989,6 +1253,8 @@ int get_user_text (display_t* display,
                 {
                     buffer[index++] = *(event.text.text);
                 }
+
+                add_anim (display, TYPING_ANIM);
             }
 
             if (event.type == SDL_KEYDOWN)
@@ -1036,6 +1302,7 @@ int get_user_text (display_t* display,
         display->cur_frame.user_text = NULL;
         index--;
     }
+    add_anim (display, STANDARD_ANIM);
 
     SDL_StopTextInput ();
     *string = strdup (buffer);
@@ -1077,31 +1344,4 @@ int check_button_click (button_t* button,
 }
 // ----------------------------------------------------------------------------------------------------
 
-
-
-
-// int main()
-// {
-//     display_t display = {};
-//     if (create_display(&display) != 0) {
-//         return 1;
-//     }
-
-//     int running = 1;
-//     EVENT current_event = START_PROGRAM;
-
-//     while (running)
-//     {
-//         current_event = get_event (current_event, &display);
-//         printf ("EVENT: %d\n", current_event);
-//         if (current_event == EXIT_PROGRAM)
-//         {
-//             running = 0;
-//         }
-//     }
-
-//     destroy_display (&display);
-
-//     return 0;
-// }
 

@@ -270,6 +270,7 @@ node_t* get_user_node (tree_t* tree)
                 PRINT_TEXT (tree->display, "The object you entered is category");
             }
 
+            get_user_continue (tree->display);
             push_text (tree->display, "Do you want to re-enter?");
             int user_answer = get_user_bool (tree->display, "YES", "NO");
 
@@ -474,6 +475,7 @@ int desc_object (tree_t* tree)
 
     stack_struct stack = {};
     stack_creator (&stack, 10, __FILE__, __LINE__, "stack for find");
+    stack_push (&stack, NULL);
 
     node_t* current_node = user_node->father;
 
@@ -489,26 +491,25 @@ int desc_object (tree_t* tree)
 
     node_t* prev = NULL;
     stack_pop (&stack, &prev);
-    for (int i = 0; i < len - 1; i++)
+    for (int i = 0; i < len; i++)
     {
         stack_pop (&stack, &current_node);
 
         if (current_node == prev->left)
         {
-            add_text (tree->display, " - isn't %s,", current_node->object.name);
+            add_text (tree->display, " - isn't %s,", prev->object.name);
         }
 
         else
         {
-            add_text (tree->display, " - is %s,", current_node->object.name);
+            add_text (tree->display, " - is %s,", prev->object.name);
         }
         prev = current_node;
     }
     stack_destruct (&stack);
 
     renew_display (tree->display);
-    push_text (tree->display, "Do tou want to continue?");
-    get_user_bool (tree->display, "YES", "OF COURSE");
+    get_user_continue (tree->display);
 
     return 1;
 }
@@ -532,6 +533,7 @@ int compare_objects (tree_t* tree)
         return 1;
     }
     PRINT_TEXT (tree->display, "Tell me two objects and I will\n tell you difference between theirs.");
+    get_user_continue (tree->display);
     push_text (tree->display, "Enter first object:");
     node_t* node_1 = get_user_node (tree);
 
@@ -551,6 +553,7 @@ int compare_objects (tree_t* tree)
     if (node_1 == node_2)
     {
         PRINT_TEXT (tree->display, "You enter just one object");
+        get_user_continue (tree->display);
         return 0;
     }
 
@@ -619,6 +622,7 @@ int compare_objects (tree_t* tree)
 
     get_user_continue (tree->display);
     PRINT_TEXT (tree->display, "The differences between these objects:");
+    get_user_continue (tree->display);
     push_text (tree->display, "First:");
 
     int buffer_len = amount_common;
@@ -823,6 +827,7 @@ int guess_object (tree_t* tree)
     node_t* current_node = tree->null;
 
     PRINT_TEXT (tree->display, "Think of any character and I'll guess it");
+    get_user_continue (tree->display);
 
     while (true)
     {
@@ -846,6 +851,7 @@ int guess_object (tree_t* tree)
             {
                 push_text (tree->display, "Then who did you guess?");
                 obj_t user_object = get_user_object (tree->display);
+
                 push_text (tree->display, "How is %s different from %s?\n %s is...",
                                            current_node->object.name,
                                            user_object.name,
@@ -861,6 +867,15 @@ int guess_object (tree_t* tree)
                     }
 
                     PRINT_TEXT (tree->display, "Invalid string. Please do not use negation.");
+                }
+
+                push_text (tree->display, "Do you want to add image");
+                if (get_user_bool (tree->display, "YES", "NO") == USER_YES)
+                {
+                    push_text (tree->display, "Enter name file");
+                    char* address = NULL;
+                    get_user_text (tree->display, &address);
+                    category.image = address;
                 }
 
                 PRINT_TEXT (tree->display, "I took note of this.");
@@ -906,6 +921,51 @@ obj_t get_user_object (display_t* display)
     object.name = name;
     object.hash = get_hash (object.name);
     object.type_object = OWN_MEMORY;
+
+    push_text (display, "Do you want to add image");
+    if (get_user_bool (display, "YES", "NO") == USER_YES)
+    {
+        push_text (display, "Enter name file");
+        char* address = NULL;
+        get_user_text (display, &address);
+        object.image = address;
+    }
+
+    push_text (display, "Do you want to record audio\nfor this object");
+    if (get_user_bool (display, "YES", "NO") == USER_YES)
+    {
+        create_button (cont,
+                   display->render,
+                   "CONTINUE",
+                   display->font,
+                   BASE_BUTTON_COLOR);
+
+        display->cur_frame.amount_but = 1;
+
+        // if (display->cur_frame.audio != NULL)
+        // {
+        //     free (display->cur_frame.audio);
+        // }
+        display->cur_frame.audio = NULL;
+
+        if (display->cur_frame.user_text != NULL)
+        {
+            free (display->cur_frame.user_text);
+        }
+        display->cur_frame.user_text = NULL;
+
+        cont->type = CENTER_UP;
+
+        char buffer[200] = "";
+        create_adr_audio (buffer, object.name);
+        object.audio = strdup (buffer);
+        push_text (display, "Start speaking!");
+        record_audio (
+        push_text (tree->display, "Enter name file");
+        char* address = NULL;
+        get_user_text (tree->display, &address);
+        user_object.image = address;
+    }
 
     return object;
 }
@@ -1039,6 +1099,43 @@ node_t* create_node (node_t* root,
 }
 // --------------------------------------------------------------------------------------------------
 
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция создания адреса аудио файла для его расположения в стандартной директории
+ * @param [in] buffer Указатель на адрес
+ * @param [in] name_obj Имя объекта -> Имя файла
+*/
+// --------------------------------------------------------------------------------------------------
+int create_adr_audio (char* buffer,
+                      const char* name_obj)
+{
+    assert (buffer);
+    assert (name_obj);
+
+    int index = 0;
+    sprintf (buffer, "%s", OBJECT_AUDIO);
+    index += strlen (OBJECT_AUDIO);
+
+    while (*name_obj != '\0')
+    {
+        if (*name_obj == ' ')
+        {
+            buffer[index++] = '_';
+        }
+
+        else
+        {
+            buffer[index++] = *name_obj;
+        }
+
+        name_obj++;
+    }
+    strcat (buffer + index, ".wav\0");
+
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
 
 
 // -*************************************************************************************************
@@ -1160,7 +1257,12 @@ int save_node (node_t* node,
 
     else
     {
-        fprintf (file, "(\"%s\"", node->object.name);
+        fprintf (file, "(\"%s\" ", node->object.name);
+
+        if (node->object.image != NULL)
+        {
+            fprintf (file, "[\"%s\"] ", node->object.image);
+        }
     }
 
 

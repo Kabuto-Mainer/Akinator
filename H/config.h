@@ -25,11 +25,12 @@ const int STANDARD_DIR_DUMP = 1;
 const int AMOUNT_DATA_DIR = 4;
 const int STANDARD_SIZE_BLOCK = 250;
 // ----------------------------------------------------------------------------------------------------
-const int STANDARD_SLEEP = 100;
+const int STANDARD_SLEEP = 50;
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
-const char OBJECT_IMAGE[] = "/home/kabuto/ProjectC/AKINA/GRAPHIC/OBJECT/IMAGES/";
+const char OBJECT_IMAGE[] = "../GRAPHIC/OBJECT/IMAGES/";
+const char OBJECT_AUDIO[] = "../GRAPHIC/OBJECT/AUDIO/";
 // ----------------------------------------------------------------------------------------------------
 
 

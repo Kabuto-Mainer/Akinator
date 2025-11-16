@@ -20,6 +20,14 @@ enum PLACE_BUTTON
     CENTER_UP   = 6
 };
 // --------------------------------------------------------------------------------------------------
+enum __ANIM_TYPE
+{
+    STANDARD_ANIM       = 10, // Отсутствие анимации
+    TYPING_ANIM         = 0,
+    PLAY_AUDIO_ANIM     = 1,
+    RECORD_AUDIO_ANIM   = 2
+};
+// --------------------------------------------------------------------------------------------------
 enum SIDES
 {
     LEFT_SIDE   = 0,
@@ -72,25 +80,55 @@ struct _video_t
     SDL_Texture** frames;
     int amount;
     int current;
-    SDL_Rect* place;
+    const SDL_Rect* place;
+
+    int delay;
+    int time_left;
+};
+// --------------------------------------------------------------------------------------------------
+struct _audio_t
+{
+    SDL_AudioDeviceID record;
+    SDL_AudioSpec param_record;
+    SDL_AudioDeviceID play;
+    SDL_AudioSpec param_play;
+};
+// --------------------------------------------------------------------------------------------------
+struct __WAV_head {
+    char riff[4];           // Заголовок (формат "RIFF")
+    uint32_t chunk_size;    // Размер файла
+    char wave[4];           // Тип ("WAVE")
+    char format[4];         // Какой идет формат
+    uint32_t subchunk1Size; // Длина подблока
+    uint16_t audio_format;  // Формат аудио
+    uint16_t num_channels;  // Количество каналов
+    uint32_t sample_rate;   // Частота дискретизации
+    uint32_t byte_rate;     // Количество байтов, которые нужно воспроизводить, в секунду
+    uint16_t block_align;   // Количество байтов на семпл
+    uint16_t bitsPerSample; // Битность семпла
+    char data[4];           // Начало данных ("data")
+    uint32_t data_size;     // Размер аудиоданных в байтах
 };
 // --------------------------------------------------------------------------------------------------
 struct _frame_t
 {
     char* main_text;
     char* user_text;
-    _video_t anim;
+
     char* obj_img;
     char* audio;
+
     button_t buttons[AMOUNT_BUTTONS];
     int amount_but;
+    __ANIM_TYPE anim_type;
 };
 // --------------------------------------------------------------------------------------------------
 struct _system_interface_t
 {
     _video_t background;
-    _video_t left;
-    _video_t right;
+    _video_t main;
+    _video_t user;
+    _video_t* mass_anim;
 };
 // --------------------------------------------------------------------------------------------------
 struct display_t
@@ -100,6 +138,7 @@ struct display_t
     TTF_Font* font;
     _system_interface_t system;
     _frame_t cur_frame;
+    _audio_t audio_data;
 };
 // --------------------------------------------------------------------------------------------------
 struct object_t

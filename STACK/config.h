@@ -44,7 +44,7 @@ const int START_SIZE_STACK = 4;
 const size_t START_HASH_CODE = 5318;
 
 // Ядовитое значение для стека
-const stmn_t POISON_NUM = NULL;
+const stmn_t POISON_NUM = (stmn_t) NULL - 1;
 
 // Минимальные рабочий адрес
 const int MIN_ADDRESS = 8000;
