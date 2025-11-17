@@ -59,6 +59,7 @@ int create_display (display_t* display)
     display->cur_frame.anim_type = STANDARD_ANIM;
     create_system_UI (display);
     create_anim (display);
+    create_audio (display);
 
     return 0;
 }
@@ -229,6 +230,7 @@ int create_audio (display_t* display)
 SDL_Texture* load_texture (SDL_Renderer* render,
                            const char* filename)
 {
+    printf ("NAME: %s\n", filename);
     SDL_Texture* texture = IMG_LoadTexture (render, filename);
     if (texture == NULL) {
         EXIT_FUNC("NULL texture", NULL);
@@ -292,10 +294,68 @@ int play_video (SDL_Renderer* render,
 // --------------------------------------------------------------------------------------------------
 
 
+// ----------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция получения имени изображения и записи голоса
+ * @param [in] display Указатель на структуру дисплея
+ * @param [in] object Объект, к которому будет добавляться информация
+*/
+// ----------------------------------------------------------------------------------------------------
+int get_image_audio (display_t *display,
+                     obj_t* object)
+{
+    assert (object);
+
+    push_text (display, "Do you want to add image");
+    if (get_user_bool (display, "YES", "NO") == USER_YES)
+    {
+        push_text (display, "Enter name file");
+        char* address = NULL;
+        get_user_text (display, &address);
+        object->image = address;
+    }
+
+    push_text (display, "Do you want to record audio\nfor this personage");
+    if (get_user_bool (display, "YES", "NO") == USER_YES)
+    {
+        button_t cont = {};
+        create_button (&cont,
+                   display->render,
+                   "CONTINUE",
+                   display->font,
+                   BASE_BUTTON_COLOR);
+
+        display->cur_frame.amount_but = 1;
+        display->cur_frame.audio = NULL;
+
+        if (display->cur_frame.user_text != NULL)
+        {
+            free (display->cur_frame.user_text);
+        }
+        display->cur_frame.user_text = NULL;
+
+        cont.type = CENTER_UP;
+
+        char buffer[200] = "";
+        create_adr_audio (buffer, object->name);
+        object->audio = strdup (buffer);
+        // printf ("%s\n", object->audio);
+
+        push_text (display, "Start speaking!");
+        record_audio (display, &cont, display->audio_data.record, buffer);
+        PRINT_TEXT(display, "Grate speaking");
+    }
+
+    return 0;
+}
+// ----------------------------------------------------------------------------------------------------
+
+
 // --------------------------------------------------------------------------------------------------
 /**
  * @brief Функция проигрывания wav файла
  * @param [in] play_device Устройство, на котором будет проигрываться файл
+ * @param [in] param_play Параметры аудио-устройства
  * @param [in] name_wav Имя файла
 */
 // --------------------------------------------------------------------------------------------------
@@ -314,6 +374,7 @@ int play_audio (SDL_AudioDeviceID play_device,
         EXIT_FUNC("NULL load file", 1);
     }
 
+    SDL_PauseAudioDevice(play_device, 0);
     SDL_QueueAudio (play_device, buffer, wav_len);
     // SDL_Delay ((wav_len / (wav_spec.freq * wav_spec.channels * (wav_spec.format & 0xFF) / 8)) * 1000);
     SDL_free (buffer);
@@ -326,19 +387,23 @@ int play_audio (SDL_AudioDeviceID play_device,
 // --------------------------------------------------------------------------------------------------
 /**
  * @brief Функция записи аудио в файл
+ * @param [in] display Указатель на структуру дисплея
  * @param [in] button Кнопка, нажатие на которую останавливает запись
  * @param [in] record_device Устройство для записи
  * @param [in] file Имя файла, куда будет записываться аудио
 */
 // --------------------------------------------------------------------------------------------------
-int record_audio (button_t* button,
+int record_audio (display_t* display,
+                  button_t* button,
                   SDL_AudioDeviceID record_device,
                   const char* file)
 {
     assert (file);
     assert (record_device);
+    clean_buttons (display);
+    display->cur_frame.buttons[0] = *button;
 
-    SDL_PauseAudioDevice(record_device, 0);
+    SDL_PauseAudioDevice (record_device, 0);
 
     uint8_t* recorded = NULL;
     uint32_t recorded_len = 0;
@@ -350,7 +415,12 @@ int record_audio (button_t* button,
         Uint32 got_data = SDL_DequeueAudio (record_device, buffer, sizeof (buffer));
         if (got_data > 0)
         {
-            recorded = (uint8_t*) realloc (recorded, recorded_len + got_data);
+            uint8_t* buffer_address = (uint8_t*) realloc (recorded, recorded_len + got_data);
+            if (buffer_address == NULL)
+            {
+                EXIT_FUNC("NULL realloc", 1);
+            }
+            recorded = buffer_address;
             memcpy (recorded + recorded_len, buffer, got_data);
             recorded_len += got_data;
         }
@@ -364,11 +434,23 @@ int record_audio (button_t* button,
             }
         }
 
-        SDL_Delay(10);
+            SDL_SetRenderDrawColor (display->render, 30, 30, 30, 255);
+            SDL_RenderClear (display->render);
+
+            render_video (display);
+            render_main_text (display);
+            render_buttons (display);
+
+            SDL_RenderPresent (display->render);
+            // render_animation (display);
+            // SDL_Delay (STANDARD_SLEEP );
     }
     SDL_PauseAudioDevice(record_device, 1);
 
-    save_audio (file, recorded, recorded_len);
+    save_audio (&(display->audio_data.param_record), file, recorded, recorded_len);
+    free (recorded);
+
+    // play_audio (display->audio_data.play, file);
 
     return 0;
 }
@@ -378,52 +460,80 @@ int record_audio (button_t* button,
 // --------------------------------------------------------------------------------------------------
 /**
  * @brief Функция записи аудио-семплов в wav файл
+ * @param [in] param Параметры аудио для записи
  * @param [in] file_name Имя файла
  * @param [in] data Аудио данные
  * @param [in] len_data Длина data
 */
 // --------------------------------------------------------------------------------------------------
-/* Невозможность компиляции с -Werror*/
-// --------------------------------------------------------------------------------------------------
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wstack-protector"
-// --------------------------------------------------------------------------------------------------
-int save_audio (const char* file_name,
-                uint8_t* data,
+int save_audio (const SDL_AudioSpec* param,
+                const char* file_name,
+                const uint8_t* data,
                 uint32_t len_data)
 {
-    assert (file_name);
-    assert (data);
-
-    FILE* wav_file = fopen (file_name, "wb");
-    if (wav_file == NULL)
+    FILE* file= fopen (file_name, "wb");
+    if (file == NULL)
     {
         EXIT_FUNC("NULL file", 1);
     }
 
-    __WAV_head head = {};
-    memcpy (head.riff, "RIFF", 4);
-    head.chunk_size = 36 + len_data;
-    memcpy (head.wave, "WAVE", 4);
-    memcpy (head.format, "fmt", 4);
+    uint32_t byteRate   = (uint32_t) (param->freq * param->channels * sdl_format_to_bits (param->format) / 8);
+    uint16_t blockAlign = (uint16_t) (param->channels * sdl_format_to_bits (param->format) /  8);
 
-    head.subchunk1Size = 16;
-    head.audio_format = 1;
-    head.num_channels = CHANNELS;
-    head.sample_rate = SAMPLE_RATE;
-    head.bitsPerSample = 16;
-    head.byte_rate = (uint32_t) SAMPLE_RATE * CHANNELS * head.bitsPerSample / 8;
-    head.block_align = (uint16_t) (CHANNELS * head.bitsPerSample / 8);
-    memcpy (head.data, "data", 4);
-    head.data_size = len_data;
-    fwrite (&head, sizeof (__WAV_head), 1, wav_file);
-    fwrite (data, 1, len_data, wav_file);
+    // ----- RIFF -----
+    fwrite ("RIFF", 1, 4, file);
 
-    fclose (wav_file);
+    uint32_t chunkSize = 36 + len_data;
+    fwrite (&chunkSize, 4, 1, file);
+
+    fwrite ("WAVE", 1, 4, file);
+
+    // ----- fmt  -----
+    fwrite ("fmt ", 1, 4, file);
+
+    uint32_t subchunk1Size = 16;
+    fwrite (&subchunk1Size, 4, 1, file);
+
+    uint16_t audioFormat = 1;
+    fwrite (&audioFormat, 2, 1, file);
+
+    uint16_t chan = param->channels;
+    fwrite (&chan, 2, 1, file);
+
+    fwrite (&(param->freq), 4, 1, file);
+    fwrite (&byteRate, 4, 1, file);
+    fwrite (&blockAlign, 2, 1, file);
+
+    uint16_t bitsPS = (uint8_t) sdl_format_to_bits (param->format);
+    fwrite (&bitsPS, 2, 1, file);
+
+    fwrite ("data", 1, 4, file);
+    fwrite (&len_data, 4, 1, file);
+    fwrite (data, 1, len_data, file);
+
+    fclose (file);
     return 0;
 }
 // --------------------------------------------------------------------------------------------------
-#pragma GCC diagnostic pop
+
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция получения количества байт в секунду для заполнения заголовка wav файла
+ * @param [in] format Формат аудио
+ * @return Количество байт в секунду
+*/
+// --------------------------------------------------------------------------------------------------
+int sdl_format_to_bits (SDL_AudioFormat format)
+{
+    switch (format)
+    {
+        case AUDIO_U8:     return 8;
+        case AUDIO_S16LSB: return 16;
+        case AUDIO_S32LSB: return 32;
+        default:           return 0;
+    }
+}
 // --------------------------------------------------------------------------------------------------
 
 
@@ -507,6 +617,29 @@ int free_video (_video_t* video)
 
 // --------------------------------------------------------------------------------------------------
 /**
+ * @brief Функция очистки кнопок
+ * @param [in] display Указатель на структуру дисплея
+*/
+// --------------------------------------------------------------------------------------------------
+int clean_buttons (display_t* display)
+{
+    assert (display);
+
+    for (int i = 0; i < AMOUNT_BUTTONS; i++)
+    {
+        if (display->cur_frame.buttons[i].but != NULL)
+        {
+            SDL_DestroyTexture (display->cur_frame.buttons->but);
+        }
+    }
+
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------------------------------
+/**
  * @brief Функция создания текстуры кнопки
  * @param [in] button Указатель на структуру кнопки, куда будет записана текстура
  * @param [in] render Указатель на окно для рендера
@@ -521,8 +654,8 @@ int create_button (button_t* button,
                    TTF_Font* font,
                    SDL_Color color)
 {
-    assert(button);
-    assert(text);
+    assert (button);
+    assert (text);
 
     SDL_Texture* combined = SDL_CreateTexture (render,
                                                SDL_PIXELFORMAT_RGBA8888,
@@ -1075,9 +1208,14 @@ int get_user_bool (display_t* display,
                    const char* true_c,
                    const char* false_c)
 {
+    assert (display);
+    assert (true_c);
+    assert (false_c);
 
     button_t* true_b = &(display->cur_frame.buttons[0]);
     button_t* false_b = &(display->cur_frame.buttons[1]);
+
+    clean_buttons (display);
 
     create_button (true_b,
                    display->render,
@@ -1142,6 +1280,7 @@ int get_user_bool (display_t* display,
         }
         renew_display (display);
     }
+    clean_buttons (display);
 
     return USER_YES;
 }
@@ -1160,6 +1299,7 @@ int get_user_continue (display_t* display)
 
     button_t* cont = &(display->cur_frame.buttons[0]);
 
+    clean_buttons (display);
     create_button (cont,
                    display->render,
                    "CONTINUE",
@@ -1201,11 +1341,13 @@ int get_user_continue (display_t* display)
                                CLICK_BUTTON_COLOR);
 
                 renew_display (display);
+                clean_buttons (display);
                 return USER_YES;
             }
         }
         renew_display (display);
     }
+    clean_buttons (display);
     return USER_YES;
 }
 // ----------------------------------------------------------------------------------------------------

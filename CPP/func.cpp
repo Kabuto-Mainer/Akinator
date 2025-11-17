@@ -267,7 +267,7 @@ node_t* get_user_node (tree_t* tree)
 
             else
             {
-                PRINT_TEXT (tree->display, "The object you entered is category");
+                PRINT_TEXT (tree->display, "The personage you entered is category");
             }
 
             get_user_continue (tree->display);
@@ -276,7 +276,7 @@ node_t* get_user_node (tree_t* tree)
 
             if (user_answer == USER_YES)
             {
-                push_text (tree->display, "Enter you object");
+                push_text (tree->display, "Enter you personage:");
                 continue;
             }
 
@@ -465,7 +465,7 @@ int desc_object (tree_t* tree)
 {
     assert (tree);
 
-    push_text (tree->display, "Tell me the object and I will describe it");
+    push_text (tree->display, "Tell me the personage and I will describe it");
     node_t* user_node = get_user_node (tree);
 
     if (user_node == NULL)
@@ -529,12 +529,12 @@ int compare_objects (tree_t* tree)
 
     if (tree->size < 3)
     {
-        PRINT_TEXT (tree->display, "Not enough object.");
+        PRINT_TEXT (tree->display, "Not enough personage.");
         return 1;
     }
-    PRINT_TEXT (tree->display, "Tell me two objects and I will\n tell you difference between theirs.");
+    PRINT_TEXT (tree->display, "Tell me two personages and I will\n tell you difference between theirs.");
     get_user_continue (tree->display);
-    push_text (tree->display, "Enter first object:");
+    push_text (tree->display, "Enter first personage:");
     node_t* node_1 = get_user_node (tree);
 
     if (node_1 == NULL)
@@ -542,7 +542,7 @@ int compare_objects (tree_t* tree)
         return 1;
     }
 // Необходимо, что бы при первом NULL был return
-    push_text (tree->display, "Enter second object:");
+    push_text (tree->display, "Enter second personage:");
     node_t* node_2 = get_user_node (tree);
 
     if (node_2 == NULL)
@@ -552,7 +552,7 @@ int compare_objects (tree_t* tree)
 
     if (node_1 == node_2)
     {
-        PRINT_TEXT (tree->display, "You enter just one object");
+        PRINT_TEXT (tree->display, "You enter just one personage");
         get_user_continue (tree->display);
         return 0;
     }
@@ -587,7 +587,7 @@ int compare_objects (tree_t* tree)
     }
 
     int amount_common = 0;
-    PRINT_TEXT (tree->display, "What these objects have in common:");
+    PRINT_TEXT (tree->display, "What these personage have in common:");
     get_user_continue (tree->display);
 
     node_t* next_1 = NULL;
@@ -621,7 +621,7 @@ int compare_objects (tree_t* tree)
     stack_push (&stack_node_2, next_2);
 
     get_user_continue (tree->display);
-    PRINT_TEXT (tree->display, "The differences between these objects:");
+    PRINT_TEXT (tree->display, "The differences between these personage:");
     get_user_continue (tree->display);
     push_text (tree->display, "First:");
 
@@ -833,6 +833,8 @@ int guess_object (tree_t* tree)
     {
         push_text (tree->display, "Is it %s?", current_node->object.name);
         push_image_object (tree->display, current_node->object);
+        play_object_audio (tree->display, current_node->object);
+
         int user_answer = get_user_bool (tree->display, "YES", "NO");
 
         if (current_node->left == NULL && current_node->right == NULL)
@@ -843,6 +845,7 @@ int guess_object (tree_t* tree)
                 pop_image_object (tree->display);
                 return 0;
             }
+
             pop_image_object (tree->display);
             push_text (tree->display, "Are you sure?");
             user_answer = get_user_bool (tree->display, "YES", "NO");
@@ -851,6 +854,7 @@ int guess_object (tree_t* tree)
             {
                 push_text (tree->display, "Then who did you guess?");
                 obj_t user_object = get_user_object (tree->display);
+                get_image_audio (tree->display, &user_object);
 
                 push_text (tree->display, "How is %s different from %s?\n %s is...",
                                            current_node->object.name,
@@ -869,14 +873,7 @@ int guess_object (tree_t* tree)
                     PRINT_TEXT (tree->display, "Invalid string. Please do not use negation.");
                 }
 
-                push_text (tree->display, "Do you want to add image");
-                if (get_user_bool (tree->display, "YES", "NO") == USER_YES)
-                {
-                    push_text (tree->display, "Enter name file");
-                    char* address = NULL;
-                    get_user_text (tree->display, &address);
-                    category.image = address;
-                }
+                get_image_audio (tree->display, &category);
 
                 PRINT_TEXT (tree->display, "I took note of this.");
                 create_node (current_node, LEFT_SIDE, current_node->object);
@@ -900,7 +897,7 @@ int guess_object (tree_t* tree)
             current_node = current_node->left;
         }
     }
-    return -1;
+    return 1;
 }
 // --------------------------------------------------------------------------------------------------
 
@@ -922,54 +919,10 @@ obj_t get_user_object (display_t* display)
     object.hash = get_hash (object.name);
     object.type_object = OWN_MEMORY;
 
-    push_text (display, "Do you want to add image");
-    if (get_user_bool (display, "YES", "NO") == USER_YES)
-    {
-        push_text (display, "Enter name file");
-        char* address = NULL;
-        get_user_text (display, &address);
-        object.image = address;
-    }
-
-    push_text (display, "Do you want to record audio\nfor this object");
-    if (get_user_bool (display, "YES", "NO") == USER_YES)
-    {
-        create_button (cont,
-                   display->render,
-                   "CONTINUE",
-                   display->font,
-                   BASE_BUTTON_COLOR);
-
-        display->cur_frame.amount_but = 1;
-
-        // if (display->cur_frame.audio != NULL)
-        // {
-        //     free (display->cur_frame.audio);
-        // }
-        display->cur_frame.audio = NULL;
-
-        if (display->cur_frame.user_text != NULL)
-        {
-            free (display->cur_frame.user_text);
-        }
-        display->cur_frame.user_text = NULL;
-
-        cont->type = CENTER_UP;
-
-        char buffer[200] = "";
-        create_adr_audio (buffer, object.name);
-        object.audio = strdup (buffer);
-        push_text (display, "Start speaking!");
-        record_audio (
-        push_text (tree->display, "Enter name file");
-        char* address = NULL;
-        get_user_text (tree->display, &address);
-        user_object.image = address;
-    }
-
     return object;
 }
 // ----------------------------------------------------------------------------------------------------
+
 
 // ----------------------------------------------------------------------------------------------------
 /**
@@ -1114,7 +1067,7 @@ int create_adr_audio (char* buffer,
 
     int index = 0;
     sprintf (buffer, "%s", OBJECT_AUDIO);
-    index += strlen (OBJECT_AUDIO);
+    index += (int) strlen (OBJECT_AUDIO);
 
     while (*name_obj != '\0')
     {
@@ -1131,6 +1084,28 @@ int create_adr_audio (char* buffer,
         name_obj++;
     }
     strcat (buffer + index, ".wav\0");
+
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция проигрывания аудио-дорожки объекта
+ * @param [in] display Указатель на структуру дисплея
+ * @param [in] object Полученный объект
+*/
+// --------------------------------------------------------------------------------------------------
+int play_object_audio (display_t* display,
+                       obj_t object)
+{
+    assert (display);
+    ASSERT_OBJECT(object);
+
+    if (object.audio != NULL)
+    {
+        play_audio (display->audio_data.play, object.audio);
+    }
 
     return 0;
 }
@@ -1228,6 +1203,11 @@ int save_data (tree_t* tree)
     }
 
     FILE* file = fopen (address, "w");
+    if (file == NULL)
+    {
+        EXIT_FUNC("NULL file", 1);
+    }
+
     save_node (tree->null, file);
     fclose (file);
 
@@ -1261,8 +1241,14 @@ int save_node (node_t* node,
 
         if (node->object.image != NULL)
         {
-            fprintf (file, "[\"%s\"] ", node->object.image);
+            fprintf (file, "[\"%s\", ", node->object.image);
         }
+
+        if (node->object.audio != NULL)
+        {
+            fprintf (file, "[\"%s\", ", node->object.audio);
+        }
+        fprintf (file, "] ");
     }
 
 

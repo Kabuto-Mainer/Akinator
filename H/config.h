@@ -29,8 +29,8 @@ const int STANDARD_SLEEP = 50;
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
-const char OBJECT_IMAGE[] = "../GRAPHIC/OBJECT/IMAGES/";
-const char OBJECT_AUDIO[] = "../GRAPHIC/OBJECT/AUDIO/";
+const char OBJECT_IMAGE[] = "GRAPHIC/OBJECT/IMAGES/";
+const char OBJECT_AUDIO[] = "GRAPHIC/OBJECT/AUDIO/";
 // ----------------------------------------------------------------------------------------------------
 
 
