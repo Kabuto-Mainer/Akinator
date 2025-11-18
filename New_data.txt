@@ -1,0 +1,1 @@
+("Math Teacher" ["teacher.png", ["GRAPHIC/OBJECT/AUDIO/Math_Teacher.wav", ] ("Unknown who" ]  nil  nil )("Petrovich" ["petrov.jpg", ]  nil  nil ))

@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 
 #include "config.h"
 #include "display-config.h"
@@ -26,6 +27,12 @@ enum __ANIM_TYPE
     TYPING_ANIM         = 0,
     PLAY_AUDIO_ANIM     = 1,
     RECORD_AUDIO_ANIM   = 2
+};
+// --------------------------------------------------------------------------------------------------
+enum __AUDIO_SYSTEM_TYPE
+{
+    WITHOUT_SYSTEM_MUSIC    = 0,
+    FONE_SYSTEM_MUSIC       = 1
 };
 // --------------------------------------------------------------------------------------------------
 enum SIDES
@@ -94,29 +101,13 @@ struct _audio_t
     SDL_AudioSpec param_play;
 };
 // --------------------------------------------------------------------------------------------------
-struct __WAV_head {
-    char riff[4];           // Заголовок (формат "RIFF")
-    uint32_t chunk_size;    // Размер файла
-    char wave[4];           // Тип ("WAVE")
-    char format[4];         // Какой идет формат
-    uint32_t subchunk1Size; // Длина подблока
-    uint16_t audio_format;  // Формат аудио
-    uint16_t num_channels;  // Количество каналов
-    uint32_t sample_rate;   // Частота дискретизации
-    uint32_t byte_rate;     // Количество байтов, которые нужно воспроизводить, в секунду
-    uint16_t block_align;   // Количество байтов на семпл
-    uint16_t bitsPerSample; // Битность семпла
-    char data[4];           // Начало данных ("data")
-    uint32_t data_size;     // Размер аудиоданных в байтах
-};
-// --------------------------------------------------------------------------------------------------
 struct _frame_t
 {
     char* main_text;
     char* user_text;
 
     char* obj_img;
-    char* audio;
+    __AUDIO_SYSTEM_TYPE type_audio;
 
     button_t buttons[AMOUNT_BUTTONS];
     int amount_but;
@@ -129,6 +120,7 @@ struct _system_interface_t
     _video_t main;
     _video_t user;
     _video_t* mass_anim;
+    Mix_Music* fone_music;
 };
 // --------------------------------------------------------------------------------------------------
 struct display_t

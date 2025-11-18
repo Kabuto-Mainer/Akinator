@@ -1,1 +1,1 @@
-("Teach Math" ["teacher.png"] ("Master of apology" ["master.png"] nil nil ) ("Faker" ["faker.png"] ("Petrovich" ["petrov.jpg"] nil nil ) ("Lunina" ["lunina.png"] nil nil )))
+("Math Teacher" ["teacher.png", "GRAPHIC/OBJECT/AUDIO/Math_Teacher.wav" ] ("Unknown who" ]  nil  nil )("Petrovich" ["petrov.jpg", "GRAPHIC/OBJECT/AUDIO/Petrovich.wav" ]  nil  nil ))

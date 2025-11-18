@@ -1246,7 +1246,7 @@ int save_node (node_t* node,
 
         if (node->object.audio != NULL)
         {
-            fprintf (file, "[\"%s\", ", node->object.audio);
+            fprintf (file, "\"%s\" ", node->object.audio);
         }
         fprintf (file, "] ");
     }

@@ -27,6 +27,9 @@ const char DISPLAY_FONT[] = "GRAPHIC/SYSTEM/font.ttf";
 #define USER_VIDEO_ADR "GRAPHIC/SYSTEM/USER/%d.jpg"
 #define ANIM_VIDEO_ADR "GRAPHIC/SYSTEM/ANIM/%d/%d.png"
 // ----------------------------------------------------------------------------------------------------
+const char FONE_MUSIC_ADR[] = "GRAPHIC/SYSTEM/FONE/music.mp3";
+const int VOLUME_FONE_MUSIC = MIX_MAX_VOLUME / 4;
+// ----------------------------------------------------------------------------------------------------
 const int LEN_VIDEO_BACKGROUND = 20;
 const int LEN_VIDEO_MAIN = 1;
 const int LEN_VIDEO_USER = 1;

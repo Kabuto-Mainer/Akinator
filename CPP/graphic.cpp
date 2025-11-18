@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <string>
 #include <assert.h>
 #include <unistd.h>
@@ -53,10 +54,10 @@ int create_display (display_t* display)
     display->window = window;
 
     display->cur_frame.obj_img = NULL;
-    display->cur_frame.audio = NULL;
     display->cur_frame.main_text = NULL;
     display->cur_frame.user_text = NULL;
     display->cur_frame.anim_type = STANDARD_ANIM;
+
     create_system_UI (display);
     create_anim (display);
     create_audio (display);
@@ -214,6 +215,21 @@ int create_audio (display_t* display)
     }*/
     display->audio_data.param_record = record_have;
 
+    if (Mix_OpenAudio (44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+    {
+        EXIT_FUNC("Error mix audio", 1);
+    }
+    Mix_Init (MIX_INIT_MP3);
+    display->system.fone_music = Mix_LoadMUS (FONE_MUSIC_ADR);
+
+    if (display->system.fone_music == NULL)
+    {
+        EXIT_FUNC("Error load music", 1);
+    }
+
+    Mix_PlayMusic (display->system.fone_music, -1);
+    Mix_VolumeMusic (VOLUME_FONE_MUSIC);
+
     return 0;
 }
 // --------------------------------------------------------------------------------------------------
@@ -326,7 +342,6 @@ int get_image_audio (display_t *display,
                    BASE_BUTTON_COLOR);
 
         display->cur_frame.amount_but = 1;
-        display->cur_frame.audio = NULL;
 
         if (display->cur_frame.user_text != NULL)
         {
@@ -365,6 +380,7 @@ int play_audio (SDL_AudioDeviceID play_device,
     assert (play_device);
     assert (name_wav);
 
+    stop_fone_music ();
     SDL_AudioSpec wav_spec = {};
     Uint32 wav_len = 0;
     Uint8* buffer = NULL;
@@ -376,9 +392,10 @@ int play_audio (SDL_AudioDeviceID play_device,
 
     SDL_PauseAudioDevice(play_device, 0);
     SDL_QueueAudio (play_device, buffer, wav_len);
-    // SDL_Delay ((wav_len / (wav_spec.freq * wav_spec.channels * (wav_spec.format & 0xFF) / 8)) * 1000);
+    SDL_Delay ((wav_len / (Uint32) ((wav_spec.freq * wav_spec.channels * (wav_spec.format & 0xFF) / 8))) * 1000);
     SDL_free (buffer);
 
+    resume_fone_music ();
     return 0;
 }
 // --------------------------------------------------------------------------------------------------
@@ -403,6 +420,7 @@ int record_audio (display_t* display,
     clean_buttons (display);
     display->cur_frame.buttons[0] = *button;
 
+    stop_fone_music ();
     SDL_PauseAudioDevice (record_device, 0);
 
     uint8_t* recorded = NULL;
@@ -450,6 +468,7 @@ int record_audio (display_t* display,
     save_audio (&(display->audio_data.param_record), file, recorded, recorded_len);
     free (recorded);
 
+    resume_fone_music ();
     // play_audio (display->audio_data.play, file);
 
     return 0;
@@ -536,6 +555,28 @@ int sdl_format_to_bits (SDL_AudioFormat format)
 }
 // --------------------------------------------------------------------------------------------------
 
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция остановки фоновой музыки
+*/
+// --------------------------------------------------------------------------------------------------
+void stop_fone_music ()
+{
+    Mix_PauseMusic ();
+}
+// --------------------------------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------------------------------
+/**
+ * @brief Функция воспроизведения пользовательской музыки
+*/
+// --------------------------------------------------------------------------------------------------
+void resume_fone_music ()
+{
+    Mix_ResumeMusic ();
+}
+// --------------------------------------------------------------------------------------------------
+
 
 // --------------------------------------------------------------------------------------------------
 /**
@@ -561,7 +602,6 @@ int destroy_display (display_t* display)
         }
     }
 
-    FREE_MEMORY(display->cur_frame.audio);
     FREE_MEMORY(display->cur_frame.main_text);
     FREE_MEMORY(display->cur_frame.user_text);
 
@@ -575,10 +615,17 @@ int destroy_display (display_t* display)
     free (display->system.mass_anim);
 
     TTF_CloseFont(display->font);
+
     SDL_DestroyRenderer(display->render);
     SDL_DestroyWindow(display->window);
+
     SDL_CloseAudioDevice (display->audio_data.play);
     SDL_CloseAudioDevice (display->audio_data.record);
+
+    Mix_FreeMusic (display->system.fone_music);
+    Mix_CloseAudio();
+    Mix_Quit();
+
     TTF_Quit();
     SDL_Quit();
 
@@ -1154,7 +1201,6 @@ EVENT get_event (EVENT prev,
     }
 
     display->cur_frame.amount_but = (sizeof (MAIN_MENU_BUT) / sizeof (MAIN_MENU_BUT[0]));
-    display->cur_frame.audio = NULL;
     display->cur_frame.user_text = NULL;
     display->cur_frame.obj_img = NULL;
 
@@ -1229,7 +1275,6 @@ int get_user_bool (display_t* display,
                    BASE_BUTTON_COLOR);
 
     display->cur_frame.amount_but = 2;
-    display->cur_frame.audio = NULL;
 
     if (display->cur_frame.user_text != NULL)
     {
@@ -1307,7 +1352,6 @@ int get_user_continue (display_t* display)
                    BASE_BUTTON_COLOR);
 
     display->cur_frame.amount_but = 1;
-    display->cur_frame.audio = NULL;
 
     if (display->cur_frame.user_text != NULL)
     {
