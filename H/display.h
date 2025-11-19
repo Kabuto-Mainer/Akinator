@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @brief Функции графики
+*/
+
 #ifndef DISPLAY_H
 #define DISPLAY_H
 

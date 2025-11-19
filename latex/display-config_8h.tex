@@ -1,0 +1,115 @@
+\doxysection{H/display-\/config.h File Reference}
+\hypertarget{display-config_8h}{}\label{display-config_8h}\index{H/display-\/config.h@{H/display-\/config.h}}
+
+
+Параметры графики  
+
+
+{\ttfamily \#include $<$SDL2/\+SDL.\+h$>$}\newline
+{\ttfamily \#include $<$SDL2/\+SDL\+\_\+ttf.\+h$>$}\newline
+{\ttfamily \#include $<$SDL2/\+SDL\+\_\+image.\+h$>$}\newline
+Include dependency graph for display-\/config.h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{display-config_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{display-config_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{display-config_8h_a35f108437fea725ae0ff053932d997db}\label{display-config_8h_a35f108437fea725ae0ff053932d997db} 
+\#define {\bfseries BACKGROUND\+\_\+\+ADR}~"{}GRAPHIC/SYSTEM/BACK/\%d.\+png"{}
+\begin{DoxyCompactList}\small\item\em define, благодаря которым получаются изображения из нужных папок \end{DoxyCompactList}\item 
+\Hypertarget{display-config_8h_a2273606a9b9ceae0d6d5c61d77907895}\label{display-config_8h_a2273606a9b9ceae0d6d5c61d77907895} 
+\#define {\bfseries SIDE\+\_\+\+VIDEO\+\_\+\+ADR}~"{}GRAPHIC/SYSTEM/SIDE/\%d.\+png"{}
+\item 
+\Hypertarget{display-config_8h_a1829ea216307c365fe4fc40713239c91}\label{display-config_8h_a1829ea216307c365fe4fc40713239c91} 
+\#define {\bfseries MAIN\+\_\+\+VIDEO\+\_\+\+ADR}~"{}GRAPHIC/SYSTEM/MAIN/\%d.\+jpg"{}
+\item 
+\Hypertarget{display-config_8h_adbd99f843f14fe8759242e8071953840}\label{display-config_8h_adbd99f843f14fe8759242e8071953840} 
+\#define {\bfseries USER\+\_\+\+VIDEO\+\_\+\+ADR}~"{}GRAPHIC/SYSTEM/USER/\%d.\+jpg"{}
+\item 
+\Hypertarget{display-config_8h_a00e89671c71473903d02f410c14b9f06}\label{display-config_8h_a00e89671c71473903d02f410c14b9f06} 
+\#define {\bfseries ANIM\+\_\+\+VIDEO\+\_\+\+ADR}~"{}GRAPHIC/SYSTEM/ANIM/\%d/\%d.\+png"{}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{display-config_8h_a3482785bd2a4c8b307f9e0b6f54e2c36}\label{display-config_8h_a3482785bd2a4c8b307f9e0b6f54e2c36} 
+const int {\bfseries SCREEN\+\_\+\+WIDTH} = 1600
+\begin{DoxyCompactList}\small\item\em Ширина и высота окна \end{DoxyCompactList}\item 
+\Hypertarget{display-config_8h_ab454541ae58bcf6555e8d723b1eb95e7}\label{display-config_8h_ab454541ae58bcf6555e8d723b1eb95e7} 
+const int {\bfseries SCREEN\+\_\+\+HEIGHT} = 900
+\item 
+\Hypertarget{display-config_8h_ab132f0b66285780286c594be2037788b}\label{display-config_8h_ab132f0b66285780286c594be2037788b} 
+const int {\bfseries BUTTON\+\_\+\+WIDTH} = 300
+\begin{DoxyCompactList}\small\item\em Ширина и высота кнопок на экране \end{DoxyCompactList}\item 
+\Hypertarget{display-config_8h_a83f45a813d7a4cde3f8a9bb8a5a7d163}\label{display-config_8h_a83f45a813d7a4cde3f8a9bb8a5a7d163} 
+const int {\bfseries BUTTON\+\_\+\+HEIGHT} = 45
+\item 
+\Hypertarget{display-config_8h_ab697bef96423aff7af6ffc6322927fe7}\label{display-config_8h_ab697bef96423aff7af6ffc6322927fe7} 
+const int {\bfseries AMOUNT\+\_\+\+BUTTONS} = 6
+\begin{DoxyCompactList}\small\item\em Максимальное количество кнопок на экране \end{DoxyCompactList}\item 
+\Hypertarget{display-config_8h_afb16f119ee648948ea1e2b5bdb9108e2}\label{display-config_8h_afb16f119ee648948ea1e2b5bdb9108e2} 
+const SDL\+\_\+\+Color {\bfseries COLOR\+\_\+\+FONT} = \{255, 255, 255, 255\}
+\begin{DoxyCompactList}\small\item\em Цвет всего текста на экране \end{DoxyCompactList}\item 
+\Hypertarget{display-config_8h_a4dbe32a4104f14079194f415ef5d426b}\label{display-config_8h_a4dbe32a4104f14079194f415ef5d426b} 
+const char {\bfseries DISPLAY\+\_\+\+FONT} \mbox{[}$\,$\mbox{]} = "{}GRAPHIC/SYSTEM/font.\+ttf"{}
+\begin{DoxyCompactList}\small\item\em Адрес хранения шрифта выводимого текста \end{DoxyCompactList}\item 
+\Hypertarget{display-config_8h_a6c3d3a395b7f83e978dad960b125f973}\label{display-config_8h_a6c3d3a395b7f83e978dad960b125f973} 
+const char {\bfseries FONE\+\_\+\+MUSIC\+\_\+\+ADR} \mbox{[}$\,$\mbox{]} = "{}GRAPHIC/SYSTEM/FONE/music.\+mp3"{}
+\begin{DoxyCompactList}\small\item\em Адрес хранения фоновой музыки \end{DoxyCompactList}\item 
+\Hypertarget{display-config_8h_aa1104aa59fe75efba95fa7491eac1ba9}\label{display-config_8h_aa1104aa59fe75efba95fa7491eac1ba9} 
+const int {\bfseries VOLUME\+\_\+\+FONE\+\_\+\+MUSIC} = MIX\+\_\+\+MAX\+\_\+\+VOLUME / 4
+\begin{DoxyCompactList}\small\item\em Громкость воспроизведения фоновой музыки \end{DoxyCompactList}\item 
+\Hypertarget{display-config_8h_a951b75ed7af4363e4242b66c955886ae}\label{display-config_8h_a951b75ed7af4363e4242b66c955886ae} 
+const int {\bfseries LEN\+\_\+\+VIDEO\+\_\+\+BACKGROUND} = 20
+\begin{DoxyCompactList}\small\item\em Количество кадров в каждом видео \end{DoxyCompactList}\item 
+\Hypertarget{display-config_8h_ade3449a68b63d6ea41685c758e02da7f}\label{display-config_8h_ade3449a68b63d6ea41685c758e02da7f} 
+const int {\bfseries LEN\+\_\+\+VIDEO\+\_\+\+MAIN} = 1
+\item 
+\Hypertarget{display-config_8h_adc24b4e90e8c420f35b7c987c2366aad}\label{display-config_8h_adc24b4e90e8c420f35b7c987c2366aad} 
+const int {\bfseries LEN\+\_\+\+VIDEO\+\_\+\+USER} = 1
+\item 
+\Hypertarget{display-config_8h_abe398db7b764259fcace50f9d110fa76}\label{display-config_8h_abe398db7b764259fcace50f9d110fa76} 
+const int {\bfseries LEN\+\_\+\+VIDEO\+\_\+\+ANIM} = 8
+\item 
+\Hypertarget{display-config_8h_aec3d3539ced4475be76dae97bea1fdbc}\label{display-config_8h_aec3d3539ced4475be76dae97bea1fdbc} 
+const int {\bfseries AMOUNT\+\_\+\+ANIM} = 1
+\begin{DoxyCompactList}\small\item\em Количество анимаций, который могут воспроизводиться \end{DoxyCompactList}\item 
+\Hypertarget{display-config_8h_a0a0a9439bbe26bcd95d5c7c895f7c29d}\label{display-config_8h_a0a0a9439bbe26bcd95d5c7c895f7c29d} 
+const int {\bfseries SIZE\+\_\+\+LINE} = 2
+\begin{DoxyCompactList}\small\item\em Толщина линии, появляющейся под пользовательским текстом \end{DoxyCompactList}\item 
+\Hypertarget{display-config_8h_a1c191e8c7808c044ccdabb4ae081f57f}\label{display-config_8h_a1c191e8c7808c044ccdabb4ae081f57f} 
+const int {\bfseries CENTER\+\_\+\+MAIN\+\_\+\+TEXT\+\_\+X} = \mbox{\hyperlink{display-config_8h_a3482785bd2a4c8b307f9e0b6f54e2c36}{SCREEN\+\_\+\+WIDTH}} / 2
+\begin{DoxyCompactList}\small\item\em Положение основного и пользовательского окна на экране \end{DoxyCompactList}\item 
+\Hypertarget{display-config_8h_ae0dcaa28c8a75bb4f9e16c54fc8c88ac}\label{display-config_8h_ae0dcaa28c8a75bb4f9e16c54fc8c88ac} 
+const int {\bfseries CENTER\+\_\+\+MAIN\+\_\+\+TEXT\+\_\+Y} = 200 / 2
+\item 
+\Hypertarget{display-config_8h_ad8803db0e5aaf9540219a66823745c40}\label{display-config_8h_ad8803db0e5aaf9540219a66823745c40} 
+const int {\bfseries CENTER\+\_\+\+USER\+\_\+\+TEXT\+\_\+X} = \mbox{\hyperlink{display-config_8h_a3482785bd2a4c8b307f9e0b6f54e2c36}{SCREEN\+\_\+\+WIDTH}} / 2
+\item 
+\Hypertarget{display-config_8h_a035918656b35bee60e164e8c30d963e4}\label{display-config_8h_a035918656b35bee60e164e8c30d963e4} 
+const int {\bfseries CENTER\+\_\+\+USER\+\_\+\+TEXT\+\_\+Y} = 750
+\item 
+\Hypertarget{display-config_8h_a2c91807a5a9e929baa69790de49d4769}\label{display-config_8h_a2c91807a5a9e929baa69790de49d4769} 
+const int {\bfseries MAX\+\_\+\+USER\+\_\+\+LEN\+\_\+\+TEXT} = 40
+\begin{DoxyCompactList}\small\item\em Максимальная длина пользовательской строки \end{DoxyCompactList}\item 
+\Hypertarget{display-config_8h_a4af42999909031256cc1bc6ed5ba82aa}\label{display-config_8h_a4af42999909031256cc1bc6ed5ba82aa} 
+const Uint64 {\bfseries TIME\+\_\+\+DELAY\+\_\+\+CURSOR} = 500
+\begin{DoxyCompactList}\small\item\em Задержка между показом курсора \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Параметры графики 
+

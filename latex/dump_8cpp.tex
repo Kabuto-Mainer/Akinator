@@ -1,0 +1,186 @@
+\doxysection{CPP/dump.cpp File Reference}
+\hypertarget{dump_8cpp}{}\label{dump_8cpp}\index{CPP/dump.cpp@{CPP/dump.cpp}}
+
+
+Файл к функциями для дампа  
+
+
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$assert.\+h$>$}\newline
+{\ttfamily \#include "{}../\+H/config.\+h"{}}\newline
+{\ttfamily \#include "{}../\+H/type.\+h"{}}\newline
+{\ttfamily \#include "{}../\+H/func.\+h"{}}\newline
+Include dependency graph for dump.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dump_8cpp__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{dump_8cpp_a32b50a2804ed213e56e8c15111e13d4e}{dump\+\_\+tree}} (\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}tree, const char \texorpdfstring{$\ast$}{*}reason)
+\begin{DoxyCompactList}\small\item\em Функция дампа всего дерева \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{dump_8cpp_a5a3a3079a4c56b42fa3d9124ed2fbff4}{create\+\_\+html}} (\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}tree, const char \texorpdfstring{$\ast$}{*}address, const char \texorpdfstring{$\ast$}{*}reason)
+\begin{DoxyCompactList}\small\item\em Функция записи дампа в html файл \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{dump_8cpp_a7a307ea927cc8465ba11165c35c860f8}{create\+\_\+graph}} (\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}tree)
+\begin{DoxyCompactList}\small\item\em Функция создания графа по дереву \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{dump_8cpp_a3d52be35d501a3bdc1809b5b4bf54f3a}{debug\+\_\+graph}} (\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}root)
+\begin{DoxyCompactList}\small\item\em Функция создания графа для debug. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{dump_8cpp_a75eeb936f00c5aa98fde5c090045346c}{create\+\_\+block}} (\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}node, FILE \texorpdfstring{$\ast$}{*}file)
+\begin{DoxyCompactList}\small\item\em Рекурсивная функция создания блоков графа \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{dump_8cpp_ada242c83eac1769268bb42133e603a32}{create\+\_\+line}} (\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}node, FILE \texorpdfstring{$\ast$}{*}file)
+\begin{DoxyCompactList}\small\item\em Рекурсивная функция создания связей между блоками \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{dump_8cpp_adb605b2993434de73fbdc3b3718eff4d}{debug\+\_\+html}} (\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}root, const char \texorpdfstring{$\ast$}{*}reason, const char \texorpdfstring{$\ast$}{*}add\+\_\+string)
+\begin{DoxyCompactList}\small\item\em Функция создания html файла для debug. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Файл к функциями для дампа 
+
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{dump_8cpp_a75eeb936f00c5aa98fde5c090045346c}\label{dump_8cpp_a75eeb936f00c5aa98fde5c090045346c} 
+\index{dump.cpp@{dump.cpp}!create\_block@{create\_block}}
+\index{create\_block@{create\_block}!dump.cpp@{dump.cpp}}
+\doxysubsubsection{\texorpdfstring{create\_block()}{create\_block()}}
+{\footnotesize\ttfamily int create\+\_\+block (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{node,  }\item[{FILE \texorpdfstring{$\ast$}{*}}]{file }\end{DoxyParamCaption})}
+
+
+
+Рекурсивная функция создания блоков графа 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node} & Указатель на текущий узел \\
+\hline
+\mbox{\texttt{ in}}  & {\em file} & Указатель на dot файл \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 
+\end{DoxyReturn}
+\Hypertarget{dump_8cpp_a7a307ea927cc8465ba11165c35c860f8}\label{dump_8cpp_a7a307ea927cc8465ba11165c35c860f8} 
+\index{dump.cpp@{dump.cpp}!create\_graph@{create\_graph}}
+\index{create\_graph@{create\_graph}!dump.cpp@{dump.cpp}}
+\doxysubsubsection{\texorpdfstring{create\_graph()}{create\_graph()}}
+{\footnotesize\ttfamily int create\+\_\+graph (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{tree }\end{DoxyParamCaption})}
+
+
+
+Функция создания графа по дереву 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em tree} & Указатель на причину дампа \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 (если не было ошибок), иначе -\/\texorpdfstring{$>$}{>} -\/1 
+\end{DoxyReturn}
+\Hypertarget{dump_8cpp_a5a3a3079a4c56b42fa3d9124ed2fbff4}\label{dump_8cpp_a5a3a3079a4c56b42fa3d9124ed2fbff4} 
+\index{dump.cpp@{dump.cpp}!create\_html@{create\_html}}
+\index{create\_html@{create\_html}!dump.cpp@{dump.cpp}}
+\doxysubsubsection{\texorpdfstring{create\_html()}{create\_html()}}
+{\footnotesize\ttfamily int create\+\_\+html (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{tree,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{address,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{reason }\end{DoxyParamCaption})}
+
+
+
+Функция записи дампа в html файл 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em tree} & Указатель на структуру дерева \\
+\hline
+\mbox{\texttt{ in}}  & {\em address} & Имя html файла \\
+\hline
+\mbox{\texttt{ in}}  & {\em reason} & Причина дампа \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 (если все нормально), иначе -\/1 
+\end{DoxyReturn}
+\Hypertarget{dump_8cpp_ada242c83eac1769268bb42133e603a32}\label{dump_8cpp_ada242c83eac1769268bb42133e603a32} 
+\index{dump.cpp@{dump.cpp}!create\_line@{create\_line}}
+\index{create\_line@{create\_line}!dump.cpp@{dump.cpp}}
+\doxysubsubsection{\texorpdfstring{create\_line()}{create\_line()}}
+{\footnotesize\ttfamily int create\+\_\+line (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{node,  }\item[{FILE \texorpdfstring{$\ast$}{*}}]{file }\end{DoxyParamCaption})}
+
+
+
+Рекурсивная функция создания связей между блоками 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node} & Указатель на текущий узел \\
+\hline
+\mbox{\texttt{ in}}  & {\em file} & Указатель на dot файл \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 
+\end{DoxyReturn}
+\Hypertarget{dump_8cpp_a3d52be35d501a3bdc1809b5b4bf54f3a}\label{dump_8cpp_a3d52be35d501a3bdc1809b5b4bf54f3a} 
+\index{dump.cpp@{dump.cpp}!debug\_graph@{debug\_graph}}
+\index{debug\_graph@{debug\_graph}!dump.cpp@{dump.cpp}}
+\doxysubsubsection{\texorpdfstring{debug\_graph()}{debug\_graph()}}
+{\footnotesize\ttfamily int debug\+\_\+graph (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{root }\end{DoxyParamCaption})}
+
+
+
+Функция создания графа для debug. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em root} & Узел, с которого строится граф \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 (если не было ошибок), иначе -\/\texorpdfstring{$>$}{>} -\/1 
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Граф сохраняется в свою директорию ADDRESS\+\_\+\+DUMP\+\_\+\+DEBUG 
+\end{DoxyNote}
+\Hypertarget{dump_8cpp_adb605b2993434de73fbdc3b3718eff4d}\label{dump_8cpp_adb605b2993434de73fbdc3b3718eff4d} 
+\index{dump.cpp@{dump.cpp}!debug\_html@{debug\_html}}
+\index{debug\_html@{debug\_html}!dump.cpp@{dump.cpp}}
+\doxysubsubsection{\texorpdfstring{debug\_html()}{debug\_html()}}
+{\footnotesize\ttfamily int debug\+\_\+html (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{root,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{reason,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{add\+\_\+string }\end{DoxyParamCaption})}
+
+
+
+Функция создания html файла для debug. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em root} & Указатель на родительский элемент \\
+\hline
+\mbox{\texttt{ in}}  & {\em reason} & Причина дампа \\
+\hline
+\mbox{\texttt{ in}}  & {\em add\+\_\+string} & Дополнительная строка, которая выводится в dump \\
+\hline
+\end{DoxyParams}
+\Hypertarget{dump_8cpp_a32b50a2804ed213e56e8c15111e13d4e}\label{dump_8cpp_a32b50a2804ed213e56e8c15111e13d4e} 
+\index{dump.cpp@{dump.cpp}!dump\_tree@{dump\_tree}}
+\index{dump\_tree@{dump\_tree}!dump.cpp@{dump.cpp}}
+\doxysubsubsection{\texorpdfstring{dump\_tree()}{dump\_tree()}}
+{\footnotesize\ttfamily int dump\+\_\+tree (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{tree,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{reason }\end{DoxyParamCaption})}
+
+
+
+Функция дампа всего дерева 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em tree} & Указатель на структуру всего дерева \\
+\hline
+\mbox{\texttt{ in}}  & {\em reason} & Причина вызова дампа \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 
+\end{DoxyReturn}

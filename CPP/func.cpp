@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @brief Файл с основными функциями
+*/
+
 #include <stdio.h>
 #include <stdio.h>
 #include <assert.h>
@@ -226,6 +231,7 @@ node_t* find_node (node_t* node,
             stack_push (&stack, current_node->left);
         }
     }
+
     stack_destruct (&stack);
     return NULL;
 }
@@ -487,7 +493,7 @@ int desc_object (tree_t* tree)
         len++;
     }
 
-    push_text (tree->display, "%s: ", user_node->object.name);
+    push_text (tree->display, "%s", user_node->object.name);
 
     node_t* prev = NULL;
     stack_pop (&stack, &prev);
@@ -497,12 +503,15 @@ int desc_object (tree_t* tree)
 
         if (current_node == prev->left)
         {
-            add_text (tree->display, " - isn't %s,", prev->object.name);
+            play_audio (tree->display->audio_data.play, NO_AUDIO_ADR);
+            play_object_audio (tree->display, prev->object);
+            add_text (tree->display, " isn't %s,", prev->object.name);
         }
 
         else
         {
-            add_text (tree->display, " - is %s,", prev->object.name);
+            play_object_audio (tree->display, prev->object);
+            add_text (tree->display, " is %s,", prev->object.name);
         }
         prev = current_node;
     }
@@ -532,7 +541,7 @@ int compare_objects (tree_t* tree)
         PRINT_TEXT (tree->display, "Not enough personage.");
         return 1;
     }
-    PRINT_TEXT (tree->display, "Tell me two personages and I will\n tell you difference between theirs.");
+    PRINT_TEXT (tree->display, "Tell me two personages and I will tell you difference between theirs.");
     get_user_continue (tree->display);
     push_text (tree->display, "Enter first personage:");
     node_t* node_1 = get_user_node (tree);
@@ -561,9 +570,11 @@ int compare_objects (tree_t* tree)
     stack_struct stack_node_1 = {};
     stack_creator (&stack_node_1, 10, __FILE__, __LINE__, "Stack of node 1");
     stack_push (&stack_node_1, node_1);
+    stack_push (&stack_node_1, node_1);
 
     stack_struct stack_node_2 = {};
     stack_creator (&stack_node_2, 10, __FILE__, __LINE__, "Stack of node 2");
+    stack_push (&stack_node_2, node_2);
     stack_push (&stack_node_2, node_2);
 
     node_t* buffer_node_1 = node_1->father;
@@ -575,6 +586,7 @@ int compare_objects (tree_t* tree)
     while (buffer_node_1->father != NULL) // Можно через for, но как то уже все такие функции делал через while
     {
         stack_push (&stack_node_1, buffer_node_1);
+        // printf ("1: %s", buffer_node_1->object.name);
         buffer_node_1 = buffer_node_1->father;
         len_path_1++;
     }
@@ -582,32 +594,36 @@ int compare_objects (tree_t* tree)
     while (buffer_node_2->father != NULL)
     {
         stack_push (&stack_node_2, buffer_node_2);
+        // printf ("2: %s", buffer_node_2->object.name);
         buffer_node_2 = buffer_node_2->father;
         len_path_2++;
     }
 
     int amount_common = 0;
-    PRINT_TEXT (tree->display, "What these personage have in common:");
-    get_user_continue (tree->display);
 
+    push_text (tree->display, "%s and %s are similar in that", node_1->object.name, node_2->object.name);
+    // get_user_continue (tree->display);
     node_t* next_1 = NULL;
     node_t* next_2 = NULL;
     stack_pop (&stack_node_1, &next_1);
     stack_pop (&stack_node_2, &next_2);
-    push_text (tree->display, "They: ");
+    // push_text (tree->display, "They: ");
 
     while (next_1 == next_2)
     {
-
         if (buffer_node_1->left == next_2)
         {
-            add_text (tree->display, " isn't %s, ", buffer_node_1->object.name);
+            play_audio (tree->display->audio_data.play, NO_AUDIO_ADR);
+            play_object_audio (tree->display, buffer_node_1->object);
+            add_text (tree->display, " aren't %s, ", buffer_node_1->object.name);
         }
 
 
         else
         {
-            add_text (tree->display, " is %s, ", buffer_node_1->object.name);
+            play_object_audio (tree->display, buffer_node_1->object);
+
+            add_text (tree->display, " are %s, ", buffer_node_1->object.name);
         }
 
         buffer_node_1 = next_1;
@@ -617,51 +633,63 @@ int compare_objects (tree_t* tree)
         amount_common++;
     }
 
-    stack_push (&stack_node_1, next_1);
-    stack_push (&stack_node_2, next_2);
+    // stack_push (&stack_node_1, next_1);
+    // stack_push (&stack_node_2, next_2);
 
-    get_user_continue (tree->display);
-    PRINT_TEXT (tree->display, "The differences between these personage:");
-    get_user_continue (tree->display);
-    push_text (tree->display, "First:");
+    // get_user_continue (tree->display);
+    add_text (tree->display, "but %s", node_1->object.name);
+    play_object_audio (tree->display, node_1->object);
+    // get_user_continue (tree->display);
+    // push_text (tree->display, "First:");
 
     int buffer_len = amount_common;
     while (buffer_len <= len_path_1)
     {
-        if (buffer_node_1->left != next_1)
+        if (buffer_node_1->left == next_1)
         {
-            add_text (tree->display, " - isn't %s,", buffer_node_1->object.name);
+            play_audio (tree->display->audio_data.play, NO_AUDIO_ADR);
+            play_object_audio (tree->display, buffer_node_1->object);
+            add_text (tree->display, " isn't %s,", buffer_node_1->object.name);
         }
 
         else
         {
-            add_text (tree->display, " - is %s,", buffer_node_1->object.name);
+            play_object_audio (tree->display, buffer_node_1->object);
+            add_text (tree->display, " is %s,", buffer_node_1->object.name);
         }
+        // stack_pop (&stack_node_2, &next_2);
         buffer_node_1 = next_1;
         stack_pop (&stack_node_1, &next_1);
         buffer_len++;
     }
     renew_display (tree->display);
-    get_user_continue (tree->display);
+    // get_user_continue (tree->display);
 
-    push_text (tree->display, "Second is:");
+    add_text (tree->display, " %s", node_2->object.name);
+    play_object_audio (tree->display, node_2->object);
 
     buffer_len = amount_common;
     while (buffer_len <= len_path_2)
     {
-        if (buffer_node_2->left != next_2)
+        if (buffer_node_2->left == next_2)
         {
-            add_text (tree->display, " - isn't %s,", buffer_node_2->object.name);
+            play_audio (tree->display->audio_data.play, NO_AUDIO_ADR);
+            play_object_audio (tree->display, buffer_node_2->object);
+            add_text (tree->display, " isn't %s,", buffer_node_2->object.name);
         }
 
         else
         {
-            add_text (tree->display, " - is %s,", buffer_node_2->object.name);
+            play_object_audio (tree->display, buffer_node_2->object);
+
+            add_text (tree->display, " is %s,", buffer_node_2->object.name);
         }
         buffer_node_2 = next_2;
         stack_pop (&stack_node_2, &next_2);
         buffer_len++;
     }
+
+    add_text (tree->display, " HEHEHE");
     get_user_continue (tree->display);
 
     stack_destruct (&stack_node_1);
@@ -809,6 +837,41 @@ int compare_objects (tree_t* tree)
 }
 // --------------------------------------------------------------------------------------------------
 
+// --------------------------------------------------------------------------------------------------
+int play_difference (display_t* display,
+                     int cur_len,
+                     int max_len,
+                     node_t* start,
+                     node_t* next,
+                     stack_t* stack)
+{
+    assert (display);
+    assert (start);
+    assert (next);
+    assert (stack);
+
+    while (cur_len <= max_len)
+    {
+        if (start->left == next)
+        {
+            play_audio (display->audio_data.play, NO_AUDIO_ADR);
+            play_object_audio (display, start->object);
+            add_text (display, " isn't %s,", start->object.name);
+        }
+
+        else
+        {
+            play_object_audio (display, start->object);
+            add_text (display, " is %s,", start->object.name);
+        }
+        start = next;
+        stack_pop (&stack, &next);
+        cur_len++;
+    }
+    return 0;
+}
+// --------------------------------------------------------------------------------------------------
+
 
 
 // -*************************************************************************************************
@@ -836,17 +899,18 @@ int guess_object (tree_t* tree)
         play_object_audio (tree->display, current_node->object);
 
         int user_answer = get_user_bool (tree->display, "YES", "NO");
+        pop_image_object (tree->display);
 
         if (current_node->left == NULL && current_node->right == NULL)
         {
             if (user_answer == USER_YES)
             {
                 PRINT_TEXT (tree->display, "It couldn't be otherwise");
-                pop_image_object (tree->display);
+                // pop_image_object (tree->display);
                 return 0;
             }
 
-            pop_image_object (tree->display);
+            // pop_image_object (tree->display);
             push_text (tree->display, "Are you sure?");
             user_answer = get_user_bool (tree->display, "YES", "NO");
 
@@ -856,7 +920,7 @@ int guess_object (tree_t* tree)
                 obj_t user_object = get_user_object (tree->display);
                 get_image_audio (tree->display, &user_object);
 
-                push_text (tree->display, "How is %s different from %s?\n %s is...",
+                push_text (tree->display, "How is %s different from %s? %s is...",
                                            current_node->object.name,
                                            user_object.name,
                                            user_object.name);
@@ -1102,7 +1166,10 @@ int play_object_audio (display_t* display,
     assert (display);
     ASSERT_OBJECT(object);
 
-    if (object.audio != NULL)
+    printf ("NAME: %s\n",  object.name);
+    // printf ("ADR_AUDIO: %p\n", object.audio);
+
+    if (size_t (object.audio) > 8000)
     {
         play_audio (display->audio_data.play, object.audio);
     }
@@ -1135,7 +1202,7 @@ int save_data (tree_t* tree)
     if (user_answer == USER_YES)
     {
         push_text (tree->display,
-                  "In what directory number\n do you want to save the file? (1-%d):",
+                  "In what directory number do you want to save the file? (1-%d):",
                   AMOUNT_DATA_DIR);
 
         int number_dir = 0;
@@ -1154,7 +1221,7 @@ int save_data (tree_t* tree)
 
             if (number_dir < 1 || number_dir > AMOUNT_DATA_DIR)
             {
-                PRINT_TEXT (tree->display, "Incorrect number directory.\n Please, re-enter it.");
+                PRINT_TEXT (tree->display, "Incorrect number directory. Please, re-enter it.");
                 continue;
             }
 
@@ -1183,7 +1250,7 @@ int save_data (tree_t* tree)
                 {
                     return 0;
                 }
-                push_text (tree->display , "Please, re-enter your address\n");
+                push_text (tree->display , "Please, re-enter your address");
                 continue;
             }
             free (adr);
@@ -1192,7 +1259,7 @@ int save_data (tree_t* tree)
             {
                 if (address[i] == '/')
                 {
-                    push_text (tree->display, "Please, do not enter a directory. Just name file.\n");
+                    push_text (tree->display, "Please, do not enter a directory. Just name file.");
                     continue;
                 }
             }
@@ -1211,7 +1278,7 @@ int save_data (tree_t* tree)
     save_node (tree->null, file);
     fclose (file);
 
-    PRINT_TEXT (tree->display, "File saved successfully\n");
+    PRINT_TEXT (tree->display, "File saved successfully");
     return 0;
 }
 // --------------------------------------------------------------------------------------------------
@@ -1248,7 +1315,8 @@ int save_node (node_t* node,
         {
             fprintf (file, "\"%s\" ", node->object.audio);
         }
-        fprintf (file, "] ");
+
+        if (node->object.audio != NULL || node->object.image != NULL)  { fprintf (file, "] "); }
     }
 
 
@@ -1298,7 +1366,7 @@ int import_data (tree_t* tree)
 
     if (tree->null->left != NULL || tree->null->right != NULL)
     {
-        PRINT_TEXT (tree->display, "Sorry, file upload is only possible\n if the tree is empty.");
+        PRINT_TEXT (tree->display, "Sorry, file upload is only possible if the tree is empty.");
         return 0;
     }
 
@@ -1308,7 +1376,7 @@ int import_data (tree_t* tree)
 
     if (user_answer == USER_YES)
     {
-        push_text (tree->display, "In what directory number \ndo you want to upload the file? (1-%d):", AMOUNT_DATA_DIR);
+        push_text (tree->display, "In what directory number do you want to upload the file? (1-%d):", AMOUNT_DATA_DIR);
 
         int number_dir = 0;
         while (1)
@@ -1326,7 +1394,7 @@ int import_data (tree_t* tree)
 
             if (number_dir < 1 || number_dir > AMOUNT_DATA_DIR)
             {
-                push_text (tree->display, "Incorrect number directory.\nDo you what to continue");
+                push_text (tree->display, "Incorrect number directory. Do you what to continue");
                 if (get_user_bool (tree->display, "YES", "NO") == USER_NO)
                 {
                     return 0;
@@ -1356,12 +1424,12 @@ int import_data (tree_t* tree)
             {
                 free (adr);
 
-                push_text (tree->display, "Incorrect input\nDo you want to continue?");
+                push_text (tree->display, "Incorrect input! Do you want to continue?");
                 if (get_user_bool (tree->display, "YES", "NO") == USER_NO)
                 {
                     return 0;
                 }
-                push_text (tree->display, "Please, re-enter your address\n");
+                push_text (tree->display, "Please, re-enter your address");
                 continue;
             }
             free (adr);
@@ -1479,14 +1547,17 @@ node_t* upload_node (node_t* root,
 
             if ((**cur_char) != ']')
             {
-                (*cur_char)++;
+                // (*cur_char)++;
+                skip_after_symbol (cur_char, '"');
                 new_node->object.audio = *cur_char;
                 skip_after_symbol (cur_char, '"');
-                (*cur_char) += 2; // Skip -"-
-                skip_void (cur_char);
+                // (*cur_char)++; // Skip -]-
+                // skip_void (cur_char);
 
                 new_node->object.type_object |= IS_AUDIO;
             }
+            skip_void (cur_char);
+
             (*cur_char)++; // Skip -]-
         }
 

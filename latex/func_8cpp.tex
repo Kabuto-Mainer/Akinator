@@ -1,0 +1,455 @@
+\doxysection{CPP/func.cpp File Reference}
+\hypertarget{func_8cpp}{}\label{func_8cpp}\index{CPP/func.cpp@{CPP/func.cpp}}
+
+
+Файл с основными функциями  
+
+
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$assert.\+h$>$}\newline
+{\ttfamily \#include $<$ctype.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include "{}../\+STACK/stack\+\_\+define.\+h"{}}\newline
+{\ttfamily \#include "{}../\+STACK/config.\+h"{}}\newline
+{\ttfamily \#include "{}../\+STACK/stack.\+h"{}}\newline
+{\ttfamily \#include "{}../\+H/display-\/config.\+h"{}}\newline
+{\ttfamily \#include "{}../\+H/display.\+h"{}}\newline
+{\ttfamily \#include "{}../\+H/config.\+h"{}}\newline
+{\ttfamily \#include "{}../\+H/const.\+h"{}}\newline
+{\ttfamily \#include "{}../\+H/type.\+h"{}}\newline
+{\ttfamily \#include "{}../\+H/func.\+h"{}}\newline
+Include dependency graph for func.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{func_8cpp__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{func_8cpp_aa69c041347ace3898fada1f286688335}{create\+\_\+tree}} (\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}tree)
+\begin{DoxyCompactList}\small\item\em Функция заполнения структуры дерева \end{DoxyCompactList}\item 
+\Hypertarget{func_8cpp_a9196ad47cd4895b3042c77776124b9e7}\label{func_8cpp_a9196ad47cd4895b3042c77776124b9e7} 
+int {\bfseries akinator} ()
+\begin{DoxyCompactList}\small\item\em Функция обработки ивентов, полученных от пользователя \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{func_8cpp_ac4848c9888e9deca549e20b2beb41861}{find\+\_\+node}} (\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}node, \mbox{\hyperlink{structobject__t}{obj\+\_\+t}} object)
+\begin{DoxyCompactList}\small\item\em Функция поиска объекта в базе данных с помощью цикла со стеком \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{func_8cpp_a0ee24cc8b3886f3087ad733c20a56a3a}{get\+\_\+user\+\_\+node}} (\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}tree)
+\begin{DoxyCompactList}\small\item\em Функция получения узла по объекту, полученному от пользователя \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{func_8cpp_ab07ad3c9a35455b3e2fe7aeed8615919}{push\+\_\+image\+\_\+object}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display, \mbox{\hyperlink{structobject__t}{obj\+\_\+t}} object)
+\begin{DoxyCompactList}\small\item\em Функция записи изображения в текущий кадр \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{func_8cpp_af8070213f2722627a16e4abfe52cd7bd}{pop\+\_\+image\+\_\+object}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display)
+\begin{DoxyCompactList}\small\item\em Функция удаления текстуры объекта из окна \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{func_8cpp_a97bc90acea0b9a71942f449739a85f56}{delete\+\_\+tree}} (\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}tree)
+\begin{DoxyCompactList}\small\item\em Функция удаления всего дерева \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{func_8cpp_a72f21b22047ecc18fd17b0dfd6e2f216}{delete\+\_\+node}} (\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}node)
+\begin{DoxyCompactList}\small\item\em Функция удаления элемента с помощью цикла и стека \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{func_8cpp_ad84dc2bc105dc05637007ca4c0cae541}{desc\+\_\+object}} (\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}tree)
+\begin{DoxyCompactList}\small\item\em Функция описания объекта \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{func_8cpp_a0de2a0f261dadec0f1d420e487b7e438}{compare\+\_\+objects}} (\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}tree)
+\begin{DoxyCompactList}\small\item\em Функция сравнения объектов, реализованная на и цикле со стеком, и на обычном динамическом массиве \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{func_8cpp_a647f3a4586860fd66199d209de1db081}{guess\+\_\+object}} (\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}tree)
+\begin{DoxyCompactList}\small\item\em Функция отгадывания пользовательского объекта и, при необходимости, добавления его в базу данных \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structobject__t}{obj\+\_\+t}} \mbox{\hyperlink{func_8cpp_a33b67e71084a5d15dfe52d6060ced745}{get\+\_\+user\+\_\+object}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display)
+\begin{DoxyCompactList}\small\item\em Функция получения пользовательского объекта и сохранение его в динамическую память \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{func_8cpp_a54c93c199e9d0e6e616edcce5b70d24f}{check\+\_\+user\+\_\+object}} (\mbox{\hyperlink{structobject__t}{obj\+\_\+t}} object)
+\begin{DoxyCompactList}\small\item\em Функция проверки корректности пользовательской строки на предмет наличия отрицания \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{func_8cpp_acc07fc2a6e9ad59261b55220ac4dd803}{create\+\_\+node}} (\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}root, \mbox{\hyperlink{type_8h_a41e800925607a3b62d2dde5610d8d047}{SIDES}} side, \mbox{\hyperlink{structobject__t}{obj\+\_\+t}} object)
+\begin{DoxyCompactList}\small\item\em Создание узла и добавление связей \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{func_8cpp_aebcb81b5763b9a51e469cef5c0a26ca4}{create\+\_\+adr\+\_\+audio}} (char \texorpdfstring{$\ast$}{*}buffer, const char \texorpdfstring{$\ast$}{*}name\+\_\+obj)
+\begin{DoxyCompactList}\small\item\em Функция создания адреса аудио файла для его расположения в стандартной директории \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{func_8cpp_a009c70a3c04e917cf17bee99ca677dcb}{play\+\_\+object\+\_\+audio}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display, \mbox{\hyperlink{structobject__t}{obj\+\_\+t}} object)
+\begin{DoxyCompactList}\small\item\em Функция проигрывания аудио-\/дорожки объекта \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{func_8cpp_a1b605a5933a907f6a46cbdc7ff7e1581}{save\+\_\+data}} (\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}tree)
+\begin{DoxyCompactList}\small\item\em Функция сохранения базы данных либо в стандартную директорию, либо в пользовательский файл \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{func_8cpp_aa6a3b66c088331114469653e62163107}{save\+\_\+node}} (\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}node, FILE \texorpdfstring{$\ast$}{*}file)
+\begin{DoxyCompactList}\small\item\em Рекурсивная функция, сохраняющая узел в файл \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{func_8cpp_a3221be46fe86ae05ddb4b668d094fdc7}{import\+\_\+data}} (\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}tree)
+\begin{DoxyCompactList}\small\item\em Функция, загружающая базу данных из выбранной пользователем директории, либо из введенного файла \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{func_8cpp_ac3f5b1c186b75fac67d81146d7101da6}{upload\+\_\+node}} (\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}root, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}cur\+\_\+char, int \texorpdfstring{$\ast$}{*}size\+\_\+tree)
+\begin{DoxyCompactList}\small\item\em Рекурсивная функция создания узла по буферу \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{func_8cpp_ac28c67b19b86bcaad24b7838fa65f21c}{skip\+\_\+after\+\_\+symbol}} (char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}cur\+\_\+pose, int symbol)
+\begin{DoxyCompactList}\small\item\em Функция скипа cur\+\_\+char до символа, замена его на \textquotesingle{}\textbackslash{}0\textquotesingle{} и перевод cur\+\_\+char на следующий \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{func_8cpp_ac2167cee0bfba80372b2ef4793633468}{skip\+\_\+void}} (char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}cur\+\_\+pose)
+\begin{DoxyCompactList}\small\item\em Функция скипа всего ненужного синтаксиса, указанного в SYNTAX\+\_\+\+VOID. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Файл с основными функциями 
+
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{func_8cpp_a54c93c199e9d0e6e616edcce5b70d24f}\label{func_8cpp_a54c93c199e9d0e6e616edcce5b70d24f} 
+\index{func.cpp@{func.cpp}!check\_user\_object@{check\_user\_object}}
+\index{check\_user\_object@{check\_user\_object}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{check\_user\_object()}{check\_user\_object()}}
+{\footnotesize\ttfamily int check\+\_\+user\+\_\+object (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structobject__t}{obj\+\_\+t}}}]{object }\end{DoxyParamCaption})}
+
+
+
+Функция проверки корректности пользовательской строки на предмет наличия отрицания 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em object} & Пользовательский объект, направленный на проверку \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 -\/ если корректный ввод, иначе -\/1 
+\end{DoxyReturn}
+\Hypertarget{func_8cpp_a0de2a0f261dadec0f1d420e487b7e438}\label{func_8cpp_a0de2a0f261dadec0f1d420e487b7e438} 
+\index{func.cpp@{func.cpp}!compare\_objects@{compare\_objects}}
+\index{compare\_objects@{compare\_objects}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{compare\_objects()}{compare\_objects()}}
+{\footnotesize\ttfamily int compare\+\_\+objects (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{tree }\end{DoxyParamCaption})}
+
+
+
+Функция сравнения объектов, реализованная на и цикле со стеком, и на обычном динамическом массиве 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em tree} & Указатель на структуру дерева \\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+Тип обработки данных настраивается через STACK\+\_\+\+FUNC (если объявлен, то используется стек, иначе -\/\texorpdfstring{$>$}{>} динамический массив 
+\end{DoxyNote}
+\Hypertarget{func_8cpp_aebcb81b5763b9a51e469cef5c0a26ca4}\label{func_8cpp_aebcb81b5763b9a51e469cef5c0a26ca4} 
+\index{func.cpp@{func.cpp}!create\_adr\_audio@{create\_adr\_audio}}
+\index{create\_adr\_audio@{create\_adr\_audio}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{create\_adr\_audio()}{create\_adr\_audio()}}
+{\footnotesize\ttfamily int create\+\_\+adr\+\_\+audio (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}}]{buffer,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{name\+\_\+obj }\end{DoxyParamCaption})}
+
+
+
+Функция создания адреса аудио файла для его расположения в стандартной директории 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em buffer} & Указатель на адрес \\
+\hline
+\mbox{\texttt{ in}}  & {\em name\+\_\+obj} & Имя объекта -\/\texorpdfstring{$>$}{>} Имя файла \\
+\hline
+\end{DoxyParams}
+\Hypertarget{func_8cpp_acc07fc2a6e9ad59261b55220ac4dd803}\label{func_8cpp_acc07fc2a6e9ad59261b55220ac4dd803} 
+\index{func.cpp@{func.cpp}!create\_node@{create\_node}}
+\index{create\_node@{create\_node}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{create\_node()}{create\_node()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*} create\+\_\+node (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{root,  }\item[{\mbox{\hyperlink{type_8h_a41e800925607a3b62d2dde5610d8d047}{SIDES}}}]{side,  }\item[{\mbox{\hyperlink{structobject__t}{obj\+\_\+t}}}]{object }\end{DoxyParamCaption})}
+
+
+
+Создание узла и добавление связей 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em root} & Родительский корень \\
+\hline
+\mbox{\texttt{ in}}  & {\em side} & Сторона, куда нужно добавлять новый элемент \\
+\hline
+\mbox{\texttt{ in}}  & {\em object} & Добавляемый объект \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+node\+\_\+t\texorpdfstring{$\ast$}{*} Указатель на новый узел 
+\end{DoxyReturn}
+\Hypertarget{func_8cpp_aa69c041347ace3898fada1f286688335}\label{func_8cpp_aa69c041347ace3898fada1f286688335} 
+\index{func.cpp@{func.cpp}!create\_tree@{create\_tree}}
+\index{create\_tree@{create\_tree}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{create\_tree()}{create\_tree()}}
+{\footnotesize\ttfamily int create\+\_\+tree (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{tree }\end{DoxyParamCaption})}
+
+
+
+Функция заполнения структуры дерева 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em tree} & Адрес структуры дерева \\
+\hline
+\end{DoxyParams}
+\Hypertarget{func_8cpp_a72f21b22047ecc18fd17b0dfd6e2f216}\label{func_8cpp_a72f21b22047ecc18fd17b0dfd6e2f216} 
+\index{func.cpp@{func.cpp}!delete\_node@{delete\_node}}
+\index{delete\_node@{delete\_node}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{delete\_node()}{delete\_node()}}
+{\footnotesize\ttfamily int delete\+\_\+node (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{node }\end{DoxyParamCaption})}
+
+
+
+Функция удаления элемента с помощью цикла и стека 
+
+Функция удаления элемента
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node} & Указатель на корень дерева \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 
+\end{DoxyReturn}
+\Hypertarget{func_8cpp_a97bc90acea0b9a71942f449739a85f56}\label{func_8cpp_a97bc90acea0b9a71942f449739a85f56} 
+\index{func.cpp@{func.cpp}!delete\_tree@{delete\_tree}}
+\index{delete\_tree@{delete\_tree}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{delete\_tree()}{delete\_tree()}}
+{\footnotesize\ttfamily int delete\+\_\+tree (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{tree }\end{DoxyParamCaption})}
+
+
+
+Функция удаления всего дерева 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em tree} & Указатель на структуру дерева \\
+\hline
+\end{DoxyParams}
+\Hypertarget{func_8cpp_ad84dc2bc105dc05637007ca4c0cae541}\label{func_8cpp_ad84dc2bc105dc05637007ca4c0cae541} 
+\index{func.cpp@{func.cpp}!desc\_object@{desc\_object}}
+\index{desc\_object@{desc\_object}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{desc\_object()}{desc\_object()}}
+{\footnotesize\ttfamily int desc\+\_\+object (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{tree }\end{DoxyParamCaption})}
+
+
+
+Функция описания объекта 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em tree} & Указатель на структуру дерева \\
+\hline
+\end{DoxyParams}
+\Hypertarget{func_8cpp_ac4848c9888e9deca549e20b2beb41861}\label{func_8cpp_ac4848c9888e9deca549e20b2beb41861} 
+\index{func.cpp@{func.cpp}!find\_node@{find\_node}}
+\index{find\_node@{find\_node}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{find\_node()}{find\_node()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*} find\+\_\+node (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{node,  }\item[{\mbox{\hyperlink{structobject__t}{obj\+\_\+t}}}]{object }\end{DoxyParamCaption})}
+
+
+
+Функция поиска объекта в базе данных с помощью цикла со стеком 
+
+Функция поиска объекта в базе данных
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node} & Указатель на корень дерева \\
+\hline
+\mbox{\texttt{ in}}  & {\em object} & Объект, который и надо найти \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+node\+\_\+t\texorpdfstring{$\ast$}{*} (указатель на узел) -\/ если узел найдет, иначе -\/\texorpdfstring{$>$}{>} NULL 
+\end{DoxyReturn}
+\Hypertarget{func_8cpp_a0ee24cc8b3886f3087ad733c20a56a3a}\label{func_8cpp_a0ee24cc8b3886f3087ad733c20a56a3a} 
+\index{func.cpp@{func.cpp}!get\_user\_node@{get\_user\_node}}
+\index{get\_user\_node@{get\_user\_node}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{get\_user\_node()}{get\_user\_node()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*} get\+\_\+user\+\_\+node (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{tree }\end{DoxyParamCaption})}
+
+
+
+Функция получения узла по объекту, полученному от пользователя 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em tree} & Указатель на структуру дерева \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+node\+\_\+t\texorpdfstring{$\ast$}{*} (если объект нашелся), иначе -\/\texorpdfstring{$>$}{>} NULL 
+\end{DoxyReturn}
+\Hypertarget{func_8cpp_a33b67e71084a5d15dfe52d6060ced745}\label{func_8cpp_a33b67e71084a5d15dfe52d6060ced745} 
+\index{func.cpp@{func.cpp}!get\_user\_object@{get\_user\_object}}
+\index{get\_user\_object@{get\_user\_object}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{get\_user\_object()}{get\_user\_object()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structobject__t}{obj\+\_\+t}} get\+\_\+user\+\_\+object (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display }\end{DoxyParamCaption})}
+
+
+
+Функция получения пользовательского объекта и сохранение его в динамическую память 
+
+\begin{DoxyReturn}{Returns}
+obj\+\_\+t -\/ пользовательский объект 
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Сохраняет в динамическую память -\/\texorpdfstring{$>$}{>} необходимо с дальнейшем будет самому освободить 
+\end{DoxyNote}
+\Hypertarget{func_8cpp_a647f3a4586860fd66199d209de1db081}\label{func_8cpp_a647f3a4586860fd66199d209de1db081} 
+\index{func.cpp@{func.cpp}!guess\_object@{guess\_object}}
+\index{guess\_object@{guess\_object}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{guess\_object()}{guess\_object()}}
+{\footnotesize\ttfamily int guess\+\_\+object (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{tree }\end{DoxyParamCaption})}
+
+
+
+Функция отгадывания пользовательского объекта и, при необходимости, добавления его в базу данных 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em tree} & Указатель на структуру дерева \\
+\hline
+\end{DoxyParams}
+\Hypertarget{func_8cpp_a3221be46fe86ae05ddb4b668d094fdc7}\label{func_8cpp_a3221be46fe86ae05ddb4b668d094fdc7} 
+\index{func.cpp@{func.cpp}!import\_data@{import\_data}}
+\index{import\_data@{import\_data}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{import\_data()}{import\_data()}}
+{\footnotesize\ttfamily int import\+\_\+data (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{tree }\end{DoxyParamCaption})}
+
+
+
+Функция, загружающая базу данных из выбранной пользователем директории, либо из введенного файла 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em tree} & Дерево, в которое загружается база данных, предварительно освобождая его \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+1 
+\end{DoxyReturn}
+\Hypertarget{func_8cpp_a009c70a3c04e917cf17bee99ca677dcb}\label{func_8cpp_a009c70a3c04e917cf17bee99ca677dcb} 
+\index{func.cpp@{func.cpp}!play\_object\_audio@{play\_object\_audio}}
+\index{play\_object\_audio@{play\_object\_audio}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{play\_object\_audio()}{play\_object\_audio()}}
+{\footnotesize\ttfamily int play\+\_\+object\+\_\+audio (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display,  }\item[{\mbox{\hyperlink{structobject__t}{obj\+\_\+t}}}]{object }\end{DoxyParamCaption})}
+
+
+
+Функция проигрывания аудио-\/дорожки объекта 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\mbox{\texttt{ in}}  & {\em object} & Полученный объект \\
+\hline
+\end{DoxyParams}
+\Hypertarget{func_8cpp_af8070213f2722627a16e4abfe52cd7bd}\label{func_8cpp_af8070213f2722627a16e4abfe52cd7bd} 
+\index{func.cpp@{func.cpp}!pop\_image\_object@{pop\_image\_object}}
+\index{pop\_image\_object@{pop\_image\_object}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{pop\_image\_object()}{pop\_image\_object()}}
+{\footnotesize\ttfamily int pop\+\_\+image\+\_\+object (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display }\end{DoxyParamCaption})}
+
+
+
+Функция удаления текстуры объекта из окна 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\end{DoxyParams}
+\Hypertarget{func_8cpp_ab07ad3c9a35455b3e2fe7aeed8615919}\label{func_8cpp_ab07ad3c9a35455b3e2fe7aeed8615919} 
+\index{func.cpp@{func.cpp}!push\_image\_object@{push\_image\_object}}
+\index{push\_image\_object@{push\_image\_object}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{push\_image\_object()}{push\_image\_object()}}
+{\footnotesize\ttfamily int push\+\_\+image\+\_\+object (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display,  }\item[{\mbox{\hyperlink{structobject__t}{obj\+\_\+t}}}]{object }\end{DoxyParamCaption})}
+
+
+
+Функция записи изображения в текущий кадр 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\mbox{\texttt{ in}}  & {\em object} & Переданный объект \\
+\hline
+\end{DoxyParams}
+\Hypertarget{func_8cpp_a1b605a5933a907f6a46cbdc7ff7e1581}\label{func_8cpp_a1b605a5933a907f6a46cbdc7ff7e1581} 
+\index{func.cpp@{func.cpp}!save\_data@{save\_data}}
+\index{save\_data@{save\_data}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{save\_data()}{save\_data()}}
+{\footnotesize\ttfamily int save\+\_\+data (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structtree__t}{tree\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{tree }\end{DoxyParamCaption})}
+
+
+
+Функция сохранения базы данных либо в стандартную директорию, либо в пользовательский файл 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em tree} & Указатель на структуру дерева \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 
+\end{DoxyReturn}
+\Hypertarget{func_8cpp_aa6a3b66c088331114469653e62163107}\label{func_8cpp_aa6a3b66c088331114469653e62163107} 
+\index{func.cpp@{func.cpp}!save\_node@{save\_node}}
+\index{save\_node@{save\_node}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{save\_node()}{save\_node()}}
+{\footnotesize\ttfamily int save\+\_\+node (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{node,  }\item[{FILE \texorpdfstring{$\ast$}{*}}]{file }\end{DoxyParamCaption})}
+
+
+
+Рекурсивная функция, сохраняющая узел в файл 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node} & Узел, который будет сохраняться \\
+\hline
+\mbox{\texttt{ in}}  & {\em file} & Указатель на файл, куда будет записываться база данных \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 
+\end{DoxyReturn}
+\Hypertarget{func_8cpp_ac28c67b19b86bcaad24b7838fa65f21c}\label{func_8cpp_ac28c67b19b86bcaad24b7838fa65f21c} 
+\index{func.cpp@{func.cpp}!skip\_after\_symbol@{skip\_after\_symbol}}
+\index{skip\_after\_symbol@{skip\_after\_symbol}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{skip\_after\_symbol()}{skip\_after\_symbol()}}
+{\footnotesize\ttfamily int skip\+\_\+after\+\_\+symbol (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{cur\+\_\+pose,  }\item[{int}]{symbol }\end{DoxyParamCaption})}
+
+
+
+Функция скипа cur\+\_\+char до символа, замена его на \textquotesingle{}\textbackslash{}0\textquotesingle{} и перевод cur\+\_\+char на следующий 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em cur\+\_\+pose} & Указатель на адрес хранения текущего символа \\
+\hline
+\mbox{\texttt{ in}}  & {\em symbol} & Символ, который будет заменяться на \textquotesingle{}\textbackslash{}0\textquotesingle{} \\
+\hline
+\end{DoxyParams}
+\Hypertarget{func_8cpp_ac2167cee0bfba80372b2ef4793633468}\label{func_8cpp_ac2167cee0bfba80372b2ef4793633468} 
+\index{func.cpp@{func.cpp}!skip\_void@{skip\_void}}
+\index{skip\_void@{skip\_void}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{skip\_void()}{skip\_void()}}
+{\footnotesize\ttfamily int skip\+\_\+void (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{cur\+\_\+pose }\end{DoxyParamCaption})}
+
+
+
+Функция скипа всего ненужного синтаксиса, указанного в SYNTAX\+\_\+\+VOID. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em Указатель} & на адрес хранения текущего символа \\
+\hline
+\end{DoxyParams}
+\Hypertarget{func_8cpp_ac3f5b1c186b75fac67d81146d7101da6}\label{func_8cpp_ac3f5b1c186b75fac67d81146d7101da6} 
+\index{func.cpp@{func.cpp}!upload\_node@{upload\_node}}
+\index{upload\_node@{upload\_node}!func.cpp@{func.cpp}}
+\doxysubsubsection{\texorpdfstring{upload\_node()}{upload\_node()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*} upload\+\_\+node (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structnode__t}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{root,  }\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{cur\+\_\+char,  }\item[{int \texorpdfstring{$\ast$}{*}}]{size\+\_\+tree }\end{DoxyParamCaption})}
+
+
+
+Рекурсивная функция создания узла по буферу 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em root} & Родительский корень \\
+\hline
+\mbox{\texttt{ in}}  & {\em cur\+\_\+char} & Указатель на адрес буфера \\
+\hline
+\mbox{\texttt{ in}}  & {\em size\+\_\+tree} & Указатель на размер дерева \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+node\+\_\+t\texorpdfstring{$\ast$}{*} Указатель на новый узел 
+\end{DoxyReturn}

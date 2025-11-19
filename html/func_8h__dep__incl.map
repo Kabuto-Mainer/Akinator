@@ -1,0 +1,11 @@
+<map id="H/func.h" name="H/func.h">
+<area shape="rect" id="Node000001" title="Функции дерева" alt="" coords="230,5,306,31"/>
+<area shape="rect" id="Node000002" href="$dump_8cpp.html" title="Файл к функциями для дампа" alt="" coords="5,79,120,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="223,38,97,81,95,76,221,33"/>
+<area shape="rect" id="Node000003" href="$func_8cpp.html" title="Файл с основными функциями" alt="" coords="144,79,251,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="249,43,211,80,207,77,245,39"/>
+<area shape="rect" id="Node000004" href="$graphic_8cpp.html" title="Файл с функциями для работы с графикой" alt="" coords="275,79,402,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="291,39,329,77,325,80,287,43"/>
+<area shape="rect" id="Node000005" href="$support_8cpp.html" title="Файл с дополнительными функциями" alt="" coords="426,79,553,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="317,32,454,76,453,81,316,37"/>
+</map>

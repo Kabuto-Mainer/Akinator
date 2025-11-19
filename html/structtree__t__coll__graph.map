@@ -1,0 +1,20 @@
+<map id="tree_t" name="tree_t">
+<area shape="rect" id="Node000001" title="Структура дерева" alt="" coords="117,332,177,357"/>
+<area shape="rect" id="Node000002" href="$structnode__t.html" title="Структура узла дерева" alt="" coords="31,235,97,260"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="85,269,138,330,134,333,81,272"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="112,236,120,240,124,248,116,257,98,260,97,255,113,253,119,247,117,244,110,241"/>
+<area shape="rect" id="Node000003" href="$structobject__t.html" title="Структура объекта дерева" alt="" coords="5,137,80,163"/>
+<area shape="poly" id="edge3_Node000002_Node000003" title=" " alt="" coords="51,176,64,234,59,235,46,177"/>
+<area shape="rect" id="Node000004" href="$structdisplay__t.html" title="Основная структура для работы с графикой" alt="" coords="233,235,314,260"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="249,271,164,334,160,330,245,266"/>
+<area shape="rect" id="Node000005" href="$struct__system__interface__t.html" title="Структура системного интерфейса" alt="" coords="104,137,259,163"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="204,171,264,232,260,236,200,174"/>
+<area shape="rect" id="Node000006" href="$struct__video__t.html" title="Структура видео для его воспроизведения" alt="" coords="143,5,220,31"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="184,44,184,137,179,137,179,44"/>
+<area shape="rect" id="Node000007" href="$struct__frame__t.html" title="Структура текущего кадра" alt="" coords="283,137,363,163"/>
+<area shape="poly" id="edge7_Node000004_Node000007" title=" " alt="" coords="313,176,282,236,277,233,308,174"/>
+<area shape="rect" id="Node000008" href="$structbutton__t.html" title="Структура кнопки для экрана" alt="" coords="285,5,361,31"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="325,44,325,137,320,137,320,44"/>
+<area shape="rect" id="Node000009" href="$struct__audio__t.html" title="Структура аудио&#45;устройств и их параметров" alt="" coords="387,137,464,163"/>
+<area shape="poly" id="edge9_Node000004_Node000009" title=" " alt="" coords="410,176,382,203,347,223,312,237,310,232,345,218,378,199,407,172"/>
+</map>

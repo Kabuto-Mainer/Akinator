@@ -1,0 +1,681 @@
+\doxysection{CPP/graphic.cpp File Reference}
+\hypertarget{graphic_8cpp}{}\label{graphic_8cpp}\index{CPP/graphic.cpp@{CPP/graphic.cpp}}
+
+
+Файл с функциями для работы с графикой  
+
+
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$SDL2/\+SDL.\+h$>$}\newline
+{\ttfamily \#include $<$SDL2/\+SDL\+\_\+ttf.\+h$>$}\newline
+{\ttfamily \#include $<$SDL2/\+SDL\+\_\+image.\+h$>$}\newline
+{\ttfamily \#include $<$SDL2/\+SDL\+\_\+mixer.\+h$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$assert.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include $<$time.\+h$>$}\newline
+{\ttfamily \#include "{}../\+H/type.\+h"{}}\newline
+{\ttfamily \#include "{}../\+H/display.\+h"{}}\newline
+{\ttfamily \#include "{}../\+H/display-\/config.\+h"{}}\newline
+{\ttfamily \#include "{}../\+H/display-\/const.\+h"{}}\newline
+{\ttfamily \#include "{}../\+H/func.\+h"{}}\newline
+Include dependency graph for graphic.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{graphic_8cpp__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{graphic_8cpp_a34c2fbb09ba90c9bf5b160a3cc1fdf64}{FREE\+\_\+\+MEMORY}}(address)
+\begin{DoxyCompactList}\small\item\em Функция удаления структуры дисплея \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{graphic_8cpp_adae9e8de297c19b1e7b5ad1525dd8739}{create\+\_\+display}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display)
+\begin{DoxyCompactList}\small\item\em Функция создания дисплея \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_ac0c5597be93878557a2d150b1e0c1422}{create\+\_\+system\+\_\+\+UI}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display)
+\begin{DoxyCompactList}\small\item\em Функция создания общего графического интерфейса \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_a08c3e6b368f54493c4eef10037d61d43}{create\+\_\+anim}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display)
+\begin{DoxyCompactList}\small\item\em Функция создания видео-\/анимаций \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_afb25664f7af62e355a594648d330f525}{create\+\_\+audio}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display)
+\begin{DoxyCompactList}\small\item\em Функция инициализации аудио-\/устройств \end{DoxyCompactList}\item 
+SDL\+\_\+\+Texture \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{graphic_8cpp_a5a485917318d98a854590c2ad7c8599d}{load\+\_\+texture}} (SDL\+\_\+\+Renderer \texorpdfstring{$\ast$}{*}render, const char \texorpdfstring{$\ast$}{*}filename)
+\begin{DoxyCompactList}\small\item\em Функция загрузки изображения в текстуру \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_ab5dce21bc3c211a5615951d2eac18960}{draw\+\_\+texture}} (SDL\+\_\+\+Renderer \texorpdfstring{$\ast$}{*}render, SDL\+\_\+\+Texture \texorpdfstring{$\ast$}{*}texture, const SDL\+\_\+\+Rect \texorpdfstring{$\ast$}{*}rect)
+\begin{DoxyCompactList}\small\item\em Функция отрисовки текстуры в окне \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_a4baee94b7f0789d8e2128a3de57937f1}{play\+\_\+video}} (SDL\+\_\+\+Renderer \texorpdfstring{$\ast$}{*}render, \mbox{\hyperlink{struct__video__t}{\+\_\+video\+\_\+t}} \texorpdfstring{$\ast$}{*}video)
+\begin{DoxyCompactList}\small\item\em Функция отрисовки кадра видео \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_aa132433c602d1ec91bf7fa3daf64524d}{get\+\_\+image\+\_\+audio}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display, \mbox{\hyperlink{structobject__t}{obj\+\_\+t}} \texorpdfstring{$\ast$}{*}object)
+\begin{DoxyCompactList}\small\item\em Функция получения имени изображения и записи голоса \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_a44cfa2032df0a4da8d92cb8fc1a27c83}{play\+\_\+audio}} (SDL\+\_\+\+Audio\+Device\+ID play\+\_\+device, const char \texorpdfstring{$\ast$}{*}name\+\_\+wav)
+\begin{DoxyCompactList}\small\item\em Функция проигрывания wav файла \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_a16a68262fe508429460865bdfe1d3025}{record\+\_\+audio}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display, \mbox{\hyperlink{structbutton__t}{button\+\_\+t}} \texorpdfstring{$\ast$}{*}button, SDL\+\_\+\+Audio\+Device\+ID record\+\_\+device, const char \texorpdfstring{$\ast$}{*}file)
+\begin{DoxyCompactList}\small\item\em Функция записи аудио в файл \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_a1636069c86b60039fefff7d5eb29057e}{save\+\_\+audio}} (const SDL\+\_\+\+Audio\+Spec \texorpdfstring{$\ast$}{*}param, const char \texorpdfstring{$\ast$}{*}file\+\_\+name, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}data, uint32\+\_\+t len\+\_\+data)
+\begin{DoxyCompactList}\small\item\em Функция записи аудио-\/семплов в wav файл \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_ae162c00b246710af504794e3026abfd0}{sdl\+\_\+format\+\_\+to\+\_\+bits}} (SDL\+\_\+\+Audio\+Format format)
+\begin{DoxyCompactList}\small\item\em Функция получения количества байт в секунду для заполнения заголовка wav файла \end{DoxyCompactList}\item 
+\Hypertarget{graphic_8cpp_a4235c3d9491c84a3078b8f91a07dffe9}\label{graphic_8cpp_a4235c3d9491c84a3078b8f91a07dffe9} 
+void {\bfseries stop\+\_\+fone\+\_\+music} ()
+\begin{DoxyCompactList}\small\item\em Функция остановки фоновой музыки \end{DoxyCompactList}\item 
+\Hypertarget{graphic_8cpp_a6940245aac655bb6c3d1cf5cd43405f5}\label{graphic_8cpp_a6940245aac655bb6c3d1cf5cd43405f5} 
+void {\bfseries resume\+\_\+fone\+\_\+music} ()
+\begin{DoxyCompactList}\small\item\em Функция воспроизведения пользовательской музыки \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_adf78b6b3638b452d6c4f2bbeb8940218}{destroy\+\_\+display}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display)
+\begin{DoxyCompactList}\small\item\em Функция удаления структуры дисплея \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_a42c526898e9806c3c2c256c02fcaec94}{free\+\_\+video}} (\mbox{\hyperlink{struct__video__t}{\+\_\+video\+\_\+t}} \texorpdfstring{$\ast$}{*}video)
+\begin{DoxyCompactList}\small\item\em Функция удаления видео \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_a61ccf324de498f30b19c9c158cdb32fa}{clean\+\_\+buttons}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display)
+\begin{DoxyCompactList}\small\item\em Функция очистки кнопок \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_a203737296cd42da3f42e94c8eba7c97b}{create\+\_\+button}} (\mbox{\hyperlink{structbutton__t}{button\+\_\+t}} \texorpdfstring{$\ast$}{*}button, SDL\+\_\+\+Renderer \texorpdfstring{$\ast$}{*}render, const char \texorpdfstring{$\ast$}{*}text, TTF\+\_\+\+Font \texorpdfstring{$\ast$}{*}font, SDL\+\_\+\+Color color)
+\begin{DoxyCompactList}\small\item\em Функция создания текстуры кнопки \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_af523cd8d94028a297bb8419752215fcb}{push\+\_\+text}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display, const char \texorpdfstring{$\ast$}{*}format,...)
+\begin{DoxyCompactList}\small\item\em Функция, вызывающая добавления текста в основное окна \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_a781c90bd621cc47184f5b4046328dddc}{push\+\_\+text\+\_\+\+\_\+va\+\_\+list}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display, const char \texorpdfstring{$\ast$}{*}format, va\+\_\+list args)
+\begin{DoxyCompactList}\small\item\em Функция, записывающая текст в основное окно \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_a9a5a6f2559743bba5006a01be3515343}{add\+\_\+text}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display, const char \texorpdfstring{$\ast$}{*}format,...)
+\begin{DoxyCompactList}\small\item\em Функция добавления текста в основное окно \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_a42d387e2e84c1c002f7fb631239fab2a}{add\+\_\+anim}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display, \mbox{\hyperlink{type_8h_a48bc1d04aa54ca491b0b97f21d88db6d}{\+\_\+\+\_\+\+ANIM\+\_\+\+TYPE}} type)
+\begin{DoxyCompactList}\small\item\em Функция изменения текущей анимации \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_a9c1949b51e474cf559fed09197cdedba}{renew\+\_\+display}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display)
+\begin{DoxyCompactList}\small\item\em Функция обновления экрана \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_af540bdb163d9d0c7461a89646423e3f5}{render\+\_\+main\+\_\+text}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display)
+\begin{DoxyCompactList}\small\item\em Функция вывода текущего текста основного окна \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_a4dc8222b35b1bdeb8c38ee396147c8da}{render\+\_\+buttons}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display)
+\begin{DoxyCompactList}\small\item\em Функция обновления кнопок (по запеченным текстурам) \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_a5a74d6c5e1f140bcc88cf3bbd3a7e6a2}{render\+\_\+user\+\_\+text}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display)
+\begin{DoxyCompactList}\small\item\em Функция отрисовки пользовательского текста \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_a4fb8c1e99a7831300ddd6b090a0f1cab}{render\+\_\+video}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display)
+\begin{DoxyCompactList}\small\item\em Функция отрисовки всех анимаций \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_a71e312c78475e6ec4758eff0de0f54ab}{render\+\_\+object}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display)
+\begin{DoxyCompactList}\small\item\em Функция отрисовки изображения в поле для пользовательских изображений \end{DoxyCompactList}\item 
+\mbox{\hyperlink{type_8h_a6043da33f9434e8d3eb6c4ec77b71b62}{EVENT}} \mbox{\hyperlink{graphic_8cpp_a51b0cc04d09b8a687475e92c6e9b4b72}{get\+\_\+event}} (\mbox{\hyperlink{type_8h_a6043da33f9434e8d3eb6c4ec77b71b62}{EVENT}} prev, \mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display)
+\begin{DoxyCompactList}\small\item\em Функция получения следующей задачи от пользователя \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_aaca103ab2a3d70212a5fcff7cbfaff79}{get\+\_\+user\+\_\+bool}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display, const char \texorpdfstring{$\ast$}{*}true\+\_\+c, const char \texorpdfstring{$\ast$}{*}false\+\_\+c)
+\begin{DoxyCompactList}\small\item\em Функция получения ответа типа \textquotesingle{}да/нет\textquotesingle{} от пользователя \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_ace79db58c6bad7751de74a8b25bffacb}{get\+\_\+user\+\_\+continue}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display)
+\begin{DoxyCompactList}\small\item\em Функция остановки программы по клика пользователем (кнопка CONTINUE) \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_a95d0816435ad9cba22402e929297b751}{get\+\_\+user\+\_\+text}} (\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}display, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}string)
+\begin{DoxyCompactList}\small\item\em Функция считывания пользовательского текста \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{graphic_8cpp_ae58ca94f8475c8e24f02d265a56df7c8}{check\+\_\+button\+\_\+click}} (\mbox{\hyperlink{structbutton__t}{button\+\_\+t}} \texorpdfstring{$\ast$}{*}button, SDL\+\_\+\+Event \texorpdfstring{$\ast$}{*}event)
+\begin{DoxyCompactList}\small\item\em Функция проверки нажатия кнопки \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Файл с функциями для работы с графикой 
+
+
+
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{graphic_8cpp_a34c2fbb09ba90c9bf5b160a3cc1fdf64}\label{graphic_8cpp_a34c2fbb09ba90c9bf5b160a3cc1fdf64} 
+\index{graphic.cpp@{graphic.cpp}!FREE\_MEMORY@{FREE\_MEMORY}}
+\index{FREE\_MEMORY@{FREE\_MEMORY}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{FREE\_MEMORY}{FREE\_MEMORY}}
+{\footnotesize\ttfamily \#define FREE\+\_\+\+MEMORY(\begin{DoxyParamCaption}\item[{}]{address }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \textcolor{keywordflow}{if}\ (address\ !=\ NULL)\ \(\backslash\)}
+\DoxyCodeLine{\ \{\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ free\ (address);\ \(\backslash\)}
+\DoxyCodeLine{\ \}}
+
+\end{DoxyCode}
+
+
+Функция удаления структуры дисплея 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{graphic_8cpp_a42d387e2e84c1c002f7fb631239fab2a}\label{graphic_8cpp_a42d387e2e84c1c002f7fb631239fab2a} 
+\index{graphic.cpp@{graphic.cpp}!add\_anim@{add\_anim}}
+\index{add\_anim@{add\_anim}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{add\_anim()}{add\_anim()}}
+{\footnotesize\ttfamily int add\+\_\+anim (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display,  }\item[{\mbox{\hyperlink{type_8h_a48bc1d04aa54ca491b0b97f21d88db6d}{\+\_\+\+\_\+\+ANIM\+\_\+\+TYPE}}}]{type }\end{DoxyParamCaption})}
+
+
+
+Функция изменения текущей анимации 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\mbox{\texttt{ in}}  & {\em type} & Тип анимации \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_a9a5a6f2559743bba5006a01be3515343}\label{graphic_8cpp_a9a5a6f2559743bba5006a01be3515343} 
+\index{graphic.cpp@{graphic.cpp}!add\_text@{add\_text}}
+\index{add\_text@{add\_text}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{add\_text()}{add\_text()}}
+{\footnotesize\ttfamily int add\+\_\+text (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{format,  }\item[{}]{... }\end{DoxyParamCaption})}
+
+
+
+Функция добавления текста в основное окно 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на дисплей \\
+\hline
+\mbox{\texttt{ in}}  & {\em format} & Формат строки, которую нужно добавить \\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+Читает только s и d 
+\end{DoxyNote}
+\Hypertarget{graphic_8cpp_ae58ca94f8475c8e24f02d265a56df7c8}\label{graphic_8cpp_ae58ca94f8475c8e24f02d265a56df7c8} 
+\index{graphic.cpp@{graphic.cpp}!check\_button\_click@{check\_button\_click}}
+\index{check\_button\_click@{check\_button\_click}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{check\_button\_click()}{check\_button\_click()}}
+{\footnotesize\ttfamily int check\+\_\+button\+\_\+click (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structbutton__t}{button\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{button,  }\item[{SDL\+\_\+\+Event \texorpdfstring{$\ast$}{*}}]{event }\end{DoxyParamCaption})}
+
+
+
+Функция проверки нажатия кнопки 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em button} & Указатель на структуру проверяемой кнопки \\
+\hline
+\mbox{\texttt{ in}}  & {\em event} & Текущий ивент \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+1 (если была нажата), иначе 0 
+\end{DoxyReturn}
+\Hypertarget{graphic_8cpp_a61ccf324de498f30b19c9c158cdb32fa}\label{graphic_8cpp_a61ccf324de498f30b19c9c158cdb32fa} 
+\index{graphic.cpp@{graphic.cpp}!clean\_buttons@{clean\_buttons}}
+\index{clean\_buttons@{clean\_buttons}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{clean\_buttons()}{clean\_buttons()}}
+{\footnotesize\ttfamily int clean\+\_\+buttons (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display }\end{DoxyParamCaption})}
+
+
+
+Функция очистки кнопок 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_a08c3e6b368f54493c4eef10037d61d43}\label{graphic_8cpp_a08c3e6b368f54493c4eef10037d61d43} 
+\index{graphic.cpp@{graphic.cpp}!create\_anim@{create\_anim}}
+\index{create\_anim@{create\_anim}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{create\_anim()}{create\_anim()}}
+{\footnotesize\ttfamily int create\+\_\+anim (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display }\end{DoxyParamCaption})}
+
+
+
+Функция создания видео-\/анимаций 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_afb25664f7af62e355a594648d330f525}\label{graphic_8cpp_afb25664f7af62e355a594648d330f525} 
+\index{graphic.cpp@{graphic.cpp}!create\_audio@{create\_audio}}
+\index{create\_audio@{create\_audio}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{create\_audio()}{create\_audio()}}
+{\footnotesize\ttfamily int create\+\_\+audio (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display }\end{DoxyParamCaption})}
+
+
+
+Функция инициализации аудио-\/устройств 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_a203737296cd42da3f42e94c8eba7c97b}\label{graphic_8cpp_a203737296cd42da3f42e94c8eba7c97b} 
+\index{graphic.cpp@{graphic.cpp}!create\_button@{create\_button}}
+\index{create\_button@{create\_button}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{create\_button()}{create\_button()}}
+{\footnotesize\ttfamily int create\+\_\+button (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structbutton__t}{button\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{button,  }\item[{SDL\+\_\+\+Renderer \texorpdfstring{$\ast$}{*}}]{render,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{text,  }\item[{TTF\+\_\+\+Font \texorpdfstring{$\ast$}{*}}]{font,  }\item[{SDL\+\_\+\+Color}]{color }\end{DoxyParamCaption})}
+
+
+
+Функция создания текстуры кнопки 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em button} & Указатель на структуру кнопки, куда будет записана текстура \\
+\hline
+\mbox{\texttt{ in}}  & {\em render} & Указатель на окно для рендера \\
+\hline
+\mbox{\texttt{ in}}  & {\em text} & Текст кнопки \\
+\hline
+\mbox{\texttt{ in}}  & {\em font} & Шрифт кнопки \\
+\hline
+\mbox{\texttt{ in}}  & {\em color} & Цвет фона кнопки \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_adae9e8de297c19b1e7b5ad1525dd8739}\label{graphic_8cpp_adae9e8de297c19b1e7b5ad1525dd8739} 
+\index{graphic.cpp@{graphic.cpp}!create\_display@{create\_display}}
+\index{create\_display@{create\_display}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{create\_display()}{create\_display()}}
+{\footnotesize\ttfamily int create\+\_\+display (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display }\end{DoxyParamCaption})}
+
+
+
+Функция создания дисплея 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_ac0c5597be93878557a2d150b1e0c1422}\label{graphic_8cpp_ac0c5597be93878557a2d150b1e0c1422} 
+\index{graphic.cpp@{graphic.cpp}!create\_system\_UI@{create\_system\_UI}}
+\index{create\_system\_UI@{create\_system\_UI}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{create\_system\_UI()}{create\_system\_UI()}}
+{\footnotesize\ttfamily int create\+\_\+system\+\_\+\+UI (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display }\end{DoxyParamCaption})}
+
+
+
+Функция создания общего графического интерфейса 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_adf78b6b3638b452d6c4f2bbeb8940218}\label{graphic_8cpp_adf78b6b3638b452d6c4f2bbeb8940218} 
+\index{graphic.cpp@{graphic.cpp}!destroy\_display@{destroy\_display}}
+\index{destroy\_display@{destroy\_display}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{destroy\_display()}{destroy\_display()}}
+{\footnotesize\ttfamily int destroy\+\_\+display (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display }\end{DoxyParamCaption})}
+
+
+
+Функция удаления структуры дисплея 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_ab5dce21bc3c211a5615951d2eac18960}\label{graphic_8cpp_ab5dce21bc3c211a5615951d2eac18960} 
+\index{graphic.cpp@{graphic.cpp}!draw\_texture@{draw\_texture}}
+\index{draw\_texture@{draw\_texture}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{draw\_texture()}{draw\_texture()}}
+{\footnotesize\ttfamily int draw\+\_\+texture (\begin{DoxyParamCaption}\item[{SDL\+\_\+\+Renderer \texorpdfstring{$\ast$}{*}}]{render,  }\item[{SDL\+\_\+\+Texture \texorpdfstring{$\ast$}{*}}]{texture,  }\item[{const SDL\+\_\+\+Rect \texorpdfstring{$\ast$}{*}}]{rect }\end{DoxyParamCaption})}
+
+
+
+Функция отрисовки текстуры в окне 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em render} & Указатель на окно рендера \\
+\hline
+\mbox{\texttt{ in}}  & {\em texture} & Указатель на структуру которую нужно отрисовать \\
+\hline
+\mbox{\texttt{ in}}  & {\em rect} & Место и размеры для отрисовки \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_a42c526898e9806c3c2c256c02fcaec94}\label{graphic_8cpp_a42c526898e9806c3c2c256c02fcaec94} 
+\index{graphic.cpp@{graphic.cpp}!free\_video@{free\_video}}
+\index{free\_video@{free\_video}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{free\_video()}{free\_video()}}
+{\footnotesize\ttfamily int free\+\_\+video (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__video__t}{\+\_\+video\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{video }\end{DoxyParamCaption})}
+
+
+
+Функция удаления видео 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em video} & Указатель на структуру видео \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_a51b0cc04d09b8a687475e92c6e9b4b72}\label{graphic_8cpp_a51b0cc04d09b8a687475e92c6e9b4b72} 
+\index{graphic.cpp@{graphic.cpp}!get\_event@{get\_event}}
+\index{get\_event@{get\_event}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{get\_event()}{get\_event()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{type_8h_a6043da33f9434e8d3eb6c4ec77b71b62}{EVENT}} get\+\_\+event (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{type_8h_a6043da33f9434e8d3eb6c4ec77b71b62}{EVENT}}}]{prev,  }\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display }\end{DoxyParamCaption})}
+
+
+
+Функция получения следующей задачи от пользователя 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em prev} & Предыдущая задача \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_aa132433c602d1ec91bf7fa3daf64524d}\label{graphic_8cpp_aa132433c602d1ec91bf7fa3daf64524d} 
+\index{graphic.cpp@{graphic.cpp}!get\_image\_audio@{get\_image\_audio}}
+\index{get\_image\_audio@{get\_image\_audio}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{get\_image\_audio()}{get\_image\_audio()}}
+{\footnotesize\ttfamily int get\+\_\+image\+\_\+audio (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display,  }\item[{\mbox{\hyperlink{structobject__t}{obj\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{object }\end{DoxyParamCaption})}
+
+
+
+Функция получения имени изображения и записи голоса 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\mbox{\texttt{ in}}  & {\em object} & Объект, к которому будет добавляться информация \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_aaca103ab2a3d70212a5fcff7cbfaff79}\label{graphic_8cpp_aaca103ab2a3d70212a5fcff7cbfaff79} 
+\index{graphic.cpp@{graphic.cpp}!get\_user\_bool@{get\_user\_bool}}
+\index{get\_user\_bool@{get\_user\_bool}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{get\_user\_bool()}{get\_user\_bool()}}
+{\footnotesize\ttfamily int get\+\_\+user\+\_\+bool (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{true\+\_\+c,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{false\+\_\+c }\end{DoxyParamCaption})}
+
+
+
+Функция получения ответа типа \textquotesingle{}да/нет\textquotesingle{} от пользователя 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em true\+\_\+c} & Левая кнопка \\
+\hline
+\mbox{\texttt{ in}}  & {\em false\+\_\+c} & Правая кнопка \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+USER\+\_\+\+YES (если да), иначе -\/\texorpdfstring{$>$}{>} USER\+\_\+\+NO 
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Сама обновляет дисплей 
+\end{DoxyNote}
+\Hypertarget{graphic_8cpp_ace79db58c6bad7751de74a8b25bffacb}\label{graphic_8cpp_ace79db58c6bad7751de74a8b25bffacb} 
+\index{graphic.cpp@{graphic.cpp}!get\_user\_continue@{get\_user\_continue}}
+\index{get\_user\_continue@{get\_user\_continue}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{get\_user\_continue()}{get\_user\_continue()}}
+{\footnotesize\ttfamily int get\+\_\+user\+\_\+continue (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display }\end{DoxyParamCaption})}
+
+
+
+Функция остановки программы по клика пользователем (кнопка CONTINUE) 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_a95d0816435ad9cba22402e929297b751}\label{graphic_8cpp_a95d0816435ad9cba22402e929297b751} 
+\index{graphic.cpp@{graphic.cpp}!get\_user\_text@{get\_user\_text}}
+\index{get\_user\_text@{get\_user\_text}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{get\_user\_text()}{get\_user\_text()}}
+{\footnotesize\ttfamily int get\+\_\+user\+\_\+text (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display,  }\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{string }\end{DoxyParamCaption})}
+
+
+
+Функция считывания пользовательского текста 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\mbox{\texttt{ in}}  & {\em string} & Указатель на адрес, куда будет записан пользовательский текст \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_a5a485917318d98a854590c2ad7c8599d}\label{graphic_8cpp_a5a485917318d98a854590c2ad7c8599d} 
+\index{graphic.cpp@{graphic.cpp}!load\_texture@{load\_texture}}
+\index{load\_texture@{load\_texture}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{load\_texture()}{load\_texture()}}
+{\footnotesize\ttfamily SDL\+\_\+\+Texture \texorpdfstring{$\ast$}{*} load\+\_\+texture (\begin{DoxyParamCaption}\item[{SDL\+\_\+\+Renderer \texorpdfstring{$\ast$}{*}}]{render,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{filename }\end{DoxyParamCaption})}
+
+
+
+Функция загрузки изображения в текстуру 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em render} & Указатель на окно рендера \\
+\hline
+\mbox{\texttt{ in}}  & {\em filename} & Имя загружаемого изображения \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Указатель на текстуру 
+\end{DoxyReturn}
+\Hypertarget{graphic_8cpp_a44cfa2032df0a4da8d92cb8fc1a27c83}\label{graphic_8cpp_a44cfa2032df0a4da8d92cb8fc1a27c83} 
+\index{graphic.cpp@{graphic.cpp}!play\_audio@{play\_audio}}
+\index{play\_audio@{play\_audio}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{play\_audio()}{play\_audio()}}
+{\footnotesize\ttfamily int play\+\_\+audio (\begin{DoxyParamCaption}\item[{SDL\+\_\+\+Audio\+Device\+ID}]{play\+\_\+device,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{name\+\_\+wav }\end{DoxyParamCaption})}
+
+
+
+Функция проигрывания wav файла 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em play\+\_\+device} & Устройство, на котором будет проигрываться файл \\
+\hline
+\mbox{\texttt{ in}}  & {\em param\+\_\+play} & Параметры аудио-\/устройства \\
+\hline
+\mbox{\texttt{ in}}  & {\em name\+\_\+wav} & Имя файла \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_a4baee94b7f0789d8e2128a3de57937f1}\label{graphic_8cpp_a4baee94b7f0789d8e2128a3de57937f1} 
+\index{graphic.cpp@{graphic.cpp}!play\_video@{play\_video}}
+\index{play\_video@{play\_video}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{play\_video()}{play\_video()}}
+{\footnotesize\ttfamily int play\+\_\+video (\begin{DoxyParamCaption}\item[{SDL\+\_\+\+Renderer \texorpdfstring{$\ast$}{*}}]{render,  }\item[{\mbox{\hyperlink{struct__video__t}{\+\_\+video\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{video }\end{DoxyParamCaption})}
+
+
+
+Функция отрисовки кадра видео 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em render} & Указатель на окно рендера \\
+\hline
+\mbox{\texttt{ in}}  & {\em video} & Указатель на структуру видео \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_af523cd8d94028a297bb8419752215fcb}\label{graphic_8cpp_af523cd8d94028a297bb8419752215fcb} 
+\index{graphic.cpp@{graphic.cpp}!push\_text@{push\_text}}
+\index{push\_text@{push\_text}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{push\_text()}{push\_text()}}
+{\footnotesize\ttfamily int push\+\_\+text (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{format,  }\item[{}]{... }\end{DoxyParamCaption})}
+
+
+
+Функция, вызывающая добавления текста в основное окна 
+
+Функция загрузки текста в основное окна
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\mbox{\texttt{ in}}  & {\em format} & Формат строки, которую нужно добавить \\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+Читает только s и d 
+
+Удаляет предыдущий текст 
+\end{DoxyNote}
+\Hypertarget{graphic_8cpp_a781c90bd621cc47184f5b4046328dddc}\label{graphic_8cpp_a781c90bd621cc47184f5b4046328dddc} 
+\index{graphic.cpp@{graphic.cpp}!push\_text\_\_va\_list@{push\_text\_\_va\_list}}
+\index{push\_text\_\_va\_list@{push\_text\_\_va\_list}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{push\_text\_\_va\_list()}{push\_text\_\_va\_list()}}
+{\footnotesize\ttfamily int push\+\_\+text\+\_\+\+\_\+va\+\_\+list (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{format,  }\item[{va\+\_\+list}]{args }\end{DoxyParamCaption})}
+
+
+
+Функция, записывающая текст в основное окно 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\mbox{\texttt{ in}}  & {\em format} & Формат строки, которую нужно добавить \\
+\hline
+\mbox{\texttt{ in}}  & {\em args} & Аргументы для строки \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_a16a68262fe508429460865bdfe1d3025}\label{graphic_8cpp_a16a68262fe508429460865bdfe1d3025} 
+\index{graphic.cpp@{graphic.cpp}!record\_audio@{record\_audio}}
+\index{record\_audio@{record\_audio}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{record\_audio()}{record\_audio()}}
+{\footnotesize\ttfamily int record\+\_\+audio (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display,  }\item[{\mbox{\hyperlink{structbutton__t}{button\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{button,  }\item[{SDL\+\_\+\+Audio\+Device\+ID}]{record\+\_\+device,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{file }\end{DoxyParamCaption})}
+
+
+
+Функция записи аудио в файл 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\mbox{\texttt{ in}}  & {\em button} & Кнопка, нажатие на которую останавливает запись \\
+\hline
+\mbox{\texttt{ in}}  & {\em record\+\_\+device} & Устройство для записи \\
+\hline
+\mbox{\texttt{ in}}  & {\em file} & Имя файла, куда будет записываться аудио \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_a4dc8222b35b1bdeb8c38ee396147c8da}\label{graphic_8cpp_a4dc8222b35b1bdeb8c38ee396147c8da} 
+\index{graphic.cpp@{graphic.cpp}!render\_buttons@{render\_buttons}}
+\index{render\_buttons@{render\_buttons}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{render\_buttons()}{render\_buttons()}}
+{\footnotesize\ttfamily int render\+\_\+buttons (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display }\end{DoxyParamCaption})}
+
+
+
+Функция обновления кнопок (по запеченным текстурам) 
+
+Функция обновления кнопок
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_af540bdb163d9d0c7461a89646423e3f5}\label{graphic_8cpp_af540bdb163d9d0c7461a89646423e3f5} 
+\index{graphic.cpp@{graphic.cpp}!render\_main\_text@{render\_main\_text}}
+\index{render\_main\_text@{render\_main\_text}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{render\_main\_text()}{render\_main\_text()}}
+{\footnotesize\ttfamily int render\+\_\+main\+\_\+text (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display }\end{DoxyParamCaption})}
+
+
+
+Функция вывода текущего текста основного окна 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_a71e312c78475e6ec4758eff0de0f54ab}\label{graphic_8cpp_a71e312c78475e6ec4758eff0de0f54ab} 
+\index{graphic.cpp@{graphic.cpp}!render\_object@{render\_object}}
+\index{render\_object@{render\_object}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{render\_object()}{render\_object()}}
+{\footnotesize\ttfamily int render\+\_\+object (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display }\end{DoxyParamCaption})}
+
+
+
+Функция отрисовки изображения в поле для пользовательских изображений 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_a5a74d6c5e1f140bcc88cf3bbd3a7e6a2}\label{graphic_8cpp_a5a74d6c5e1f140bcc88cf3bbd3a7e6a2} 
+\index{graphic.cpp@{graphic.cpp}!render\_user\_text@{render\_user\_text}}
+\index{render\_user\_text@{render\_user\_text}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{render\_user\_text()}{render\_user\_text()}}
+{\footnotesize\ttfamily int render\+\_\+user\+\_\+text (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display }\end{DoxyParamCaption})}
+
+
+
+Функция отрисовки пользовательского текста 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_a4fb8c1e99a7831300ddd6b090a0f1cab}\label{graphic_8cpp_a4fb8c1e99a7831300ddd6b090a0f1cab} 
+\index{graphic.cpp@{graphic.cpp}!render\_video@{render\_video}}
+\index{render\_video@{render\_video}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{render\_video()}{render\_video()}}
+{\footnotesize\ttfamily int render\+\_\+video (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display }\end{DoxyParamCaption})}
+
+
+
+Функция отрисовки всех анимаций 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_a9c1949b51e474cf559fed09197cdedba}\label{graphic_8cpp_a9c1949b51e474cf559fed09197cdedba} 
+\index{graphic.cpp@{graphic.cpp}!renew\_display@{renew\_display}}
+\index{renew\_display@{renew\_display}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{renew\_display()}{renew\_display()}}
+{\footnotesize\ttfamily int renew\+\_\+display (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdisplay__t}{display\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{display }\end{DoxyParamCaption})}
+
+
+
+Функция обновления экрана 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em display} & Указатель на структуру дисплея \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_a1636069c86b60039fefff7d5eb29057e}\label{graphic_8cpp_a1636069c86b60039fefff7d5eb29057e} 
+\index{graphic.cpp@{graphic.cpp}!save\_audio@{save\_audio}}
+\index{save\_audio@{save\_audio}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{save\_audio()}{save\_audio()}}
+{\footnotesize\ttfamily int save\+\_\+audio (\begin{DoxyParamCaption}\item[{const SDL\+\_\+\+Audio\+Spec \texorpdfstring{$\ast$}{*}}]{param,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{file\+\_\+name,  }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{data,  }\item[{uint32\+\_\+t}]{len\+\_\+data }\end{DoxyParamCaption})}
+
+
+
+Функция записи аудио-\/семплов в wav файл 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em param} & Параметры аудио для записи \\
+\hline
+\mbox{\texttt{ in}}  & {\em file\+\_\+name} & Имя файла \\
+\hline
+\mbox{\texttt{ in}}  & {\em data} & Аудио данные \\
+\hline
+\mbox{\texttt{ in}}  & {\em len\+\_\+data} & Длина data \\
+\hline
+\end{DoxyParams}
+\Hypertarget{graphic_8cpp_ae162c00b246710af504794e3026abfd0}\label{graphic_8cpp_ae162c00b246710af504794e3026abfd0} 
+\index{graphic.cpp@{graphic.cpp}!sdl\_format\_to\_bits@{sdl\_format\_to\_bits}}
+\index{sdl\_format\_to\_bits@{sdl\_format\_to\_bits}!graphic.cpp@{graphic.cpp}}
+\doxysubsubsection{\texorpdfstring{sdl\_format\_to\_bits()}{sdl\_format\_to\_bits()}}
+{\footnotesize\ttfamily int sdl\+\_\+format\+\_\+to\+\_\+bits (\begin{DoxyParamCaption}\item[{SDL\+\_\+\+Audio\+Format}]{format }\end{DoxyParamCaption})}
+
+
+
+Функция получения количества байт в секунду для заполнения заголовка wav файла 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em format} & Формат аудио \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Количество байт в секунду 
+\end{DoxyReturn}

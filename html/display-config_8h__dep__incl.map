@@ -1,0 +1,28 @@
+<map id="H/display&#45;config.h" name="H/display&#45;config.h">
+<area shape="rect" id="Node000001" title="Параметры графики" alt="" coords="297,5,435,31"/>
+<area shape="rect" id="Node000002" href="$func_8cpp.html" title="Файл с основными функциями" alt="" coords="566,225,673,251"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="398,36,471,84,552,150,588,189,614,223,609,227,584,193,548,154,468,89,395,40"/>
+<area shape="rect" id="Node000003" href="$graphic_8cpp.html" title="Файл с функциями для работы с графикой" alt="" coords="124,225,251,251"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="283,27,215,39,140,62,104,78,70,99,40,124,15,153,9,168,11,181,20,192,34,202,77,217,124,227,123,232,75,222,32,206,16,196,6,183,3,168,11,151,36,120,67,94,102,74,138,57,213,34,283,22"/>
+<area shape="rect" id="Node000004" href="$type_8h.html" title="Типы объектов" alt="" coords="327,79,405,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="369,44,369,79,363,79,363,44"/>
+<area shape="poly" id="edge5_Node000004_Node000002" title=" " alt="" coords="417,106,466,125,516,150,569,188,609,223,606,227,566,192,513,154,464,130,415,111"/>
+<area shape="poly" id="edge6_Node000004_Node000003" title=" " alt="" coords="315,106,268,125,245,138,225,154,212,171,203,191,192,226,187,224,198,189,208,168,222,150,242,133,266,120,313,101"/>
+<area shape="rect" id="Node000005" href="$dump_8cpp.html" title="Файл к функциями для дампа" alt="" coords="275,225,390,251"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="363,118,338,226,333,225,358,117"/>
+<area shape="rect" id="Node000006" href="$support_8cpp.html" title="Файл с дополнительными функциями" alt="" coords="415,225,541,251"/>
+<area shape="poly" id="edge7_Node000004_Node000006" title=" " alt="" coords="419,101,461,119,480,133,495,151,502,170,500,191,487,226,482,224,495,190,496,171,491,153,476,137,458,123,417,105"/>
+<area shape="rect" id="Node000007" href="$display-const_8h.html" title="Константы графики" alt="" coords="25,152,160,177"/>
+<area shape="poly" id="edge8_Node000004_Node000007" title=" " alt="" coords="315,109,138,155,136,149,313,104"/>
+<area shape="rect" id="Node000008" href="$display_8h.html" title="Функции графики" alt="" coords="235,152,329,177"/>
+<area shape="poly" id="edge10_Node000004_Node000008" title=" " alt="" coords="344,115,298,154,294,150,340,111"/>
+<area shape="rect" id="Node000009" href="$func_8h.html" title="Функции дерева" alt="" coords="404,152,480,177"/>
+<area shape="poly" id="edge13_Node000004_Node000009" title=" " alt="" coords="390,111,432,150,428,154,387,115"/>
+<area shape="poly" id="edge9_Node000007_Node000003" title=" " alt="" coords="121,183,174,223,170,227,117,188"/>
+<area shape="poly" id="edge11_Node000008_Node000002" title=" " alt="" coords="343,176,566,223,565,228,342,181"/>
+<area shape="poly" id="edge12_Node000008_Node000003" title=" " alt="" coords="258,188,205,227,201,223,254,183"/>
+<area shape="poly" id="edge15_Node000009_Node000002" title=" " alt="" coords="484,180,591,223,589,228,482,185"/>
+<area shape="poly" id="edge16_Node000009_Node000003" title=" " alt="" coords="392,183,229,228,228,223,390,178"/>
+<area shape="poly" id="edge14_Node000009_Node000005" title=" " alt="" coords="415,187,352,227,349,223,412,183"/>
+<area shape="poly" id="edge17_Node000009_Node000006" title=" " alt="" coords="457,188,475,224,470,226,452,191"/>
+</map>

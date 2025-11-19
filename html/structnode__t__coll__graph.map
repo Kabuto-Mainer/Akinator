@@ -1,0 +1,6 @@
+<map id="node_t" name="node_t">
+<area shape="rect" id="Node000001" title="Структура узла дерева" alt="" coords="9,103,76,128"/>
+<area shape="poly" id="edge1_Node000001_Node000001" title=" " alt="" coords="91,104,99,108,103,116,94,125,77,128,76,123,92,121,97,115,95,112,89,109"/>
+<area shape="rect" id="Node000002" href="$structobject__t.html" title="Структура объекта дерева" alt="" coords="5,5,80,31"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="45,44,45,102,40,102,40,44"/>
+</map>

@@ -1,0 +1,85 @@
+\doxysection{H/config.h File Reference}
+\hypertarget{config_8h}{}\label{config_8h}\index{H/config.h@{H/config.h}}
+
+
+Конфигурация для основным функций дерева  
+
+
+{\ttfamily \#include $<$SDL2/\+SDL.\+h$>$}\newline
+{\ttfamily \#include $<$SDL2/\+SDL\+\_\+ttf.\+h$>$}\newline
+{\ttfamily \#include $<$SDL2/\+SDL\+\_\+image.\+h$>$}\newline
+Include dependency graph for config.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{config_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{config_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{config_8h_afc8f0f484968ea11810ff61c500a0e4b}\label{config_8h_afc8f0f484968ea11810ff61c500a0e4b} 
+\#define {\bfseries STACK\+\_\+\+FUNC}
+\begin{DoxyCompactList}\small\item\em Включения функций, работающих на стеке и отключение рекурсии \end{DoxyCompactList}\item 
+\Hypertarget{config_8h_ae3c0fe76e2b038f42d1e50f7c20bb639}\label{config_8h_ae3c0fe76e2b038f42d1e50f7c20bb639} 
+\#define {\bfseries ADDRESS\+\_\+\+DUMP\+\_\+\+DEBUG}~"{}DUMPS/DEBUG/"{}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{config_8h_a5978274770c3470cbbfd9c406efa2ff3}\label{config_8h_a5978274770c3470cbbfd9c406efa2ff3} 
+const char {\bfseries ADDRESS\+\_\+\+DUMP\+\_\+\+DIR} \mbox{[}$\,$\mbox{]} = "{}DUMPS/DUMP\+\_\+"{}
+\begin{DoxyCompactList}\small\item\em Адреса данных для дампов и деревьев \end{DoxyCompactList}\item 
+\Hypertarget{config_8h_a370e6e3904a64747102c49396256ac60}\label{config_8h_a370e6e3904a64747102c49396256ac60} 
+const char {\bfseries ADDRESS\+\_\+\+DATA\+\_\+\+DIR} \mbox{[}$\,$\mbox{]} = "{}DATA/DATA\+\_\+"{}
+\item 
+\Hypertarget{config_8h_a53589b3d353d047d7e36176b4dc0f192}\label{config_8h_a53589b3d353d047d7e36176b4dc0f192} 
+const char {\bfseries ADDRESS\+\_\+\+USER\+\_\+\+DATA} \mbox{[}$\,$\mbox{]} = "{}USER\+\_\+\+DATA"{}
+\item 
+const int \mbox{\hyperlink{config_8h_a77a8d304e532509efa610404b9818f4f}{STANDARD\+\_\+\+DIR\+\_\+\+DUMP}} = 1
+\begin{DoxyCompactList}\small\item\em Номер стандартной директории для дампов В директорию под этим номером будут отправляться все дампы \end{DoxyCompactList}\item 
+\Hypertarget{config_8h_afbff3ff7326e874da65d06e600cb52c2}\label{config_8h_afbff3ff7326e874da65d06e600cb52c2} 
+const int {\bfseries AMOUNT\+\_\+\+DATA\+\_\+\+DIR} = 4
+\begin{DoxyCompactList}\small\item\em Количество директорий, куда может сохраняться дамп \end{DoxyCompactList}\item 
+\Hypertarget{config_8h_a59c26ff558d0a3fd1b9783bace2c8292}\label{config_8h_a59c26ff558d0a3fd1b9783bace2c8292} 
+const int {\bfseries STANDARD\+\_\+\+SIZE\+\_\+\+BLOCK} = 250
+\begin{DoxyCompactList}\small\item\em Стандартный размер одного блока дерева на картинке в html файле \end{DoxyCompactList}\item 
+\Hypertarget{config_8h_a3acf1d5a9716c9544867c10f922f84ee}\label{config_8h_a3acf1d5a9716c9544867c10f922f84ee} 
+const int {\bfseries STANDARD\+\_\+\+SLEEP} = 50
+\begin{DoxyCompactList}\small\item\em Задержка программы при обновлении экрана \end{DoxyCompactList}\item 
+\Hypertarget{config_8h_ab97f92c90ee23ef46aa96948ac84b89f}\label{config_8h_ab97f92c90ee23ef46aa96948ac84b89f} 
+const char {\bfseries OBJECT\+\_\+\+IMAGE} \mbox{[}$\,$\mbox{]} = "{}GRAPHIC/OBJECT/IMAGES/"{}
+\begin{DoxyCompactList}\small\item\em Пути к изображениям и аудио объектов для их записи и показа \end{DoxyCompactList}\item 
+\Hypertarget{config_8h_afbbea523566a50b0040e5882f3974681}\label{config_8h_afbbea523566a50b0040e5882f3974681} 
+const char {\bfseries OBJECT\+\_\+\+AUDIO} \mbox{[}$\,$\mbox{]} = "{}GRAPHIC/OBJECT/AUDIO/"{}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Конфигурация для основным функций дерева 
+
+
+
+\doxysubsection{Variable Documentation}
+\Hypertarget{config_8h_a77a8d304e532509efa610404b9818f4f}\label{config_8h_a77a8d304e532509efa610404b9818f4f} 
+\index{config.h@{config.h}!STANDARD\_DIR\_DUMP@{STANDARD\_DIR\_DUMP}}
+\index{STANDARD\_DIR\_DUMP@{STANDARD\_DIR\_DUMP}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{STANDARD\_DIR\_DUMP}{STANDARD\_DIR\_DUMP}}
+{\footnotesize\ttfamily const int STANDARD\+\_\+\+DIR\+\_\+\+DUMP = 1}
+
+
+
+Номер стандартной директории для дампов В директорию под этим номером будут отправляться все дампы 
+
+\begin{DoxySeeAlso}{See also}
+\doxylink{support_8cpp_aa9ffae28236cd8a78ff88f6cdde1ba17}{find\+\_\+number\+\_\+dump} () 
+\end{DoxySeeAlso}

@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @brief Файл с функциями для работы с графикой
+*/
+
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -379,6 +384,8 @@ int play_audio (SDL_AudioDeviceID play_device,
 {
     assert (play_device);
     assert (name_wav);
+
+    printf ("NAME: %s\n", name_wav);
 
     stop_fone_music ();
     SDL_AudioSpec wav_spec = {};
@@ -891,10 +898,14 @@ int add_text (display_t* display,
         EXIT_FUNC("NULL calloc", 1);
     }
 
+    // printf ("PREV: %s\n", prev_str);
+    // printf ("NEXT: %s\n", next_str);
+
     strcat (buffer, prev_str);
     // buffer[strlen (prev_str)] = ' ';
     strcat (buffer, next_str);
-    buffer[strlen (prev_str) + strlen (next_str) + 1] = '\0';
+    buffer[strlen (prev_str) + strlen (next_str)] = '\0';
+    // printf ("BUF: %s\n", buffer);
 
     free (prev_str);
     free (next_str);
@@ -975,66 +986,78 @@ int render_main_text (display_t* display)
     // SDL_RenderFillRect (display->render, &MAIN_TEXT);
 
     SDL_Color color = COLOR_FONT;
-    int width = 0;
-    int height = 0;
-    int width_2 = 0;
-    SDL_Surface* surface_2 = NULL;
-    SDL_Texture* texture_2 = NULL;
+    char* string = strdup (display->cur_frame.main_text);
+    int len_str = (int) strlen (string);
 
-    char* adr_n = NULL;
-    if ((adr_n = strchr (display->cur_frame.main_text, '\n')) != NULL)
+    // printf ("STR: %s\n", string);
+
+    if (len_str <= MAX_USER_LEN_TEXT)
     {
-        *adr_n = '\0';
-        if (*(adr_n + 1) != '\0')
-        {
-            surface_2 = TTF_RenderUTF8_Blended (display->font, adr_n + 1, color);
-            texture_2 = SDL_CreateTextureFromSurface (display->render, surface_2);
+        int width = 0;
+        int height = 0;
 
-            TTF_SizeUTF8 (display->font, adr_n + 1, &width_2, &height);
-        }
-    }
+        SDL_Surface* surface = TTF_RenderUTF8_Blended (display->font, string, color);
+        SDL_Texture* texture = SDL_CreateTextureFromSurface (display->render, surface);
 
-    else
-    {
-        (void) surface_2;
-        (void) texture_2;
-    }
+        TTF_SizeUTF8 (display->font, string, &width, &height);
 
-    SDL_Surface* surface = TTF_RenderUTF8_Blended (display->font, display->cur_frame.main_text, color);
-    SDL_Texture* texture = SDL_CreateTextureFromSurface (display->render, surface);
-
-    TTF_SizeUTF8 (display->font, display->cur_frame.main_text, &width, &height);
-
-    SDL_Rect size_tex = {};
-    if (adr_n != NULL)
-    {
-        size_tex = {CENTER_MAIN_TEXT_X - width / 2,
-                    CENTER_MAIN_TEXT_Y - height,
-                    width,
-                    height};
-        SDL_Rect size_tex_2 = {CENTER_MAIN_TEXT_X - width_2 / 2,
-                               CENTER_MAIN_TEXT_Y,
-                               width_2,
-                               height};
-        SDL_FreeSurface (surface_2);
-        SDL_RenderCopy (display->render, texture_2, NULL, &size_tex_2);
-        SDL_DestroyTexture (texture_2);
-        *adr_n = '\n';
-    }
-
-    else
-    {
+        SDL_Rect size_tex = {};
         size_tex = {CENTER_MAIN_TEXT_X - width / 2,
                     CENTER_MAIN_TEXT_Y - height / 2,
                     width,
                     height};
+
+
+        SDL_FreeSurface (surface);
+
+        SDL_RenderCopy (display->render, texture, NULL, &size_tex);
+        SDL_DestroyTexture (texture);
+        free (string);
+
+        return 0;
     }
 
-    SDL_FreeSurface (surface);
+    int amount_text_tex = (len_str / MAX_USER_LEN_TEXT) + !!(len_str % MAX_USER_LEN_TEXT);
 
-    SDL_RenderCopy (display->render, texture, NULL, &size_tex);
-    SDL_DestroyTexture (texture);
+    // printf ("Amount tex: %d\n", amount_text_tex);
+    int width = 0;
+    int height = 0;
+    TTF_SizeUTF8 (display->font, string, &width, &height);
 
+    int high_start = CENTER_MAIN_TEXT_Y - (height * amount_text_tex / 2);
+    for (int i = 0; i < amount_text_tex; i++)
+    {
+        char buffer_char = '\0';
+        if (i != amount_text_tex - 1)
+        {
+            buffer_char = string[MAX_USER_LEN_TEXT * (i + 1)];
+            string[MAX_USER_LEN_TEXT * (i + 1)] = '\0';
+        }
+        // else
+        //     string[
+
+        SDL_Surface* surface = TTF_RenderUTF8_Blended (display->font, string + MAX_USER_LEN_TEXT * i, color);
+        // printf ("STR: %s\n", string + MAX_USER_LEN_TEXT * i);
+        SDL_Texture* texture = SDL_CreateTextureFromSurface (display->render, surface);
+        SDL_FreeSurface (surface);
+
+        TTF_SizeUTF8 (display->font, string + MAX_USER_LEN_TEXT * i, &width, &height);
+        SDL_Rect size_tex = {CENTER_MAIN_TEXT_X - width / 2,
+                             high_start + height * i,
+                             width,
+                             height
+
+        };
+
+        if (buffer_char != '\0')
+        {
+            string[MAX_USER_LEN_TEXT * (i + 1)] = buffer_char;
+        }
+        SDL_RenderCopy (display->render, texture, NULL, &size_tex);
+        SDL_DestroyTexture (texture);
+    }
+
+    free (string);
     return 0;
 }
 // --------------------------------------------------------------------------------------------------
@@ -1168,7 +1191,7 @@ EVENT get_event (EVENT prev,
     if (prev == NULL_EVENT)
     {
         push_text (display,
-                  "Welcome to this program\n"
+                  "Welcome to this program! "
                   "Do you want to start?");
 
         if (get_user_bool (display, "YES", "NO") == USER_YES)

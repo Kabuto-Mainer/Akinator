@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @brief Файл с дополнительными функциями
+*/
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>

@@ -1,0 +1,23 @@
+<map id="H/display.h" name="H/display.h">
+<area shape="rect" id="Node000001" title="Функции графики" alt="" coords="224,5,317,31"/>
+<area shape="rect" id="Node000002" href="$type_8h.html" title="Типы объектов" alt="" coords="239,79,302,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="273,31,273,65,268,65,268,31"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="173,225,269,251"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="282,103,299,137,303,158,298,178,281,202,258,220,255,216,277,199,294,176,297,158,294,138,277,105"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="293,225,411,251"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="283,103,318,151,346,211,341,214,314,153,279,106"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="5,225,149,251"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="239,99,132,118,81,134,62,143,50,154,45,167,46,183,61,213,57,216,41,184,39,167,46,150,59,139,79,129,131,113,238,94"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="409,152,548,177"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="303,101,433,145,431,150,301,106"/>
+<area shape="rect" id="Node000007" href="$config_8h.html" title="Конфигурация для основным функций дерева" alt="" coords="61,152,134,177"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="244,106,139,149,137,144,242,102"/>
+<area shape="rect" id="Node000008" href="$display-config_8h.html" title="Параметры графики" alt="" coords="159,152,284,177"/>
+<area shape="poly" id="edge10_Node000002_Node000008" title=" " alt="" coords="265,106,239,142,235,139,260,103"/>
+<area shape="poly" id="edge7_Node000007_Node000003" title=" " alt="" coords="119,175,191,216,188,221,116,180"/>
+<area shape="poly" id="edge8_Node000007_Node000004" title=" " alt="" coords="135,174,299,219,297,224,134,179"/>
+<area shape="poly" id="edge9_Node000007_Node000005" title=" " alt="" coords="97,178,87,213,82,211,91,177"/>
+<area shape="poly" id="edge11_Node000008_Node000003" title=" " alt="" coords="224,178,224,212,219,212,219,178"/>
+<area shape="poly" id="edge12_Node000008_Node000004" title=" " alt="" coords="244,175,320,216,318,221,241,180"/>
+<area shape="poly" id="edge13_Node000008_Node000005" title=" " alt="" coords="199,180,114,221,112,217,197,175"/>
+</map>

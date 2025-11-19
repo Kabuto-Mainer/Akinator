@@ -1,0 +1,141 @@
+\doxysection{H/type.h File Reference}
+\hypertarget{type_8h}{}\label{type_8h}\index{H/type.h@{H/type.h}}
+
+
+Типы объектов  
+
+
+{\ttfamily \#include $<$SDL2/\+SDL.\+h$>$}\newline
+{\ttfamily \#include $<$SDL2/\+SDL\+\_\+ttf.\+h$>$}\newline
+{\ttfamily \#include $<$SDL2/\+SDL\+\_\+image.\+h$>$}\newline
+{\ttfamily \#include $<$SDL2/\+SDL\+\_\+mixer.\+h$>$}\newline
+{\ttfamily \#include "{}config.\+h"{}}\newline
+{\ttfamily \#include "{}display-\/config.\+h"{}}\newline
+Include dependency graph for type.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{type_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{type_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structbutton__t}{button\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Структура кнопки для экрана \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structbutton__desc__t}{button\+\_\+desc\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Структура параметров кнопки \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct__video__t}{\+\_\+video\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Структура видео для его воспроизведения \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct__audio__t}{\+\_\+audio\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Структура аудио-\/устройств и их параметров \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct__frame__t}{\+\_\+frame\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Структура текущего кадра \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct__system__interface__t}{\+\_\+system\+\_\+interface\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Структура системного интерфейса \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structdisplay__t}{display\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Основная структура для работы с графикой \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structobject__t}{object\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Структура объекта дерева \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structnode__t}{node\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Структура узла дерева \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structtree__t}{tree\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Структура дерева \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{type_8h_add1e7192bfe3b0c0e639dc12a0e49f99}\label{type_8h_add1e7192bfe3b0c0e639dc12a0e49f99} 
+typedef \mbox{\hyperlink{structobject__t}{object\+\_\+t}} {\bfseries obj\+\_\+t}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{type_8h_af11b337bbec52e9ddcc6d2fa49038448}{PLACE\+\_\+\+BUTTON}} \{ \newline
+{\bfseries LEFT\+\_\+\+DOWN} = 0
+, {\bfseries RIGHT\+\_\+\+DOWN} = 1
+, {\bfseries LEFT\+\_\+\+MID} = 2
+, {\bfseries RIGHT\+\_\+\+MID} = 3
+, \newline
+{\bfseries LEFT\+\_\+\+UP} = 4
+, {\bfseries RIGHT\+\_\+\+UP} = 5
+, {\bfseries CENTER\+\_\+\+UP} = 6
+ \}
+\begin{DoxyCompactList}\small\item\em Типы расположения кнопок на экране \end{DoxyCompactList}\item 
+\Hypertarget{type_8h_a48bc1d04aa54ca491b0b97f21d88db6d}\label{type_8h_a48bc1d04aa54ca491b0b97f21d88db6d} 
+enum \mbox{\hyperlink{type_8h_a48bc1d04aa54ca491b0b97f21d88db6d}{\+\_\+\+\_\+\+ANIM\+\_\+\+TYPE}} \{ {\bfseries STANDARD\+\_\+\+ANIM} = 10
+, {\bfseries TYPING\+\_\+\+ANIM} = 0
+, {\bfseries PLAY\+\_\+\+AUDIO\+\_\+\+ANIM} = 1
+, {\bfseries RECORD\+\_\+\+AUDIO\+\_\+\+ANIM} = 2
+ \}
+\begin{DoxyCompactList}\small\item\em Тип текущей анимации \end{DoxyCompactList}\item 
+\Hypertarget{type_8h_a1e4a87301627413d5b946d40353416d7}\label{type_8h_a1e4a87301627413d5b946d40353416d7} 
+enum \mbox{\hyperlink{type_8h_a1e4a87301627413d5b946d40353416d7}{\+\_\+\+\_\+\+AUDIO\+\_\+\+SYSTEM\+\_\+\+TYPE}} \{ {\bfseries WITHOUT\+\_\+\+SYSTEM\+\_\+\+MUSIC} = 0
+, {\bfseries FONE\+\_\+\+SYSTEM\+\_\+\+MUSIC} = 1
+ \}
+\begin{DoxyCompactList}\small\item\em Тип текущего системного звука \end{DoxyCompactList}\item 
+\Hypertarget{type_8h_a41e800925607a3b62d2dde5610d8d047}\label{type_8h_a41e800925607a3b62d2dde5610d8d047} 
+enum \mbox{\hyperlink{type_8h_a41e800925607a3b62d2dde5610d8d047}{SIDES}} \{ {\bfseries LEFT\+\_\+\+SIDE} = 0
+, {\bfseries RIGHT\+\_\+\+SIDE} = 1
+ \}
+\begin{DoxyCompactList}\small\item\em Стороны, с которых можно добавлять элементы в дерева \end{DoxyCompactList}\item 
+\Hypertarget{type_8h_a3e5b8192e7d9ffaf3542f1210aec18dd}\label{type_8h_a3e5b8192e7d9ffaf3542f1210aec18dd} 
+enum \mbox{\hyperlink{type_8h_a3e5b8192e7d9ffaf3542f1210aec18dd}{BOOL}} \{ {\bfseries USER\+\_\+\+YES} = 0
+, {\bfseries USER\+\_\+\+NO} = 1
+ \}
+\begin{DoxyCompactList}\small\item\em Да/Нет, полученные от пользователя \end{DoxyCompactList}\item 
+\Hypertarget{type_8h_a6043da33f9434e8d3eb6c4ec77b71b62}\label{type_8h_a6043da33f9434e8d3eb6c4ec77b71b62} 
+enum \mbox{\hyperlink{type_8h_a6043da33f9434e8d3eb6c4ec77b71b62}{EVENT}} \{ \newline
+{\bfseries NULL\+\_\+\+EVENT} = 0
+, {\bfseries START\+\_\+\+PROGRAM} = 1
+, {\bfseries GUESS\+\_\+\+OBJECT} = 2
+, {\bfseries COMPARE\+\_\+\+OBJECTS} = 3
+, \newline
+{\bfseries DESC\+\_\+\+OBJECT} = 4
+, {\bfseries SAVE\+\_\+\+DATA} = 5
+, {\bfseries IMPORT\+\_\+\+DATA} = 6
+, {\bfseries EXIT\+\_\+\+PROGRAM} = 7
+ \}
+\begin{DoxyCompactList}\small\item\em Все возможные ивенты \end{DoxyCompactList}\item 
+\Hypertarget{type_8h_af3ec464aa442c2d0bd0c227fda28a8be}\label{type_8h_af3ec464aa442c2d0bd0c227fda28a8be} 
+enum \mbox{\hyperlink{type_8h_af3ec464aa442c2d0bd0c227fda28a8be}{TYPE\+\_\+\+OBJECT}} \{ {\bfseries NO\+\_\+\+OWN\+\_\+\+MEMORY} = 0x0000
+, {\bfseries OWN\+\_\+\+MEMORY} = 0x0001
+, {\bfseries IS\+\_\+\+IMAGE} = 0x0002
+, {\bfseries IS\+\_\+\+AUDIO} = 0x0004
+ \}
+\begin{DoxyCompactList}\small\item\em Показатели объектов \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{type_8h_ac3d210e9df5069d219b9a83115c6fd0f}\label{type_8h_ac3d210e9df5069d219b9a83115c6fd0f} 
+const \mbox{\hyperlink{structbutton__desc__t}{button\+\_\+desc\+\_\+t}} {\bfseries MAIN\+\_\+\+MENU\+\_\+\+BUN} \mbox{[}$\,$\mbox{]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Типы объектов 
+
+
+
+\doxysubsection{Enumeration Type Documentation}
+\Hypertarget{type_8h_af11b337bbec52e9ddcc6d2fa49038448}\label{type_8h_af11b337bbec52e9ddcc6d2fa49038448} 
+\index{type.h@{type.h}!PLACE\_BUTTON@{PLACE\_BUTTON}}
+\index{PLACE\_BUTTON@{PLACE\_BUTTON}!type.h@{type.h}}
+\doxysubsubsection{\texorpdfstring{PLACE\_BUTTON}{PLACE\_BUTTON}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{type_8h_af11b337bbec52e9ddcc6d2fa49038448}{PLACE\+\_\+\+BUTTON}}}
+
+
+
+Типы расположения кнопок на экране 
+
+\begin{DoxySeeAlso}{See also}
+\doxylink{display-const_8h_a30da75ab4558317351d83e094aa06f96}{MAIN\+\_\+\+MENU\+\_\+\+BUT}\mbox{[}\mbox{]} 
+\end{DoxySeeAlso}

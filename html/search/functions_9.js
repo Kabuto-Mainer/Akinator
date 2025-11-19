@@ -1,0 +1,11 @@
+var searchData=
+[
+  ['record_5faudio_0',['record_audio',['../graphic_8cpp.html#a16a68262fe508429460865bdfe1d3025',1,'record_audio(display_t *display, button_t *button, SDL_AudioDeviceID record_device, const char *file):&#160;graphic.cpp'],['../display_8h.html#a16a68262fe508429460865bdfe1d3025',1,'record_audio(display_t *display, button_t *button, SDL_AudioDeviceID record_device, const char *file):&#160;graphic.cpp']]],
+  ['render_5fbuttons_1',['render_buttons',['../graphic_8cpp.html#a4dc8222b35b1bdeb8c38ee396147c8da',1,'render_buttons(display_t *display):&#160;graphic.cpp'],['../display_8h.html#a4dc8222b35b1bdeb8c38ee396147c8da',1,'render_buttons(display_t *display):&#160;graphic.cpp']]],
+  ['render_5fmain_5ftext_2',['render_main_text',['../graphic_8cpp.html#af540bdb163d9d0c7461a89646423e3f5',1,'render_main_text(display_t *display):&#160;graphic.cpp'],['../display_8h.html#af540bdb163d9d0c7461a89646423e3f5',1,'render_main_text(display_t *display):&#160;graphic.cpp']]],
+  ['render_5fobject_3',['render_object',['../graphic_8cpp.html#a71e312c78475e6ec4758eff0de0f54ab',1,'render_object(display_t *display):&#160;graphic.cpp'],['../display_8h.html#a71e312c78475e6ec4758eff0de0f54ab',1,'render_object(display_t *display):&#160;graphic.cpp']]],
+  ['render_5fuser_5ftext_4',['render_user_text',['../graphic_8cpp.html#a5a74d6c5e1f140bcc88cf3bbd3a7e6a2',1,'render_user_text(display_t *display):&#160;graphic.cpp'],['../display_8h.html#a5a74d6c5e1f140bcc88cf3bbd3a7e6a2',1,'render_user_text(display_t *display):&#160;graphic.cpp']]],
+  ['render_5fvideo_5',['render_video',['../graphic_8cpp.html#a4fb8c1e99a7831300ddd6b090a0f1cab',1,'render_video(display_t *display):&#160;graphic.cpp'],['../display_8h.html#a4fb8c1e99a7831300ddd6b090a0f1cab',1,'render_video(display_t *display):&#160;graphic.cpp']]],
+  ['renew_5fdisplay_6',['renew_display',['../graphic_8cpp.html#a9c1949b51e474cf559fed09197cdedba',1,'renew_display(display_t *display):&#160;graphic.cpp'],['../display_8h.html#a9c1949b51e474cf559fed09197cdedba',1,'renew_display(display_t *display):&#160;graphic.cpp']]],
+  ['resume_5ffone_5fmusic_7',['resume_fone_music',['../graphic_8cpp.html#a6940245aac655bb6c3d1cf5cd43405f5',1,'resume_fone_music():&#160;graphic.cpp'],['../display_8h.html#a6940245aac655bb6c3d1cf5cd43405f5',1,'resume_fone_music():&#160;graphic.cpp']]]
+];
